@@ -23,6 +23,7 @@
 *.sbr
 *.sdf
 ipch/
+.vscode/
 obj/
 [Bb]in
 [Dd]ebug*/
