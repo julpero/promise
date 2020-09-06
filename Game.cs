@@ -22,15 +22,30 @@ namespace promise
         public Game()
         {
             GetPlayers();
-            GetGameRules();
             this.Players = ShufflePlayers();
+            GetGameRules();
             InitRounds();
+            PlayPromise();
+        }
+
+        private void PlayRound(int roundNbr)
+        {
+            var roundToPlay = this.Rounds[roundNbr];
+            roundToPlay.MakePromises();
+        }
+
+        private void PlayPromise()
+        {
+            for (int i = 0; i < this.Rounds.Count(); i++)
+            {
+                PlayRound(i);
+            }
         }
 
         private void InitRounds()
         {
             this.Rounds = new Round[0];
-            int round = 1;
+            int round = 0;
             for (int i = this.StartRound; i >= this.TurnRound; i--)
             {
                 this.Rounds.Append(new Round(i, round, this.Players));
