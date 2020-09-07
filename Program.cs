@@ -10,6 +10,7 @@ namespace promise
     {
         static void Main(string[] args)
         {
+            Console.SetWindowSize(180, 40);
             ScreenUtils.ClearScreen();
             Game promiseGame = new Game();
             

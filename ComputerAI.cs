@@ -4,9 +4,10 @@ namespace promise
 {
     public static class ComputerAI
     {
-        public static int MakePromise()
+        private static Random rand = new Random();
+        public static Promise MakePromise(int cardsInRound)
         {
-            return 1;
+            return new Promise(rand.Next(0, cardsInRound + 1));
         }
 
     }

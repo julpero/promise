@@ -16,26 +16,36 @@ namespace promise
     {
         public PlayerType PlayerType {get; set;}
         public string PlayerName {get; set;}
+        public string PlayerInitials {get; set;}
+
+        private string GenerateInitials(string name)
+        {
+            return name.Substring(0, 3);
+        }
 
         public Player(int playerNro)
         {
-            int input = 0;
+            int playerTypeInt = 0;
             Console.Write($"Pelaajan {playerNro} tyyppi, 0 = tietokone, 1 = ihminen: ");
-
-            while (!Int32.TryParse(Console.ReadLine(), out input))
+            var input = Console.ReadKey();
+            while (!Int32.TryParse(input.KeyChar.ToString(), out playerTypeInt))
             {
-                Console.Write($"Pelaajan {playerNro} tyyppi, 0 = tietokone, 1 = ihminen: ");
+                // Console.Write($"Pelaajan {playerNro} tyyppi, 0 = tietokone, 1 = ihminen: ");
+                input = Console.ReadKey();
             }
-            if (input == 1)
+            Console.WriteLine();
+            if (playerTypeInt == 1)
             {
                 this.PlayerType = PlayerType.HUMAN;
                 Console.Write($"Pelaajan {playerNro} nimi: ");
                 this.PlayerName = Console.ReadLine();
+                this.PlayerInitials = GenerateInitials(this.PlayerName);
             }
             else
             {
                 this.PlayerType = PlayerType.COMPUTER;
                 this.PlayerName = $"Computer {playerNro}";
+                this.PlayerInitials = $"Co{playerNro}";
             }
         }
     }
