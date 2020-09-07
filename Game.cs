@@ -8,10 +8,11 @@ namespace promise
 {
     class Game
     {
+        const bool DEBUGMODE = true;
         const int MAXPLAYERS = 5;
-        const int SCOREBOARDSTART = 120;
+        const int SCOREBOARDSTART = 130;
         const int PROMISEBOARDX = 10;
-        const int PROMISEBOARDY = 30;
+        const int PROMISEBOARDY = 33;
 
         // public int PlayerCount {get; set;}
 
@@ -52,6 +53,7 @@ namespace promise
             int[] promiseSums = new int[this.Players.Count()];
 
             Console.SetCursorPosition(SCOREBOARDSTART, 1);
+            Console.ForegroundColor = ConsoleColor.White;
             for (int i = 0; i < this.Players.Count(); i++)
             {
                 Console.Write("|");
@@ -69,17 +71,19 @@ namespace promise
 
                 for (int j = 0; j < this.Players.Count(); j++)
                 {
-                    int promiseSum = CountPoint(this.Rounds[i].CardsInRound, this.Rounds[i].Promises[PlayerPositionHelper(i - j)]); // this IS WRONG
+                    int promiseSum = CountPoint(this.Rounds[i].CardsInRound, this.Rounds[i].Promises[PlayerPositionHelper(j - i)]);
                     promiseSums[j]+= promiseSum;
                     string sumStr = (promiseSum > 0) ? $"{promiseSums[j]}" : "";
                     Console.Write(sumStr.PadLeft(3, ' '));
+                    Console.Write(" ");
                 }
             }
         }
 
-        private void PrintPromiseBoard()
+        private void PrintPromiseBoard(int inGame = -1)
         {
             Console.SetCursorPosition(PROMISEBOARDX + 15, PROMISEBOARDY);
+            Console.ForegroundColor = ConsoleColor.White;
             Console.Write("|");
             for (int i = 0; i < this.Rounds.Length; i++)
             {
@@ -91,13 +95,30 @@ namespace promise
             for (int i = 0; i < this.Players.Count(); i++)
             {
                 Console.SetCursorPosition(PROMISEBOARDX, PROMISEBOARDY + 1 + i);
+                Console.ForegroundColor = ConsoleColor.White;
                 var nameStr = this.Players[i].PlayerName;
                 if (nameStr.Length > 14) nameStr = nameStr.Substring(0, 14);
                 Console.Write(nameStr.PadLeft(14, ' '));
                 Console.Write(" |");
                 for (int j = 0; j < this.Rounds.Count(); j++)
                 {
-                    if (!this.Rounds[j].RoundPlayed) break;
+                    if (!this.Rounds[j].RoundPlayed)
+                    {
+                        if (inGame != j) continue;
+                    }
+
+                    if (inGame == j)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                    }
+                    else if (this.Rounds[j].Promises[PlayerPositionHelper(i - j)].PromiseKept)
+                    {
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkGray;
+                    }
 
                     string thisPromiseStr = this.Rounds[j].Promises[PlayerPositionHelper(i - j)].PromiseNumber.ToString();
                     Console.Write(thisPromiseStr.PadLeft(2, ' '));
@@ -112,6 +133,13 @@ namespace promise
             PrintPromiseBoard();
             var roundToPlay = this.Rounds[roundNbr];
             roundToPlay.MakePromises();
+            PrintPromiseBoard(roundNbr);
+            roundToPlay.PlayRound();
+
+            PrintScoreBoard();
+            PrintPromiseBoard();
+
+            Console.ReadKey();
         }
 
         private void PlayPromise()
@@ -121,6 +149,8 @@ namespace promise
                 ScreenUtils.ClearScreen();
                 PlayRound(i);
             }
+
+            Console.ReadKey();
         }
 
         private int RoundsInThisGame()
@@ -151,7 +181,7 @@ namespace promise
             int lkm = 0;
 
             Console.Write($"Pelaajien lukumäärä (2-{MAXPLAYERS}): ");
-            var input = Console.ReadKey();
+            ConsoleKeyInfo input = Console.ReadKey();
             while (!Int32.TryParse(input.KeyChar.ToString(), out lkm) || lkm > MAXPLAYERS || lkm < 2)
             {
                 ScreenUtils.ClearScreen();
@@ -182,7 +212,7 @@ namespace promise
             int lkm = 0;
 
             Console.Write($"Mistä jaosta lähdetään (max {MaximumRounds()}): ");
-            input = Console.ReadLine();
+            input = DEBUGMODE ? "4" : Console.ReadLine();
             while (!Int32.TryParse(input, out lkm) || lkm > MaximumRounds())
             {
                 Console.Write($"Mistä jaosta lähdetään (max {MaximumRounds()}): ");
@@ -191,7 +221,7 @@ namespace promise
             this.StartRound = lkm;
 
             Console.Write("Missä jaossa käännytään: ");
-            input = Console.ReadLine();
+            input = DEBUGMODE ? "1" : Console.ReadLine();
             while (!Int32.TryParse(input, out lkm) || lkm < 1 || lkm > this.StartRound)
             {
                 Console.Write("Missä jaossa käännytään: ");
@@ -200,7 +230,7 @@ namespace promise
             this.TurnRound = lkm;
 
             Console.Write($"Mihin jakoon lopetetaan (max {MaximumRounds()}): ");
-            input = Console.ReadLine();
+            input = DEBUGMODE ? "4" : Console.ReadLine();
             while (!Int32.TryParse(input, out lkm) || lkm < this.TurnRound || lkm > MaximumRounds())
             {
                 Console.Write($"Mihin jakoon lopetetaan (max {MaximumRounds()}): ");

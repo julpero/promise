@@ -27,7 +27,7 @@ namespace promise
         {
             int playerTypeInt = 0;
             Console.Write($"Pelaajan {playerNro} tyyppi, 0 = tietokone, 1 = ihminen: ");
-            var input = Console.ReadKey();
+            ConsoleKeyInfo input = Console.ReadKey();
             while (!Int32.TryParse(input.KeyChar.ToString(), out playerTypeInt))
             {
                 // Console.Write($"Pelaajan {playerNro} tyyppi, 0 = tietokone, 1 = ihminen: ");
@@ -38,7 +38,7 @@ namespace promise
             {
                 this.PlayerType = PlayerType.HUMAN;
                 Console.Write($"Pelaajan {playerNro} nimi: ");
-                this.PlayerName = Console.ReadLine();
+                this.PlayerName = Console.ReadLine().PadRight(3);
                 this.PlayerInitials = GenerateInitials(this.PlayerName);
             }
             else

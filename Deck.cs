@@ -35,7 +35,7 @@ namespace DSI.Deck
             CardSet = new List<Card>();
             for (int i = 0; i < 4; i++)         //Suit values 0-3 (0-clubs, 1-diamonds, 2-hearts, 3-spades)
             {
-                for (int j = 1; j < 14; j++)    //Card values 1-13 (values ordered from 2 to Ace, Ace is high)
+                for (int j = 2; j <= 14; j++)    //Card values 1-13 (values ordered from 2 to Ace, Ace is high)
                 {
                     CardSet.Add(new Card(i, j));
                 }

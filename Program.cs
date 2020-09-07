@@ -10,6 +10,7 @@ namespace promise
     {
         static void Main(string[] args)
         {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
             Console.SetWindowSize(180, 40);
             ScreenUtils.ClearScreen();
             Game promiseGame = new Game();
