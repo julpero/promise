@@ -346,7 +346,9 @@ namespace promise
 
                 if (printCardNumber)
                 {
-                    string cardNumberStr = (i == 9) ? "0" : $"{i+1}";
+                    string cardNumberStr = (cardIsAvailable)
+                                            ? (i == 9) ? "0" : $"{i+1}"
+                                            : " ";
                     if (cardWillWin)
                     {
                         Console.SetCursorPosition(x + (CARDWIDTH / 2) - 2, y + CARDHEIGHT);
