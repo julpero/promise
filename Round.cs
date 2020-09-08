@@ -190,14 +190,16 @@ namespace promise
             UIShowPromises();
             for (int i = 0; i < this.CardsInRound; i++)
             {
-                List<string> debugInfo = new List<string>();
+                // List<string> debugInfo = new List<string>();
 
                 this.TableCards = new Card[this.Players.Count()];
+                this.CardInCharge = null;
+
                 for (int j = 0; j < this.Players.Count(); j++)
                 {
                     int currentPlayerIndex = CardAskHelper(j);
-                    string debugStr = $"{this.PlayerInCharge} - {j} -> {currentPlayerIndex}";
-                    debugInfo.Add(debugStr);
+                    // string debugStr = $"{this.PlayerInCharge} - {j} -> {currentPlayerIndex}";
+                    // debugInfo.Add(debugStr);
                     Card cardPlayed = AskCard(currentPlayerIndex);
                     this.TableCards[currentPlayerIndex] = cardPlayed;
                 }
@@ -290,7 +292,13 @@ namespace promise
             {
                 int x = CARDSSTARTX + (i * (CARDWIDTH + 1));
                 int y = CARDSSTARTY;
-                ScreenUtils.PrintCard(x, y, this.Hands[playerInd].Skip(i).First());
+                Card cardToPrint = this.Hands[playerInd].Skip(i).First();
+                bool cardIsAvailable = true;
+                if (this.CardInCharge != null)
+                {
+                    cardIsAvailable = IsValidCard(this.Hands[playerInd], i);
+                }
+                ScreenUtils.PrintCard(x, y, cardToPrint, cardIsAvailable);
                 if (printCardNumber)
                 {
                     Console.SetCursorPosition(x + (CARDWIDTH / 2) - 1, y + CARDHEIGHT);

@@ -356,9 +356,9 @@ namespace promise
             }
         }
 
-        public static void PrintCard(int x, int y, Card card)
+        public static void PrintCard(int x, int y, Card card, bool cardIsAvailable = true)
         {
-            Console.BackgroundColor = ConsoleColor.White;
+            Console.BackgroundColor = cardIsAvailable ? ConsoleColor.White : ConsoleColor.Gray;
             Console.ForegroundColor = (card.CardSuit == CardSuit.Diamonds || card.CardSuit == CardSuit.Hearts)
                                     ? ConsoleColor.Red
                                     : ConsoleColor.Black;
