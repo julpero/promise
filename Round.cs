@@ -147,6 +147,24 @@ namespace promise
             return playedCard;
         }
 
+        private bool CardWillWin(Card cardToCheck, Card cardInCharge, List<Card> cardsInTable, CardSuit trumpSuit)
+        {
+            if (!cardsInTable.Any() || cardInCharge == null) return false;
+            cardsInTable.RemoveAll(x => x == null);
+            Card winningCard = (cardsInTable.Any(x => x.CardSuit == trumpSuit))
+                        ? cardsInTable.Where(x => x.CardSuit == trumpSuit).OrderByDescending(x => x.CardValue).First()
+                        : cardsInTable.Where(x => x.CardSuit == cardInCharge.CardSuit).OrderByDescending(x => x.CardValue).First();
+            
+            if (winningCard.CardSuit == trumpSuit)
+            {
+                return (cardToCheck.CardSuit == trumpSuit && cardToCheck.CardValue > winningCard.CardValue);
+            }
+            else
+            {
+                return (cardToCheck.CardSuit == trumpSuit || (cardToCheck.CardSuit == winningCard.CardSuit && cardToCheck.CardValue > winningCard.CardValue));
+            }
+        }
+
         private int CheckWinner()
         {
             // initally player in charge is winner
@@ -299,10 +317,21 @@ namespace promise
                     cardIsAvailable = IsValidCard(this.Hands[playerInd], i);
                 }
                 ScreenUtils.PrintCard(x, y, cardToPrint, cardIsAvailable);
+
                 if (printCardNumber)
                 {
-                    Console.SetCursorPosition(x + (CARDWIDTH / 2) - 1, y + CARDHEIGHT);
+                    bool cardWillWin = cardIsAvailable && CardWillWin(cardToPrint, this.CardInCharge, this.TableCards.ToList(), this.TrumpCard.CardSuit);
                     string cardNumberStr = (i == 9) ? "0" : $"{i+1}";
+                    if (cardWillWin)
+                    {
+                        Console.SetCursorPosition(x + (CARDWIDTH / 2) - 2, y + CARDHEIGHT);
+                        cardNumberStr = $"*{cardNumberStr}*";
+                    }
+                    else
+                    {
+                        Console.SetCursorPosition(x + (CARDWIDTH / 2) - 1, y + CARDHEIGHT);
+                    }
+                    
                     Console.Write($"({cardNumberStr})");
                 }
             }
