@@ -401,7 +401,13 @@ namespace promise
                 string promiseStr = $"{this.Promises[i].PromiseNumber}";
                 promiseStr+= $" / {this.RoundWins[i]}";
                 Console.Write("|  ");
-                Console.Write(promiseStr.PadRight(COLWIDTH - 1, ' '));
+                int promiseStatus = this.RoundWins[i] - this.Promises[i].PromiseNumber;
+                Console.BackgroundColor = ConsoleColor.Black;
+                if (promiseStatus == 0) Console.BackgroundColor = ConsoleColor.Green;
+                if (promiseStatus > 0) Console.BackgroundColor = ConsoleColor.Red;
+                Console.Write(promiseStr.PadRight(COLWIDTH - 6, ' '));
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.Write("     ");
             }
         }
 
