@@ -11,6 +11,15 @@ namespace promise
         const int TRUMPSTARTY = 12;
         const int CARDSSTARTX = 4;
 
+        public enum CardBgType
+        {
+            BASIC,
+            NOTAVAILABLE,
+            WINNIG,
+            INCHARGE,
+            LOSING
+        }
+
         public static void ClearScreen()
         {
             try
@@ -356,9 +365,16 @@ namespace promise
             }
         }
 
-        public static void PrintCard(int x, int y, Card card, bool cardIsAvailable = true)
+        public static void PrintCard(int x, int y, Card card, CardBgType cardBgType = CardBgType.BASIC)
         {
-            Console.BackgroundColor = cardIsAvailable ? ConsoleColor.White : ConsoleColor.Gray;
+            switch (cardBgType)
+            {
+                case CardBgType.WINNIG: Console.BackgroundColor = ConsoleColor.Yellow; break;
+                case CardBgType.INCHARGE: Console.BackgroundColor = ConsoleColor.White; break;
+                case CardBgType.LOSING: Console.BackgroundColor = ConsoleColor.Gray; break;
+                case CardBgType.NOTAVAILABLE: Console.BackgroundColor = ConsoleColor.Gray; break;
+                default: Console.BackgroundColor = ConsoleColor.White; break;
+            }
             Console.ForegroundColor = (card.CardSuit == CardSuit.Diamonds || card.CardSuit == CardSuit.Hearts)
                                     ? ConsoleColor.Red
                                     : ConsoleColor.Black;

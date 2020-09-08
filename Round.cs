@@ -2,7 +2,7 @@ using System;
 using DSI.Deck;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Threading;
 
 namespace promise
 {
@@ -20,6 +20,7 @@ namespace promise
 
     class Round
     {
+        const int WAITTIME = 400; // milliseconds
         const int COLWIDTH = 20;
         const int CARDSSTARTX = 4;
         const int CARDSSTARTY = 22;
@@ -109,11 +110,23 @@ namespace promise
             return true;
         }
 
+        private int NextPlayerIndex(int currentPlayerIndex)
+        {
+            for (int i = 1; i < this.Players.Count(); i++)
+            {
+                int j = currentPlayerIndex + i;
+                if (j > this.Players.Count()) j = 0;
+            }
+            return -1;
+        }
+
         private Card AskCard(int playerInd)
         {
             int cardIndex = -1;
             if (this.Players[playerInd].PlayerType == PlayerType.COMPUTER)
             {
+                PrintPlayerCards(NextPlayerIndex(playerInd), false);
+                Thread.Sleep(WAITTIME);
                 cardIndex = ComputerAI.PlayCard(this.Hands[playerInd], this.CardInCharge);
             }
             else
@@ -134,8 +147,10 @@ namespace promise
                 }
             }
             Card playedCard = this.Hands[playerInd].Skip(cardIndex).First();
+            this.TableCards[playerInd] = playedCard;
 
-            PrintPlayedCard(playerInd, playedCard);
+            // PrintPlayedCard(playerInd, playedCard);
+            PrintPlayedCards();
             this.Hands[playerInd].RemoveAt(cardIndex);
 
             if (this.Players[playerInd].PlayerType == PlayerType.HUMAN)
@@ -157,11 +172,11 @@ namespace promise
             
             if (winningCard.CardSuit == trumpSuit)
             {
-                return (cardToCheck.CardSuit == trumpSuit && cardToCheck.CardValue > winningCard.CardValue);
+                return (cardToCheck.CardSuit == trumpSuit && cardToCheck.CardValue >= winningCard.CardValue);
             }
             else
             {
-                return (cardToCheck.CardSuit == trumpSuit || (cardToCheck.CardSuit == winningCard.CardSuit && cardToCheck.CardValue > winningCard.CardValue));
+                return (cardToCheck.CardSuit == trumpSuit || (cardToCheck.CardSuit == winningCard.CardSuit && cardToCheck.CardValue >= winningCard.CardValue));
             }
         }
 
@@ -219,7 +234,7 @@ namespace promise
                     // string debugStr = $"{this.PlayerInCharge} - {j} -> {currentPlayerIndex}";
                     // debugInfo.Add(debugStr);
                     Card cardPlayed = AskCard(currentPlayerIndex);
-                    this.TableCards[currentPlayerIndex] = cardPlayed;
+                    
                 }
 
                 int winnerOfRound = CheckWinner();
@@ -253,9 +268,14 @@ namespace promise
 
         private Promise GetPromise(int i)
         {
-            return (this.Players[i].PlayerType == PlayerType.COMPUTER)
-                ? ComputerAI.MakePromise(this.CardsInRound, this.Players.Count())
-                : GetPlayerPromise(i);
+            if (this.Players[i].PlayerType == PlayerType.COMPUTER)
+            {
+                return ComputerAI.MakePromise(this.CardsInRound, this.Players.Count());
+            }
+            else
+            {
+                return GetPlayerPromise(i);
+            }
         }
 
         private int GetPlayerCard(int playerIndex)
@@ -306,21 +326,26 @@ namespace promise
 
         private void PrintPlayerCards(int playerInd, bool printCardNumber = false)
         {
+            if (playerInd < 0) return;
+
             for (int i = 0; i < this.Hands[playerInd].Count(); i++)
             {
                 int x = CARDSSTARTX + (i * (CARDWIDTH + 1));
                 int y = CARDSSTARTY;
                 Card cardToPrint = this.Hands[playerInd].Skip(i).First();
+                ScreenUtils.CardBgType cardBgType = ScreenUtils.CardBgType.BASIC;
                 bool cardIsAvailable = true;
                 if (this.CardInCharge != null)
                 {
                     cardIsAvailable = IsValidCard(this.Hands[playerInd], i);
+                    if (!cardIsAvailable) cardBgType = ScreenUtils.CardBgType.NOTAVAILABLE;
                 }
-                ScreenUtils.PrintCard(x, y, cardToPrint, cardIsAvailable);
+                bool cardWillWin = printCardNumber && cardIsAvailable && CardWillWin(cardToPrint, this.CardInCharge, this.TableCards.ToList(), this.TrumpCard.CardSuit);
+                if (cardWillWin) cardBgType = ScreenUtils.CardBgType.WINNIG;
+                ScreenUtils.PrintCard(x, y, cardToPrint, cardBgType);
 
                 if (printCardNumber)
                 {
-                    bool cardWillWin = cardIsAvailable && CardWillWin(cardToPrint, this.CardInCharge, this.TableCards.ToList(), this.TrumpCard.CardSuit);
                     string cardNumberStr = (i == 9) ? "0" : $"{i+1}";
                     if (cardWillWin)
                     {
@@ -337,9 +362,32 @@ namespace promise
             }
         }
 
-        private void PrintPlayedCard(int playerInd, Card playedCard)
+        private void PrintPlayedCards()
         {
-            ScreenUtils.PrintCard((playerInd * (COLWIDTH + 1)) + 5, 3, playedCard);
+            for (int i = 0; i < this.Players.Count(); i++)
+            {
+                if (this.TableCards[i] != null)
+                {
+                    Card playedCard = this.TableCards[i];
+                    ScreenUtils.CardBgType cardBgType = ScreenUtils.CardBgType.LOSING;
+                    if (i == this.PlayerInCharge)
+                    {
+                        cardBgType = ScreenUtils.CardBgType.INCHARGE;
+                    }
+                    else
+                    {
+                        if (CardWillWin(playedCard, this.CardInCharge, this.TableCards.ToList(), this.TrumpCard.CardSuit))
+                            cardBgType = ScreenUtils.CardBgType.WINNIG;
+                    }
+
+                    PrintPlayedCard(i, playedCard, cardBgType);
+                }
+            }
+        }
+
+        private void PrintPlayedCard(int playerInd, Card playedCard, ScreenUtils.CardBgType cardBgType)
+        {
+            ScreenUtils.PrintCard((playerInd * (COLWIDTH + 1)) + 5, 3, playedCard, cardBgType);
         }
 
         private void UIShowPromises()
@@ -379,6 +427,7 @@ namespace promise
             {
                 string promiseStr = $"{this.Promises[i].PromiseNumber}";
                 Console.Write("|  ");
+                Thread.Sleep(WAITTIME);
                 Console.Write(promiseStr.PadRight(COLWIDTH - 1, ' '));
             }
             Console.WriteLine();
