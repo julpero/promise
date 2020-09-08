@@ -8,7 +8,7 @@ namespace promise
 {
     class Game
     {
-        const bool DEBUGMODE = true;
+        const bool DEBUGMODE = false;
         const int MAXPLAYERS = 5;
         const int SCOREBOARDSTART = 130;
         const int PROMISEBOARDX = 10;
