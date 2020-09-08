@@ -375,9 +375,13 @@ namespace promise
                 case CardBgType.NOTAVAILABLE: Console.BackgroundColor = ConsoleColor.Gray; break;
                 default: Console.BackgroundColor = ConsoleColor.White; break;
             }
-            Console.ForegroundColor = (card.CardSuit == CardSuit.Diamonds || card.CardSuit == CardSuit.Hearts)
-                                    ? ConsoleColor.Red
-                                    : ConsoleColor.Black;
+            switch (card.CardSuit)
+            {
+                case CardSuit.Clubs: Console.ForegroundColor = ConsoleColor.Green; break;
+                case CardSuit.Hearts: Console.ForegroundColor = ConsoleColor.Red; break;
+                case CardSuit.Diamonds: Console.ForegroundColor = ConsoleColor.Blue; break;
+                case CardSuit.Spades: Console.ForegroundColor = ConsoleColor.Black; break;
+            }
             
             PrintCardBackGround(x, y);
             PrintCardVal(x, y, card.CardValue);
