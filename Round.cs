@@ -456,10 +456,12 @@ namespace promise
 
         private void UIShowPromises()
         {
+            int totalPromises = 0;
             Console.SetCursorPosition(0, 1);
             Console.ForegroundColor = ConsoleColor.White;
             for (int i = 0; i < this.Players.Count(); i++)
             {
+                totalPromises+= this.Promises[i].PromiseNumber;
                 string promiseStr = $"{this.Promises[i].PromiseNumber}";
                 promiseStr+= $" / {this.RoundWins[i]}";
                 Console.Write("|  ");
@@ -471,14 +473,13 @@ namespace promise
                 Console.BackgroundColor = ConsoleColor.Black;
                 Console.Write("     ");
             }
+            Console.Write($"  {totalPromises} / {this.CardsInRound}");
 
             Console.SetCursorPosition(0, 2);
             for (int i = 0; i < this.Players.Count(); i++)
             {
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.Write("|  ");
-
-                int promiseStatus = this.RoundWins[i] - this.Promises[i].PromiseNumber;
 
                 Console.ForegroundColor = ConsoleColor.Green;
                 for (int j = 0; j < this.RoundWins[i] && j < this.Promises[i].PromiseNumber; j++)
@@ -498,6 +499,8 @@ namespace promise
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.Write("".PadRight(COLWIDTH - Math.Max(this.RoundWins[i], this.Promises[i].PromiseNumber) - 1, ' '));
             }
+
+
         }
 
         private void UIShowNames(int boldPlayer = -1)
@@ -512,13 +515,13 @@ namespace promise
                 if (nameStr.Length > COLWIDTH) nameStr = nameStr.Substring(0, COLWIDTH);
                 Console.Write(nameStr.PadRight(COLWIDTH, ' '));
             }
-            Console.WriteLine();
-
+            Console.Write("| TOTAL");
         }
 
         private void UiAskPromise(int playerInd)
         {
             UIShowNames();
+            Console.SetCursorPosition(0, 1);
             Console.ForegroundColor = ConsoleColor.White;
             for (int i = 0; i < playerInd; i++)
             {
@@ -527,7 +530,6 @@ namespace promise
                 Thread.Sleep(WAITTIME);
                 Console.Write(promiseStr.PadRight(COLWIDTH - 1, ' '));
             }
-            Console.WriteLine();
 
         }
     }
