@@ -392,7 +392,7 @@ namespace promise
             return losingCards;
         }
 
-        public static int PlayCard(int playerInd, List<Card> hand, Card cardInCharge, Card trumpCard, Card[] tableCards, int cardsInRound, Promise[] promises, int[] roundWins)
+        public static int PlayCard(int playerInd, List<Card> hand, Card cardInCharge, Card trumpCard, Card[] tableCards, int cardsInRound, Promise[] promises, int[] roundWins, List<Card> cardsPlayedInRounds, PlayerInfo[] playerInfos)
         {
             PlayingMethod myMethod = PlayingMethod.NOTSET;
 
