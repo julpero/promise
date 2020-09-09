@@ -35,6 +35,18 @@ namespace promise
             HasTrumps = true;
         }
 
+        public bool HasSuit(CardSuit suit)
+        {
+            switch (suit)
+            {
+                case CardSuit.Spades: return HasSpades;
+                case CardSuit.Hearts: return HasHearts;
+                case CardSuit.Clubs: return HasClubs;
+                case CardSuit.Diamonds: return HasDiamonds;
+            }
+            return true;
+        }
+
     }
 
     class Round
@@ -459,7 +471,7 @@ namespace promise
                 Console.BackgroundColor = ConsoleColor.Black;
                 Console.Write("     ");
             }
-            
+
             Console.SetCursorPosition(0, 2);
             for (int i = 0; i < this.Players.Count(); i++)
             {

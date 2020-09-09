@@ -18,6 +18,8 @@ namespace promise
             TRYTOROB,
             // player has lost but makes harm to others by skipping
             TRYTOSKIP,
+            // player has enough sure cards to keep promise so play other cards away
+            SKIPSAFE
         }
 
 #region analyzing
@@ -31,14 +33,15 @@ namespace promise
             public int SmallValuesInSuit {get; set;}
             public int CardCount {get; set;}
             public int IsDodgeable {get; set;}
+            public double AvgOtherPlayersCount {get; set;}
 
-            private int AnalyzeDodgeable()
+            private int AnalyzeDodgeable(List<Card> playedCards, int playerCount, bool inCharge)
             {
-                int retVal = 50;
+                double retVal = 50.0;
                 if (this.CardCount == 0)
                 {
-                    retVal = 100;
-                } 
+                    return 100;
+                }
                 else if (this.SmallValuesInSuit > this.BigValuesInSuit)
                 {
                     if (this.SmallestValuesInSuit > 0)
@@ -48,6 +51,10 @@ namespace promise
                     else
                     {
                         retVal = 85;
+                    }
+                    if (CardCount < this.AvgOtherPlayersCount)
+                    {
+                        retVal+= 3;
                     }
                 }
                 else
@@ -60,20 +67,38 @@ namespace promise
                     {
                         retVal = 25;
                     }
+                    if (CardCount > this.AvgOtherPlayersCount)
+                    {
+                        retVal=- 7;
+                    }
                 }
-                return retVal;
+                if (inCharge && this.AvgOtherPlayersCount < 1)
+                {
+                    retVal*= 0.8;
+                }
+                return (int)retVal;
             }
 
-            public AnalyzedSuit(List<Card> cards, CardSuit suit, bool isTrump = false)
+            public AnalyzedSuit(List<Card> cards, CardSuit suit, bool isTrump = false, List<Card> playedCards = null, int playerCount = 0, int cardsDrawn = 0, bool inCharge = false, PlayerInfo[] playerInfos = null)
             {
                 CardCount = cards == null ? 0 : cards.Count();
+                cardsDrawn++; // also trump is drawn
+                List<Card> playedCardsInSuit = playedCards != null ? playedCards.Where(x => x.CardSuit == suit).ToList() : new List<Card>();
+                PlayerInfo[] playerInfosInMethod = playerInfos != null ? playerInfos : new PlayerInfo[playerCount];
+                if (playerInfos == null)
+                {
+                    for (int i = 0; i < playerCount; i++) playerInfosInMethod[i] = new PlayerInfo();
+                }
                 Suit = suit;
                 IsTrump = isTrump;
-                BiggestValuesInSuit = BiggestValuesInSuit(cards);
+                BiggestValuesInSuit = BiggestValuesInSuit(cards, playedCardsInSuit);
                 BigValuesInSuit = BigValuesInSuit(cards);
-                SmallestValuesInSuit = SmallestValuesInSuit(cards);
+                SmallestValuesInSuit = SmallestValuesInSuit(cards, playedCardsInSuit);
                 SmallValuesInSuit = SmallValuesInSuit(cards);
-                IsDodgeable = AnalyzeDodgeable();
+                int cardsKnown = CardCount + playedCardsInSuit.Count();
+                if (isTrump) cardsKnown++;
+                AvgOtherPlayersCount = playerCount == 0 ? 0 : (13.0 - cardsKnown - ((52.0 - cardsDrawn) / 4.0)) / (playerCount - 1 - playerInfosInMethod.Count(x => !x.HasSuit(suit)));
+                IsDodgeable = AnalyzeDodgeable(playedCards, playerCount, inCharge);
             }
         }
 
@@ -85,7 +110,7 @@ namespace promise
             return (testInt < checkValue);
         }
 
-        private static int BiggestValuesInSuit(List<Card> cards)
+        private static int BiggestValuesInSuit(List<Card> cards, List<Card> playedCards = null)
         {
             if (cards == null || !cards.Any()) return 0;
             int retVal = 0;
@@ -94,6 +119,10 @@ namespace promise
                 if (cards.Any(x => (int)x.CardValue == i))
                 {
                     retVal++;
+                }
+                else if (playedCards != null && playedCards.Any(x => (int)x.CardValue == i))
+                {
+                    continue;
                 }
                 else
                 {
@@ -117,7 +146,7 @@ namespace promise
             return retVal;
         }
 
-        private static int SmallestValuesInSuit(List<Card> cards)
+        private static int SmallestValuesInSuit(List<Card> cards, List<Card> playedCards = null)
         {
             if (cards == null || !cards.Any()) return 0;
             int retVal = 0;
@@ -126,6 +155,10 @@ namespace promise
                 if (cards.Any(x => (int)x.CardValue == i))
                 {
                     retVal++;
+                }
+                else if (playedCards != null && playedCards.Any(x => (int)x.CardValue == i))
+                {
+                    continue;
                 }
                 else
                 {
@@ -199,7 +232,7 @@ namespace promise
             return zeroPromises;
         }
 
-        private static int BiggestTrumpsInHand(List<Card> myHand, Card trumpCard)
+        private static int BiggestTrumpsInHand(List<Card> myHand, Card trumpCard, List<Card> playedTrumps)
         {
             int retVal = 0;
 
@@ -209,7 +242,7 @@ namespace promise
                 {
                     retVal++;
                 }
-                else if ((int)trumpCard.CardValue == i)
+                else if ((int)trumpCard.CardValue == i || playedTrumps.Any(x => (int)x.CardValue == i))
                 {
                     continue;
                 }
@@ -249,15 +282,15 @@ namespace promise
 
             List<Card> myTrumps = hand.Where(x => x.CardSuit == trumpCard.CardSuit).ToList();
             int myTrumpCount = myTrumps.Count();
-            int biggestTrumpsInHand = BiggestTrumpsInHand(myTrumps, trumpCard);
+            int biggestTrumpsInHand = BiggestTrumpsInHand(myTrumps, trumpCard, new List<Card>());
             int smallerTrumpsInHand = myTrumps.Count() - biggestTrumpsInHand;
 
-            AnalyzedSuit analyzedC = new AnalyzedSuit(suitC, CardSuit.Clubs, CardSuit.Clubs == trumpCard.CardSuit);
-            AnalyzedSuit analyzedD = new AnalyzedSuit(suitD, CardSuit.Diamonds, CardSuit.Diamonds == trumpCard.CardSuit);
-            AnalyzedSuit analyzedH = new AnalyzedSuit(suitH, CardSuit.Hearts, CardSuit.Hearts == trumpCard.CardSuit);
-            AnalyzedSuit analyzedS = new AnalyzedSuit(suitS, CardSuit.Spades, CardSuit.Spades == trumpCard.CardSuit);
+            AnalyzedSuit analyzedC = new AnalyzedSuit(suitC, CardSuit.Clubs, CardSuit.Clubs == trumpCard.CardSuit, null, playersInGame, cardsInGame, iAmFirst);
+            AnalyzedSuit analyzedD = new AnalyzedSuit(suitD, CardSuit.Diamonds, CardSuit.Diamonds == trumpCard.CardSuit, null, playersInGame, cardsInGame, iAmFirst);
+            AnalyzedSuit analyzedH = new AnalyzedSuit(suitH, CardSuit.Hearts, CardSuit.Hearts == trumpCard.CardSuit, null, playersInGame, cardsInGame, iAmFirst);
+            AnalyzedSuit analyzedS = new AnalyzedSuit(suitS, CardSuit.Spades, CardSuit.Spades == trumpCard.CardSuit, null, playersInGame, cardsInGame, iAmFirst);
 
-            AnalyzedSuit analyzedT = new AnalyzedSuit(myTrumps, trumpCard.CardSuit, true);
+            AnalyzedSuit analyzedT = new AnalyzedSuit(myTrumps, trumpCard.CardSuit, true, null, playersInGame, cardsInGame, iAmFirst);
             // AnalyzedSuit analyzedT = myTrumps.Any() ? new AnalyzedSuit(myTrumps, trumpCard.CardSuit, true) : null;
 
             // this is a fact
@@ -392,9 +425,74 @@ namespace promise
             return losingCards;
         }
 
+        private static List<CardSuit> SureSuits(int playerInd, PlayerInfo[] playerInfos)
+        {
+            List<CardSuit> sureSuits = new List<CardSuit>();
+
+            bool isSure = true;
+            for (int i = 0; i < playerInfos.Count(); i++)
+            {
+                if (i == playerInd) continue;
+                if (playerInfos[i].HasClubs) isSure = false;
+            }
+            if (isSure) sureSuits.Add(CardSuit.Clubs);
+
+            isSure = true;
+            for (int i = 0; i < playerInfos.Count(); i++)
+            {
+                if (i == playerInd) continue;
+                if (playerInfos[i].HasDiamonds) isSure = false;
+            }
+            if (isSure) sureSuits.Add(CardSuit.Diamonds);
+
+            isSure = true;
+            for (int i = 0; i < playerInfos.Count(); i++)
+            {
+                if (i == playerInd) continue;
+                if (playerInfos[i].HasHearts) isSure = false;
+            }
+            if (isSure) sureSuits.Add(CardSuit.Hearts);
+
+            isSure = true;
+            for (int i = 0; i < playerInfos.Count(); i++)
+            {
+                if (i == playerInd) continue;
+                if (playerInfos[i].HasSpades) isSure = false;
+            }
+            if (isSure) sureSuits.Add(CardSuit.Spades);
+
+            return sureSuits;
+        }
+
+        private static CardSuit ChooseDodgeSuit(List<AnalyzedSuit> analyzedSuits, int counter = 0)
+        {
+            if (counter > 5) return analyzedSuits.OrderByDescending(x => x.IsDodgeable).First().Suit;
+            foreach (AnalyzedSuit analyzedSuit in analyzedSuits.OrderByDescending(x => x.IsDodgeable))
+            {
+                if (CheckRandom(analyzedSuit.IsDodgeable)) return analyzedSuit.Suit;
+            }
+
+            return ChooseDodgeSuit(analyzedSuits, counter++);
+        }
+
+        private static CardSuit ChooseDiffultiestDodgeSuit(List<AnalyzedSuit> analyzedSuits, int counter = 0)
+        {
+            if (counter > 5) return analyzedSuits.OrderBy(x => x.IsDodgeable).First().Suit;
+            foreach (AnalyzedSuit analyzedSuit in analyzedSuits.OrderBy(x => x.IsDodgeable))
+            {
+                if (CheckRandom(100 - analyzedSuit.IsDodgeable)) return analyzedSuit.Suit;
+            }
+
+            return ChooseDodgeSuit(analyzedSuits, counter++);
+        }
+
         public static int PlayCard(int playerInd, List<Card> hand, Card cardInCharge, Card trumpCard, Card[] tableCards, int cardsInRound, Promise[] promises, int[] roundWins, List<Card> cardsPlayedInRounds, PlayerInfo[] playerInfos)
         {
             PlayingMethod myMethod = PlayingMethod.NOTSET;
+
+            int playersInGame = promises.Count();
+            int cardsInGame = playersInGame * cardsInRound;
+            // int currentRound = roundWins.Sum() + 1;
 
             int myPromises = promises[playerInd].PromiseNumber;
             int myCurrentWins = roundWins[playerInd];
@@ -416,15 +514,17 @@ namespace promise
 
             List<Card> myTrumps = hand.Where(x => x.CardSuit == trumpCard.CardSuit).ToList();
             int myTrumpCount = myTrumps.Count();
-            int biggestTrumpsInHand = BiggestTrumpsInHand(myTrumps, trumpCard);
+            int biggestTrumpsInHand = BiggestTrumpsInHand(myTrumps, trumpCard, cardsPlayedInRounds.Where(x => x.CardSuit == trumpCard.CardSuit).ToList());
             int smallerTrumpsInHand = myTrumps.Count() - biggestTrumpsInHand;
 
-            AnalyzedSuit analyzedC = new AnalyzedSuit(suitC, CardSuit.Clubs, CardSuit.Clubs == trumpCard.CardSuit);
-            AnalyzedSuit analyzedD = new AnalyzedSuit(suitD, CardSuit.Diamonds, CardSuit.Diamonds == trumpCard.CardSuit);
-            AnalyzedSuit analyzedH = new AnalyzedSuit(suitH, CardSuit.Hearts, CardSuit.Hearts == trumpCard.CardSuit);
-            AnalyzedSuit analyzedS = new AnalyzedSuit(suitS, CardSuit.Spades, CardSuit.Spades == trumpCard.CardSuit);
+            AnalyzedSuit analyzedC = new AnalyzedSuit(suitC, CardSuit.Clubs, CardSuit.Clubs == trumpCard.CardSuit, cardsPlayedInRounds, playersInGame, cardsInGame, iAmFirst);
+            AnalyzedSuit analyzedD = new AnalyzedSuit(suitD, CardSuit.Diamonds, CardSuit.Diamonds == trumpCard.CardSuit, cardsPlayedInRounds, playersInGame, cardsInGame, iAmFirst);
+            AnalyzedSuit analyzedH = new AnalyzedSuit(suitH, CardSuit.Hearts, CardSuit.Hearts == trumpCard.CardSuit, cardsPlayedInRounds, playersInGame, cardsInGame, iAmFirst);
+            AnalyzedSuit analyzedS = new AnalyzedSuit(suitS, CardSuit.Spades, CardSuit.Spades == trumpCard.CardSuit, cardsPlayedInRounds, playersInGame, cardsInGame, iAmFirst);
 
-            AnalyzedSuit analyzedT = myTrumps.Any() ? new AnalyzedSuit(suitS, trumpCard.CardSuit, true) : null;
+            AnalyzedSuit analyzedT = myTrumps.Any() ? new AnalyzedSuit(suitS, trumpCard.CardSuit, true, cardsPlayedInRounds, playersInGame, cardsInGame, iAmFirst) : null;
+
+            List<CardSuit> sureSuits = SureSuits(playerInd, playerInfos);
 
             if (myPromiseStatus + biggestTrumpsInHand > 0)
             {
@@ -439,9 +539,11 @@ namespace promise
             else
             {
                 myMethod = (myPromises == myCurrentWins) ? PlayingMethod.TRYTODODGE : PlayingMethod.TRYTOWIN;
+                if (myPromiseStatus + biggestTrumpsInHand == 0 && roundsLeft > biggestTrumpsInHand) myMethod = PlayingMethod.SKIPSAFE;
             }
 
             int selectedCardInd = 0;
+            Card selectedCard;
 
             if (iAmFirst)
             {
@@ -462,33 +564,122 @@ namespace promise
                 }
                 else
                 {
-                    selectedCardInd = rand.Next(hand.Count());
-                    return selectedCardInd;
+                    // i should now avoid to win rounds
+
+                    // don't play suresuits if possible
+                    List<Card> betterCards = sureSuits.Any() && hand.Any(x => !sureSuits.Contains(x.CardSuit))
+                                            ? hand.Where(x => !sureSuits.Contains(x.CardSuit)).ToList()
+                                            : hand;
+                    
+                    List<CardSuit> betterSuits =  betterCards.Select(x => x.CardSuit).Distinct().ToList();
+                    List<AnalyzedSuit> betterAnalyzedSuits = new List<AnalyzedSuit>();
+                    foreach (CardSuit cardSuit in betterSuits)
+                    {
+                        switch (cardSuit)
+                        {
+                            case CardSuit.Hearts: betterAnalyzedSuits.Add(analyzedH); break;
+                            case CardSuit.Diamonds: betterAnalyzedSuits.Add(analyzedD); break;
+                            case CardSuit.Spades: betterAnalyzedSuits.Add(analyzedS); break;
+                            case CardSuit.Clubs: betterAnalyzedSuits.Add(analyzedC); break;
+                        }
+                    }
+
+                    CardSuit dodgeSuit = ChooseDodgeSuit(betterAnalyzedSuits);
+                    betterCards = betterCards.Where(x => x.CardSuit == dodgeSuit).ToList();
+
+                    selectedCardInd = rand.Next(betterCards.Count());
+                    selectedCard = betterCards.Skip(selectedCardInd).First();
+                    return GetCardIndexFromHand(hand, selectedCard);
+                    
                 }
             }
             else
             {
+                // i'm not in charge in this round
+
                 List<Card> possibleCards = (hand.Any(x => x.CardSuit == cardInCharge.CardSuit))
                                             ? hand.Where(x => x.CardSuit == cardInCharge.CardSuit).ToList()
                                             : hand;
                 selectedCardInd = rand.Next(possibleCards.Count());
-                // this is default card
-                Card selectedCard = possibleCards.Skip(selectedCardInd).First();
+                // this is just a default card
+                selectedCard = possibleCards.Skip(selectedCardInd).First();
+
+                List<Card> losingCards = LosingCards(possibleCards, cardInCharge, tableCards.ToList(), trumpCard.CardSuit);
+                List<Card> winningCards = WinningCards(possibleCards, cardInCharge, tableCards.ToList(), trumpCard.CardSuit);
 
                 if (myMethod == PlayingMethod.TRYTODODGE || myMethod == PlayingMethod.TRYTOSKIP)
                 {
-                    List<Card> losingCards = LosingCards(possibleCards, cardInCharge, tableCards.ToList(), trumpCard.CardSuit);
+                    // do everything to avoid getting win
+
                     if (losingCards.Any())
                     {
+                        // take losing card that is difficultiest to dodge
+                        List<AnalyzedSuit> betterAnalyzedSuits = new List<AnalyzedSuit>();
+                        List<CardSuit> betterSuits =  losingCards.Select(x => x.CardSuit).Distinct().ToList();
+                        foreach (CardSuit cardSuit in betterSuits)
+                        {
+                            switch (cardSuit)
+                            {
+                                case CardSuit.Hearts: betterAnalyzedSuits.Add(analyzedH); break;
+                                case CardSuit.Diamonds: betterAnalyzedSuits.Add(analyzedD); break;
+                                case CardSuit.Spades: betterAnalyzedSuits.Add(analyzedS); break;
+                                case CardSuit.Clubs: betterAnalyzedSuits.Add(analyzedC); break;
+                            }
+                        }
+
+                        CardSuit dodgeSuit = ChooseDiffultiestDodgeSuit(betterAnalyzedSuits);
+                        losingCards = losingCards.Where(x => x.CardSuit == dodgeSuit).ToList();
+                        
                         selectedCardInd = rand.Next(losingCards.Count());
                         selectedCard = losingCards.Skip(selectedCardInd).First();
+                    }
+                    else
+                    {
+                        // take card from easy dodge
+                        List<AnalyzedSuit> betterAnalyzedSuits = new List<AnalyzedSuit>();
+                        List<CardSuit> betterSuits =  possibleCards.Select(x => x.CardSuit).Distinct().ToList();
+                        foreach (CardSuit cardSuit in betterSuits)
+                        {
+                            switch (cardSuit)
+                            {
+                                case CardSuit.Hearts: betterAnalyzedSuits.Add(analyzedH); break;
+                                case CardSuit.Diamonds: betterAnalyzedSuits.Add(analyzedD); break;
+                                case CardSuit.Spades: betterAnalyzedSuits.Add(analyzedS); break;
+                                case CardSuit.Clubs: betterAnalyzedSuits.Add(analyzedC); break;
+                            }
+                        }
+
+                        CardSuit dodgeSuit = ChooseDodgeSuit(betterAnalyzedSuits);
+                        possibleCards = possibleCards.Where(x => x.CardSuit == dodgeSuit).ToList();
+                        
+                        selectedCardInd = rand.Next(possibleCards.Count());
+                        selectedCard = possibleCards.Skip(selectedCardInd).First();
                     }
                 }
                 else
                 {
-                    List<Card> winningCards = WinningCards(possibleCards, cardInCharge, tableCards.ToList(), trumpCard.CardSuit);
+                    // we should win some round in this game, possibly not now...
+
+                    if (winningCards.Any() && myPromiseStatus + roundsLeft == 0)
+                    {
+                        // we have to win all next rounds
+                        // start using possible smallest winning card
+                        if (iAmLast) return GetCardIndexFromHand(hand, winningCards.OrderBy(x => x.CardValue).First());
+                        // otherwise take random
+                        return GetCardIndexFromHand(hand, winningCards.Skip(rand.Next(winningCards.Count())).First());
+                    }
                     if (winningCards.Any())
                     {
+                        if (myMethod == PlayingMethod.SKIPSAFE && losingCards.Any())
+                        {
+                            // no need to take yet, i have enough biggest trumps in my hand
+                            return GetCardIndexFromHand(hand, losingCards.OrderByDescending(x => x.CardValue).First());
+                        }
+                        if (myMethod == PlayingMethod.SKIPSAFE)
+                        {
+                            // no need to take yet, i have enough biggest trumps in my hand
+                            return GetCardIndexFromHand(hand, possibleCards.OrderBy(x => x.CardValue).First());
+                        }
                         selectedCardInd = rand.Next(winningCards.Count());
                         selectedCard = winningCards.Skip(selectedCardInd).First();
                     }
