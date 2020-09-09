@@ -18,6 +18,25 @@ namespace promise
         }
     }
 
+    public class PlayerInfo
+    {
+        public bool HasTrumps {get; set;}
+        public bool HasSpades {get; set;}
+        public bool HasClubs {get; set;}
+        public bool HasHearts {get; set;}
+        public bool HasDiamonds {get; set;}
+
+        public PlayerInfo()
+        {
+            HasClubs = true;
+            HasHearts = true;
+            HasDiamonds = true;
+            HasSpades = true;
+            HasTrumps = true;
+        }
+
+    }
+
     class Round
     {
         const int WAITTIME = 400; // milliseconds
@@ -38,7 +57,9 @@ namespace promise
         public int PlayerInCharge {get; set;}
 
         // cards that are played - going to use this in AI
-        public List<Card> CardsPlayed {get; set;}
+        public List<Card> CardsPlayedInRounds {get; set;}
+        public PlayerInfo[] PlayerInfos {get; set;}
+        
         public List<Card>[] Hands {get; set;}
         public Card TrumpCard {get; set;}
         public Card CardInCharge {get; set;}
@@ -61,6 +82,8 @@ namespace promise
             this.RoundPlayed = false;
 
             this.Players = new Player[players.Count()];
+            this.PlayerInfos = new PlayerInfo[players.Count()];
+            
             for (int i = 0; i < players.Count(); i++)
             {
                 this.Players[i] = players[PlayerPositionHelper(roundCount + i)];
@@ -71,6 +94,7 @@ namespace promise
             for (int i = 0; i < players.Count(); i++)
             {
                 this.RoundWins[i] = 0;
+                this.PlayerInfos[i] = new PlayerInfo();
             }
 
             MakeDeal();
@@ -127,7 +151,17 @@ namespace promise
             {
                 PrintPlayerCards(NextPlayerIndex(playerInd), false);
                 Thread.Sleep(WAITTIME);
-                cardIndex = ComputerAI.PlayCard(playerInd, this.Hands[playerInd], this.CardInCharge, this.TrumpCard, this.TableCards, this.CardsInRound, this.Promises, this.RoundWins);
+                cardIndex = ComputerAI.PlayCard(playerInd
+                                                , this.Hands[playerInd]
+                                                , this.CardInCharge
+                                                , this.TrumpCard
+                                                , this.TableCards
+                                                , this.CardsInRound
+                                                , this.Promises
+                                                , this.RoundWins
+                                                , this.CardsPlayedInRounds
+                                                , this.PlayerInfos
+                                                );
             }
             else
             {
@@ -149,7 +183,17 @@ namespace promise
             Card playedCard = this.Hands[playerInd].Skip(cardIndex).First();
             this.TableCards[playerInd] = playedCard;
 
-            // PrintPlayedCard(playerInd, playedCard);
+            if (playedCard.CardSuit != this.CardInCharge.CardSuit)
+            {
+                switch (this.CardInCharge.CardSuit)
+                {
+                    case CardSuit.Clubs: this.PlayerInfos[playerInd].HasClubs = false; break;
+                    case CardSuit.Hearts: this.PlayerInfos[playerInd].HasHearts = false; break;
+                    case CardSuit.Diamonds: this.PlayerInfos[playerInd].HasDiamonds = false; break;
+                    case CardSuit.Spades: this.PlayerInfos[playerInd].HasSpades = false; break;
+                }
+            }
+
             PrintPlayedCards();
             this.Hands[playerInd].RemoveAt(cardIndex);
 
@@ -218,12 +262,15 @@ namespace promise
         public void PlayRound()
         {
             this.PlayerInCharge = 0;
+            this.CardsPlayedInRounds = new List<Card>();
             Console.ForegroundColor = ConsoleColor.White;
             UIShowNames(0);
             UIShowPromises();
             for (int i = 0; i < this.CardsInRound; i++)
             {
                 // List<string> debugInfo = new List<string>();
+
+                List<Card> cardsInThisRound = new List<Card>();
 
                 this.TableCards = new Card[this.Players.Count()];
                 this.CardInCharge = null;
@@ -234,7 +281,7 @@ namespace promise
                     // string debugStr = $"{this.PlayerInCharge} - {j} -> {currentPlayerIndex}";
                     // debugInfo.Add(debugStr);
                     Card cardPlayed = AskCard(currentPlayerIndex);
-                    
+                    cardsInThisRound.Add(cardPlayed);
                 }
 
                 int winnerOfRound = CheckWinner();
@@ -242,6 +289,9 @@ namespace promise
                 this.PlayerInCharge = winnerOfRound;
                 UIShowNames(winnerOfRound);
                 UIShowPromises();
+
+                this.CardsPlayedInRounds.AddRange(cardsInThisRound);
+
                 Console.SetCursorPosition(CARDSSTARTX + (CARDWIDTH / 2) - 1, CARDSSTARTY + CARDHEIGHT + 2);
                 Console.Write($"Kierroksen voitti {this.Players[winnerOfRound].PlayerName}");
                 Console.ReadKey();
@@ -408,6 +458,33 @@ namespace promise
                 Console.Write(promiseStr.PadRight(COLWIDTH - 6, ' '));
                 Console.BackgroundColor = ConsoleColor.Black;
                 Console.Write("     ");
+            }
+            
+            Console.SetCursorPosition(0, 2);
+            for (int i = 0; i < this.Players.Count(); i++)
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write("|  ");
+
+                int promiseStatus = this.RoundWins[i] - this.Promises[i].PromiseNumber;
+
+                Console.ForegroundColor = ConsoleColor.Green;
+                for (int j = 0; j < this.RoundWins[i] && j < this.Promises[i].PromiseNumber; j++)
+                {
+                    Console.Write("●");
+                }
+                Console.ForegroundColor = ConsoleColor.White;
+                for (int j = this.RoundWins[i]; j < this.Promises[i].PromiseNumber; j++)
+                {
+                    Console.Write("○");
+                }
+                Console.ForegroundColor = ConsoleColor.Red;
+                for (int j = this.RoundWins[i]; j > this.Promises[i].PromiseNumber; j--)
+                {
+                    Console.Write("●");
+                }
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write("".PadRight(COLWIDTH - Math.Max(this.RoundWins[i], this.Promises[i].PromiseNumber) - 1, ' '));
             }
         }
 
