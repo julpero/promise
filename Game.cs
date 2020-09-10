@@ -130,8 +130,10 @@ namespace promise
                 }
             }
 
-            Console.SetCursorPosition(PROMISEBOARDX, PROMISEBOARDY + 1 + this.Players.Count());
             Console.ForegroundColor = ConsoleColor.White;
+            Console.SetCursorPosition(PROMISEBOARDX, PROMISEBOARDY + 1 + this.Players.Count());
+            Console.Write("".PadRight(16 + (this.Rounds.Count() * 3), '-'));
+            Console.SetCursorPosition(PROMISEBOARDX, PROMISEBOARDY + 1 + this.Players.Count()+1);
             Console.Write("TOTAL".PadLeft(14, ' '));
             Console.Write(" |");
             for (int j = 0; j < this.Rounds.Count(); j++)
