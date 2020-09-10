@@ -2,6 +2,7 @@ using System;
 using DSI.Deck;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace promise
 {
@@ -106,6 +107,8 @@ namespace promise
 
         private static bool CheckRandom(int checkValue)
         {
+            if (checkValue < 0) checkValue = 0;
+            if (checkValue > 100) checkValue = 100;
             int testInt = rand.Next(0, 101);
             return (testInt < checkValue);
         }
@@ -472,7 +475,8 @@ namespace promise
                 if (CheckRandom(analyzedSuit.IsDodgeable)) return analyzedSuit.Suit;
             }
 
-            return ChooseDodgeSuit(analyzedSuits, counter++);
+            RuntimeHelpers.EnsureSufficientExecutionStack();
+            return ChooseDodgeSuit(analyzedSuits, ++counter);
         }
 
         private static CardSuit ChooseDiffultiestDodgeSuit(List<AnalyzedSuit> analyzedSuits, int counter = 0)
@@ -483,11 +487,14 @@ namespace promise
                 if (CheckRandom(100 - analyzedSuit.IsDodgeable)) return analyzedSuit.Suit;
             }
 
-            return ChooseDodgeSuit(analyzedSuits, counter++);
+            RuntimeHelpers.EnsureSufficientExecutionStack();
+            return ChooseDiffultiestDodgeSuit(analyzedSuits, ++counter);
         }
 
         public static int PlayCard(int playerInd, List<Card> hand, Card cardInCharge, Card trumpCard, Card[] tableCards, int cardsInRound, Promise[] promises, int[] roundWins, List<Card> cardsPlayedInRounds, PlayerInfo[] playerInfos)
         {
+            //Logger.Log("PlayCard", "test");
+
             PlayingMethod myMethod = PlayingMethod.NOTSET;
 
             int playersInGame = promises.Count();
@@ -584,8 +591,19 @@ namespace promise
                         }
                     }
 
-                    CardSuit dodgeSuit = ChooseDodgeSuit(betterAnalyzedSuits);
-                    betterCards = betterCards.Where(x => x.CardSuit == dodgeSuit).ToList();
+                    try
+                    {
+                        CardSuit dodgeSuit = ChooseDodgeSuit(betterAnalyzedSuits);
+                        betterCards = betterCards.Where(x => x.CardSuit == dodgeSuit).ToList();
+                    }
+                    catch (InsufficientExecutionStackException)
+                    {
+                        throw;
+                    }
+                    catch
+                    {
+                        throw;
+                    }
 
                     selectedCardInd = rand.Next(betterCards.Count());
                     selectedCard = betterCards.Skip(selectedCardInd).First();
@@ -627,8 +645,19 @@ namespace promise
                             }
                         }
 
-                        CardSuit dodgeSuit = ChooseDiffultiestDodgeSuit(betterAnalyzedSuits);
-                        losingCards = losingCards.Where(x => x.CardSuit == dodgeSuit).ToList();
+                        try
+                        {
+                            CardSuit dodgeSuit = ChooseDiffultiestDodgeSuit(betterAnalyzedSuits);
+                            losingCards = losingCards.Where(x => x.CardSuit == dodgeSuit).ToList();
+                        }
+                        catch (InsufficientExecutionStackException)
+                        {
+                            throw;
+                        }
+                        catch
+                        {
+                            throw;
+                        }
                         
                         selectedCardInd = rand.Next(losingCards.Count());
                         selectedCard = losingCards.Skip(selectedCardInd).First();
@@ -649,8 +678,19 @@ namespace promise
                             }
                         }
 
-                        CardSuit dodgeSuit = ChooseDodgeSuit(betterAnalyzedSuits);
-                        possibleCards = possibleCards.Where(x => x.CardSuit == dodgeSuit).ToList();
+                        try
+                        {
+                            CardSuit dodgeSuit = ChooseDodgeSuit(betterAnalyzedSuits);
+                            possibleCards = possibleCards.Where(x => x.CardSuit == dodgeSuit).ToList();
+                        }
+                        catch (InsufficientExecutionStackException)
+                        {
+                            throw;
+                        }
+                        catch
+                        {
+                            throw;
+                        }
                         
                         selectedCardInd = rand.Next(possibleCards.Count());
                         selectedCard = possibleCards.Skip(selectedCardInd).First();
