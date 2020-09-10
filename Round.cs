@@ -6,10 +6,17 @@ using System.Threading;
 
 namespace promise
 {
+    public enum PromiseKeptTypeEnum
+    {
+        UNDER,
+        OVER
+    }
+
     public class Promise
     {
         public int PromiseNumber {get; set;}
         public bool PromiseKept {get; set;}
+        public PromiseKeptTypeEnum PromiseKeptType {get; set;}
 
         public Promise(int promiseNumber)
         {
@@ -320,6 +327,8 @@ namespace promise
             for (int i = 0; i < this.Players.Count(); i++)
             {
                 if (this.Promises[i].PromiseNumber == this.RoundWins[i]) this.Promises[i].PromiseKept = true;
+                if (this.Promises[i].PromiseNumber > this.RoundWins[i]) this.Promises[i].PromiseKeptType = PromiseKeptTypeEnum.UNDER;
+                if (this.Promises[i].PromiseNumber < this.RoundWins[i]) this.Promises[i].PromiseKeptType = PromiseKeptTypeEnum.OVER;
             }
 
             this.RoundPlayed = true;

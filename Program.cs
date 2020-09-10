@@ -8,7 +8,7 @@ namespace promise
         static void Main(string[] args)
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
-            Console.SetWindowSize(170, 40);
+            Console.SetWindowSize(170, 41);
 
             int GameCount = 1;
             bool isBotMatch = false;

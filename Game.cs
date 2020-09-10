@@ -115,17 +115,57 @@ namespace promise
                     }
                     else if (this.Rounds[j].Promises[PlayerPositionHelper(i - j)].PromiseKept)
                     {
-                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.ForegroundColor = ConsoleColor.Green;
                     }
                     else
                     {
-                        Console.ForegroundColor = ConsoleColor.DarkGray;
+                        Console.ForegroundColor = (this.Rounds[j].Promises[PlayerPositionHelper(i - j)].PromiseKeptType == PromiseKeptTypeEnum.UNDER)
+                                                ? ConsoleColor.DarkGray
+                                                : ConsoleColor.DarkRed;
                     }
 
                     string thisPromiseStr = this.Rounds[j].Promises[PlayerPositionHelper(i - j)].PromiseNumber.ToString();
                     Console.Write(thisPromiseStr.PadLeft(2, ' '));
                     Console.Write(" ");
                 }
+            }
+
+            Console.SetCursorPosition(PROMISEBOARDX, PROMISEBOARDY + 1 + this.Players.Count());
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("TOTAL".PadLeft(14, ' '));
+            Console.Write(" |");
+            for (int j = 0; j < this.Rounds.Count(); j++)
+            {
+                if (!this.Rounds[j].RoundPlayed)
+                {
+                    if (inGame != j) continue;
+                }
+
+                int evenRound = this.Rounds[j].CardsInRound;
+                int roundPromises = 0;
+                for (int i = 0; i < this.Players.Count(); i++)
+                {
+                    roundPromises+= this.Rounds[j].Promises[i].PromiseNumber;
+                }
+
+                if (inGame == j)
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                }
+                else if (roundPromises == evenRound)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                }
+                else
+                {
+                    Console.ForegroundColor = (evenRound > roundPromises)
+                                            ? ConsoleColor.DarkGray
+                                            : ConsoleColor.DarkRed;
+                }
+
+                string thisPromiseStr = roundPromises.ToString();
+                Console.Write(thisPromiseStr.PadLeft(2, ' '));
+                Console.Write(" ");
             }
         }
 
