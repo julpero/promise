@@ -175,7 +175,7 @@ namespace promise
             {
                 if (this.ShowCards) PrintPlayerCards(NextPlayerIndex(playerInd), false);
                 if (!this.IsBotMatch) Thread.Sleep(WAITTIME);
-                cardIndex = ComputerAI.PlayCard(playerInd
+                cardIndex = ComputerAI.PlayCard(this.Players[playerInd].AI, playerInd
                                                 , this.Hands[playerInd]
                                                 , this.CardInCharge
                                                 , this.TrumpCard
@@ -346,7 +346,7 @@ namespace promise
         {
             if (this.Players[i].PlayerType == PlayerType.COMPUTER)
             {
-                return ComputerAI.MakePromise(this.Hands[i], this.Players.Count(), this.TrumpCard, this.Promises);
+                return ComputerAI.MakePromise(this.Players[i].AI, this.Hands[i], this.Players.Count(), this.TrumpCard, this.Promises);
             }
             else
             {

@@ -36,51 +36,52 @@ namespace promise
             public int IsDodgeable {get; set;}
             public double AvgOtherPlayersCount {get; set;}
 
-            private int AnalyzeDodgeable(List<Card> playedCards, int playerCount, bool inCharge)
+            private int AnalyzeDodgeable(PlayerAI ai, List<Card> playedCards, int playerCount, bool inCharge)
             {
-                double retVal = 50.0;
+                double retVal = ai.DodgeBase;
                 if (this.CardCount == 0)
                 {
-                    return 100;
+                    return ai.DodgeSure;
                 }
                 else if (this.SmallValuesInSuit > this.BigValuesInSuit)
                 {
                     if (this.SmallestValuesInSuit > 0)
                     {
-                        retVal = 95;
+                        retVal = ai.DodgeSmallestValuesInSuit;
                     }
                     else
                     {
-                        retVal = 85;
+                        retVal = ai.DodgeSmallestValuesInSuitNOT;
                     }
                     if (CardCount < this.AvgOtherPlayersCount)
                     {
-                        retVal+= 3;
+                        retVal+= ai.DodgeCardCountAvgOtherPlayersCount1;
                     }
                 }
                 else
                 {
                     if (this.BiggestValuesInSuit > 0)
                     {
-                        retVal = 15;
+                        retVal = ai.DodgeBiggestValuesInSuit;
                     }
                     else
                     {
-                        retVal = 25;
+                        retVal = ai.DodgeBiggestValuesInSuitNOT;
                     }
                     if (CardCount > this.AvgOtherPlayersCount)
                     {
-                        retVal=- 7;
+                        retVal=- ai.DodgeCardCountAvgOtherPlayersCount2;
                     }
                 }
                 if (inCharge && this.AvgOtherPlayersCount < 1)
                 {
-                    retVal*= 0.8;
+                    retVal*= ai.DodgeInChargeAverageCount;
                 }
-                return (int)retVal;
+                int dodgeable = (int)retVal;
+                return dodgeable;
             }
 
-            public AnalyzedSuit(List<Card> cards, CardSuit suit, bool isTrump = false, List<Card> playedCards = null, int playerCount = 0, int cardsDrawn = 0, bool inCharge = false, PlayerInfo[] playerInfos = null)
+            public AnalyzedSuit(PlayerAI ai, List<Card> cards, CardSuit suit, bool isTrump = false, List<Card> playedCards = null, int playerCount = 0, int cardsDrawn = 0, bool inCharge = false, PlayerInfo[] playerInfos = null)
             {
                 CardCount = cards == null ? 0 : cards.Count();
                 cardsDrawn++; // also trump is drawn
@@ -93,13 +94,13 @@ namespace promise
                 Suit = suit;
                 IsTrump = isTrump;
                 BiggestValuesInSuit = BiggestValuesInSuit(cards, playedCardsInSuit);
-                BigValuesInSuit = BigValuesInSuit(cards);
+                BigValuesInSuit = BigValuesInSuit(ai, cards);
                 SmallestValuesInSuit = SmallestValuesInSuit(cards, playedCardsInSuit);
-                SmallValuesInSuit = SmallValuesInSuit(cards);
+                SmallValuesInSuit = SmallValuesInSuit(ai, cards);
                 int cardsKnown = CardCount + playedCardsInSuit.Count();
                 if (isTrump) cardsKnown++;
                 AvgOtherPlayersCount = playerCount == 0 ? 0 : (13.0 - cardsKnown - ((52.0 - cardsDrawn) / 4.0)) / (playerCount - 1 - playerInfosInMethod.Count(x => !x.HasSuit(suit)));
-                IsDodgeable = AnalyzeDodgeable(playedCards, playerCount, inCharge);
+                IsDodgeable = AnalyzeDodgeable(ai, playedCards, playerCount, inCharge);
             }
         }
 
@@ -135,11 +136,11 @@ namespace promise
             return retVal;
         }
 
-        private static int BigValuesInSuit(List<Card> cards)
+        private static int BigValuesInSuit(PlayerAI ai, List<Card> cards)
         {
             if (cards == null || !cards.Any()) return 0;
             int retVal = 0;
-            for (int i = 14; i >= 11; i--)
+            for (int i = 14; i >= ai.BigValuesInSuit; i--)
             {
                 if (cards.Any(x => (int)x.CardValue == i))
                 {
@@ -171,11 +172,11 @@ namespace promise
             return retVal;
         }
 
-        private static int SmallValuesInSuit(List<Card> cards)
+        private static int SmallValuesInSuit(PlayerAI ai, List<Card> cards)
         {
             if (cards == null || !cards.Any()) return 0;
             int retVal = 0;
-            for (int i = 2; i <= 6; i++)
+            for (int i = 2; i <= ai.SmallValuesInSuit; i++)
             {
                 if (cards.Any(x => (int)x.CardValue == i))
                 {
@@ -258,10 +259,10 @@ namespace promise
             return retVal < 0 ? 0 : retVal;
         }
 
-        public static Promise MakePromise(List<Card> hand, int playersInGame, Card trumpCard, Promise[] promises)
+        public static Promise MakePromise(PlayerAI ai, List<Card> hand, int playersInGame, Card trumpCard, Promise[] promises)
         {
             int cardsInRound = hand.Count();
-            bool bigZeroRound = cardsInRound > 5;
+            bool smallZeroRound = cardsInRound <= 5;
 
             int playersPromised = PlayersPromised(promises);
             bool iAmFirst = playersPromised == 0;
@@ -289,23 +290,22 @@ namespace promise
             int biggestTrumpsInHand = BiggestTrumpsInHand(myTrumps, trumpCard, new List<Card>());
             int smallerTrumpsInHand = myTrumps.Count() - biggestTrumpsInHand;
 
-            AnalyzedSuit analyzedC = new AnalyzedSuit(suitC, CardSuit.Clubs, CardSuit.Clubs == trumpCard.CardSuit, null, playersInGame, cardsInGame, iAmFirst);
-            AnalyzedSuit analyzedD = new AnalyzedSuit(suitD, CardSuit.Diamonds, CardSuit.Diamonds == trumpCard.CardSuit, null, playersInGame, cardsInGame, iAmFirst);
-            AnalyzedSuit analyzedH = new AnalyzedSuit(suitH, CardSuit.Hearts, CardSuit.Hearts == trumpCard.CardSuit, null, playersInGame, cardsInGame, iAmFirst);
-            AnalyzedSuit analyzedS = new AnalyzedSuit(suitS, CardSuit.Spades, CardSuit.Spades == trumpCard.CardSuit, null, playersInGame, cardsInGame, iAmFirst);
+            AnalyzedSuit analyzedC = new AnalyzedSuit(ai, suitC, CardSuit.Clubs, CardSuit.Clubs == trumpCard.CardSuit, null, playersInGame, cardsInGame, iAmFirst);
+            AnalyzedSuit analyzedD = new AnalyzedSuit(ai, suitD, CardSuit.Diamonds, CardSuit.Diamonds == trumpCard.CardSuit, null, playersInGame, cardsInGame, iAmFirst);
+            AnalyzedSuit analyzedH = new AnalyzedSuit(ai, suitH, CardSuit.Hearts, CardSuit.Hearts == trumpCard.CardSuit, null, playersInGame, cardsInGame, iAmFirst);
+            AnalyzedSuit analyzedS = new AnalyzedSuit(ai, suitS, CardSuit.Spades, CardSuit.Spades == trumpCard.CardSuit, null, playersInGame, cardsInGame, iAmFirst);
 
-            AnalyzedSuit analyzedT = new AnalyzedSuit(myTrumps, trumpCard.CardSuit, true, null, playersInGame, cardsInGame, iAmFirst);
-            // AnalyzedSuit analyzedT = myTrumps.Any() ? new AnalyzedSuit(myTrumps, trumpCard.CardSuit, true) : null;
+            AnalyzedSuit analyzedT = new AnalyzedSuit(ai, myTrumps, trumpCard.CardSuit, true, null, playersInGame, cardsInGame, iAmFirst);
 
             // this is a fact
             double myPromise = biggestTrumpsInHand;
             bool playZero = false;
 
-            double promiseMultiplier = 0.6;
+            double promiseMultiplier = ai.PromiseMultiplierBase1;
             double averageSuitMultiplier = Math.Sqrt(avgEachSuitAtPlayer);
-            if (iAmFirst) promiseMultiplier+= 0.3;
-            if (iAmLast) promiseMultiplier+= 0.15;
-            promiseMultiplier+= zeroPromises * 0.1;
+            if (iAmFirst) promiseMultiplier+= ai.PromiseMultiplierChange1A;
+            if (iAmLast) promiseMultiplier+= ai.PromiseMultiplierChange1B;
+            promiseMultiplier+= zeroPromises * ai.PromiseMultiplierChange1C;
 
             if (trumpCard.CardSuit != CardSuit.Clubs) myPromise+= analyzedC.BiggestValuesInSuit * averageSuitMultiplier * promiseMultiplier;
             if (trumpCard.CardSuit != CardSuit.Diamonds) myPromise+= analyzedD.BiggestValuesInSuit * averageSuitMultiplier * promiseMultiplier;
@@ -313,10 +313,10 @@ namespace promise
             if (trumpCard.CardSuit != CardSuit.Spades) myPromise+= analyzedS.BiggestValuesInSuit * averageSuitMultiplier * promiseMultiplier;
 
             
-            promiseMultiplier = 0.2;
-            if (iAmFirst) promiseMultiplier+= 0.1;
-            if (iAmLast) promiseMultiplier+= 0.05;
-            promiseMultiplier+= bigPromises * 0.1;
+            promiseMultiplier = ai.PromiseMultiplierBase2;
+            if (iAmFirst) promiseMultiplier+= ai.PromiseMultiplierChange2A;
+            if (iAmLast) promiseMultiplier+= ai.PromiseMultiplierChange2B;
+            promiseMultiplier+= bigPromises * ai.PromiseMultiplierChange2C;
 
             if (trumpCard.CardSuit != CardSuit.Clubs) myPromise-= analyzedC.SmallestValuesInSuit * averageSuitMultiplier * promiseMultiplier;
             if (trumpCard.CardSuit != CardSuit.Diamonds) myPromise-= analyzedD.SmallestValuesInSuit * averageSuitMultiplier * promiseMultiplier;
@@ -324,10 +324,10 @@ namespace promise
             if (trumpCard.CardSuit != CardSuit.Spades) myPromise-= analyzedS.SmallestValuesInSuit * averageSuitMultiplier * promiseMultiplier;
 
 
-            promiseMultiplier = 0.3;
-            if (iAmFirst) promiseMultiplier+= 0.4;
-            if (iAmLast) promiseMultiplier+= 0.25;
-            promiseMultiplier+= zeroPromises * 0.1;
+            promiseMultiplier = ai.PromiseMultiplierBase3;
+            if (iAmFirst) promiseMultiplier+= ai.PromiseMultiplierChange3A;
+            if (iAmLast) promiseMultiplier+= ai.PromiseMultiplierChange3B;
+            promiseMultiplier+= zeroPromises * ai.PromiseMultiplierChange3C;
 
             if (trumpCard.CardSuit != CardSuit.Clubs) myPromise+= (analyzedC.BigValuesInSuit - analyzedC.BiggestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
             if (trumpCard.CardSuit != CardSuit.Diamonds) myPromise+= (analyzedD.BigValuesInSuit - analyzedD.BiggestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
@@ -335,10 +335,10 @@ namespace promise
             if (trumpCard.CardSuit != CardSuit.Spades) myPromise+= (analyzedS.BigValuesInSuit - analyzedS.BiggestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
 
             
-            promiseMultiplier = 0.25;
-            if (iAmFirst) promiseMultiplier+= 0.1;
-            if (iAmLast) promiseMultiplier+= 0.05;
-            promiseMultiplier+= bigPromises * 0.1;
+            promiseMultiplier = ai.PromiseMultiplierBase4;
+            if (iAmFirst) promiseMultiplier+= ai.PromiseMultiplierChange4A;
+            if (iAmLast) promiseMultiplier+= ai.PromiseMultiplierChange4B;
+            promiseMultiplier+= bigPromises * ai.PromiseMultiplierChange4C;
 
             if (trumpCard.CardSuit != CardSuit.Clubs) myPromise-= (analyzedC.SmallValuesInSuit - analyzedC.SmallestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
             if (trumpCard.CardSuit != CardSuit.Diamonds) myPromise-= (analyzedD.SmallValuesInSuit - analyzedD.SmallestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
@@ -350,8 +350,13 @@ namespace promise
                 // should play zero?
                 if (myTrumpCount < avgTrumpsAtPlayer && analyzedT.BigValuesInSuit < analyzedT.SmallValuesInSuit)
                 {
+                    int miniRisk = smallZeroRound ? ai.MiniRisk : 0;
                     // very likely zero
-                    if (CheckRandom(analyzedC.IsDodgeable) && CheckRandom(analyzedD.IsDodgeable) && CheckRandom(analyzedH.IsDodgeable) && CheckRandom(analyzedS.IsDodgeable))
+                    if (CheckRandom(analyzedC.IsDodgeable - miniRisk)
+                        && CheckRandom(analyzedD.IsDodgeable - miniRisk)
+                        && CheckRandom(analyzedH.IsDodgeable - miniRisk)
+                        && CheckRandom(analyzedS.IsDodgeable - miniRisk)
+                    )
                     {
                         playZero = true;
                     }
@@ -407,7 +412,7 @@ namespace promise
             // last check - do not promise under your biggest trumps!
             if (finalPromise < biggestTrumpsInHand) finalPromise = biggestTrumpsInHand;
 
-            if (finalPromise > cardsInRound) finalPromise = cardsInGame;
+            if (finalPromise > cardsInRound) finalPromise = cardsInRound;
 
             return new Promise(finalPromise);
         }
@@ -537,7 +542,7 @@ namespace promise
             return ChooseDiffultiestDodgeSuit(analyzedSuits, ++counter);
         }
 
-        public static int PlayCard(int playerInd, List<Card> hand, Card cardInCharge, Card trumpCard, Card[] tableCards, int cardsInRound, Promise[] promises, int[] roundWins, List<Card> cardsPlayedInRounds, PlayerInfo[] playerInfos)
+        public static int PlayCard(PlayerAI ai, int playerInd, List<Card> hand, Card cardInCharge, Card trumpCard, Card[] tableCards, int cardsInRound, Promise[] promises, int[] roundWins, List<Card> cardsPlayedInRounds, PlayerInfo[] playerInfos)
         {
             //Logger.Log("PlayCard", "test");
 
@@ -570,12 +575,12 @@ namespace promise
             int biggestTrumpsInHand = BiggestTrumpsInHand(myTrumps, trumpCard, cardsPlayedInRounds.Where(x => x.CardSuit == trumpCard.CardSuit).ToList());
             int smallerTrumpsInHand = myTrumps.Count() - biggestTrumpsInHand;
 
-            AnalyzedSuit analyzedC = new AnalyzedSuit(suitC, CardSuit.Clubs, CardSuit.Clubs == trumpCard.CardSuit, cardsPlayedInRounds, playersInGame, cardsInGame, iAmFirst);
-            AnalyzedSuit analyzedD = new AnalyzedSuit(suitD, CardSuit.Diamonds, CardSuit.Diamonds == trumpCard.CardSuit, cardsPlayedInRounds, playersInGame, cardsInGame, iAmFirst);
-            AnalyzedSuit analyzedH = new AnalyzedSuit(suitH, CardSuit.Hearts, CardSuit.Hearts == trumpCard.CardSuit, cardsPlayedInRounds, playersInGame, cardsInGame, iAmFirst);
-            AnalyzedSuit analyzedS = new AnalyzedSuit(suitS, CardSuit.Spades, CardSuit.Spades == trumpCard.CardSuit, cardsPlayedInRounds, playersInGame, cardsInGame, iAmFirst);
+            AnalyzedSuit analyzedC = new AnalyzedSuit(ai, suitC, CardSuit.Clubs, CardSuit.Clubs == trumpCard.CardSuit, cardsPlayedInRounds, playersInGame, cardsInGame, iAmFirst);
+            AnalyzedSuit analyzedD = new AnalyzedSuit(ai, suitD, CardSuit.Diamonds, CardSuit.Diamonds == trumpCard.CardSuit, cardsPlayedInRounds, playersInGame, cardsInGame, iAmFirst);
+            AnalyzedSuit analyzedH = new AnalyzedSuit(ai, suitH, CardSuit.Hearts, CardSuit.Hearts == trumpCard.CardSuit, cardsPlayedInRounds, playersInGame, cardsInGame, iAmFirst);
+            AnalyzedSuit analyzedS = new AnalyzedSuit(ai, suitS, CardSuit.Spades, CardSuit.Spades == trumpCard.CardSuit, cardsPlayedInRounds, playersInGame, cardsInGame, iAmFirst);
 
-            AnalyzedSuit analyzedT = myTrumps.Any() ? new AnalyzedSuit(suitS, trumpCard.CardSuit, true, cardsPlayedInRounds, playersInGame, cardsInGame, iAmFirst) : null;
+            AnalyzedSuit analyzedT = myTrumps.Any() ? new AnalyzedSuit(ai, suitS, trumpCard.CardSuit, true, cardsPlayedInRounds, playersInGame, cardsInGame, iAmFirst) : null;
 
             List<CardSuit> sureSuits = SureSuits(playerInd, playerInfos);
 

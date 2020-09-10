@@ -13,13 +13,14 @@ namespace promise
         public PlayerType PlayerType {get; set;}
         public string PlayerName {get; set;}
         public string PlayerInitials {get; set;}
+        public PlayerAI AI {get; set;}
 
         private string GenerateInitials(string name)
         {
             return name.Substring(0, 3);
         }
 
-        public Player(int playerNro, bool botPlayer = false)
+        public Player(int playerNro, PlayerAI ai, bool botPlayer = false)
         {
             int playerTypeInt = 0;
             if (!botPlayer)
@@ -32,7 +33,7 @@ namespace promise
                 }
                 Console.WriteLine();
             }
-            
+
             if (playerTypeInt == 1)
             {
                 this.PlayerType = PlayerType.HUMAN;
@@ -45,6 +46,7 @@ namespace promise
                 this.PlayerType = PlayerType.COMPUTER;
                 this.PlayerName = $"Computer {playerNro}";
                 this.PlayerInitials = $"Co{playerNro}";
+                this.AI = ai;
             }
         }
     }

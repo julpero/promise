@@ -13,6 +13,8 @@ namespace promise
             int GameCount = 1;
             bool isBotMatch = false;
             bool showCards = true;
+            bool randomizedBots = false;
+            bool useDb = false;
             if (args.Any(x => x.ToLower() == "botmatch"))
             {
                 GameCount = 5;
@@ -22,12 +24,21 @@ namespace promise
             {
                 showCards = false;
             }
+            if (args.Any(x => x.ToLower() == "randombots"))
+            {
+                randomizedBots = true;
+            }
+            if (args.Any(x => x.ToLower() == "usedb"))
+            {
+                useDb = true;
+                useDb = false; // not yet
+            }
             for (int i = 0; i < GameCount; i++)
             {
                 Console.BackgroundColor = ConsoleColor.Black;
                 Console.ForegroundColor = ConsoleColor.White;
                 ScreenUtils.ClearScreen();
-                Game promiseGame = new Game(isBotMatch, showCards);
+                Game promiseGame = new Game(isBotMatch, showCards, randomizedBots);
             }
         }
     }

@@ -1,8 +1,134 @@
 using System;
-using System.Linq; 
+using System.Linq;
+using System.Collections.Generic;
 
 namespace promise
 {
+    public class PlayerAI
+    {
+        // AnalyzeDodgeable
+        public int DodgeBase {get; set;}
+        public int DodgeSure {get; set;}
+        public int DodgeSmallestValuesInSuit {get; set;}
+        public int DodgeSmallestValuesInSuitNOT {get; set;}
+        public int DodgeCardCountAvgOtherPlayersCount1 {get; set;}
+        public int DodgeBiggestValuesInSuit {get; set;}
+        public int DodgeBiggestValuesInSuitNOT {get; set;}
+        public int DodgeCardCountAvgOtherPlayersCount2 {get; set;}
+        public double DodgeInChargeAverageCount {get; set;}
+
+        // BigValuesInSuit, 2-14
+        public int BigValuesInSuit {get; set;}
+
+        // SmallValuesInSuit, 2-14
+        public int SmallValuesInSuit {get; set;}
+
+        // MakePromise
+        public double PromiseMultiplierBase1 {get; set;}
+        public double PromiseMultiplierBase2 {get; set;}
+        public double PromiseMultiplierBase3 {get; set;}
+        public double PromiseMultiplierBase4 {get; set;}
+        public double PromiseMultiplierChange1A {get; set;}
+        public double PromiseMultiplierChange1B {get; set;}
+        public double PromiseMultiplierChange1C {get; set;}
+        public double PromiseMultiplierChange2A {get; set;}
+        public double PromiseMultiplierChange2B {get; set;}
+        public double PromiseMultiplierChange2C {get; set;}
+        public double PromiseMultiplierChange3A {get; set;}
+        public double PromiseMultiplierChange3B {get; set;}
+        public double PromiseMultiplierChange3C {get; set;}
+        public double PromiseMultiplierChange4A {get; set;}
+        public double PromiseMultiplierChange4B {get; set;}
+        public double PromiseMultiplierChange4C {get; set;}
+        public int MiniRisk {get; set;}
+
+        private static Random randomAi = new Random();
+
+        public PlayerAI()
+        {
+            // AnalyzeDodgeable
+            DodgeBase = 50;
+            DodgeSure = 100;
+            DodgeSmallestValuesInSuit = 95;
+            DodgeSmallestValuesInSuitNOT = 85;
+            DodgeCardCountAvgOtherPlayersCount1 = 3;
+            DodgeBiggestValuesInSuit = 15;
+            DodgeBiggestValuesInSuitNOT = 25;
+            DodgeCardCountAvgOtherPlayersCount1 = 7;
+            DodgeInChargeAverageCount = 0.8;
+            
+            // BigValuesInSuit
+            BigValuesInSuit = 10;
+
+            // SmallValuesInSuit
+            SmallValuesInSuit = 6;
+
+            // MakePromise
+            PromiseMultiplierBase1 = 0.6;
+            PromiseMultiplierBase2 = 0.2;
+            PromiseMultiplierBase3 = 0.3;
+            PromiseMultiplierBase4 = 0.25;
+            PromiseMultiplierChange1A = 0.3;
+            PromiseMultiplierChange1B = 0.15;
+            PromiseMultiplierChange1C = 0.1;
+            PromiseMultiplierChange2A = 0.1;
+            PromiseMultiplierChange2B = 0.05;
+            PromiseMultiplierChange2C = 0.1;
+            PromiseMultiplierChange3A = 0.4;
+            PromiseMultiplierChange3B = 0.25;
+            PromiseMultiplierChange3C = 0.1;
+            PromiseMultiplierChange4A = 0.1;
+            PromiseMultiplierChange4B = 0.05;
+            PromiseMultiplierChange4C = 0.1;
+            MiniRisk = 5;
+
+        }
+
+        public static double GetRandomNumber(double minimum, double maximum)
+        { 
+            
+            return randomAi.NextDouble() * (maximum - minimum) + minimum;
+        }
+        
+        public PlayerAI(string joo)
+        {
+            DodgeBase = randomAi.Next(100) + 1; // 50
+            // DodgeSure = randomAi.Next(100) + 1; // this is a fact
+            DodgeSmallestValuesInSuit = randomAi.Next(100); // 95
+            DodgeSmallestValuesInSuitNOT = randomAi.Next(100); // 85
+            DodgeCardCountAvgOtherPlayersCount1 = randomAi.Next(100); // 3
+            DodgeBiggestValuesInSuit = randomAi.Next(100); // 15;
+            DodgeBiggestValuesInSuitNOT = randomAi.Next(100); // 25;
+            DodgeCardCountAvgOtherPlayersCount1 = randomAi.Next(100); // 7;
+            DodgeInChargeAverageCount = randomAi.NextDouble(); // 0.8;
+            
+            // BigValuesInSuit
+            BigValuesInSuit = randomAi.Next(1, 14) + 1; // 10;
+
+            // SmallValuesInSuit
+            SmallValuesInSuit = randomAi.Next(1, 14) + 1; // 6;
+
+            // MakePromise
+            PromiseMultiplierBase1 = randomAi.NextDouble(); // 0.6;
+            PromiseMultiplierBase2 = randomAi.NextDouble(); // 0.2;
+            PromiseMultiplierBase3 = randomAi.NextDouble(); // 0.3;
+            PromiseMultiplierBase4 = randomAi.NextDouble(); // 0.25;
+            PromiseMultiplierChange1A = randomAi.NextDouble(); // 0.3;
+            PromiseMultiplierChange1B = randomAi.NextDouble(); // 0.15;
+            PromiseMultiplierChange1C = randomAi.NextDouble(); // 0.1;
+            PromiseMultiplierChange2A = randomAi.NextDouble(); // 0.1;
+            PromiseMultiplierChange2B = randomAi.NextDouble(); // 0.05;
+            PromiseMultiplierChange2C = randomAi.NextDouble(); // 0.1;
+            PromiseMultiplierChange3A = randomAi.NextDouble(); // 0.4;
+            PromiseMultiplierChange3B = randomAi.NextDouble(); // 0.25;
+            PromiseMultiplierChange3C = randomAi.NextDouble(); // 0.1;
+            PromiseMultiplierChange4A = randomAi.NextDouble(); // 0.1;
+            PromiseMultiplierChange4B = randomAi.NextDouble(); // 0.05;
+            PromiseMultiplierChange4C = randomAi.NextDouble(); // 0.1;
+            MiniRisk = randomAi.Next(100); // 5;
+        }
+    }
+
     class Game
     {
         const bool DEBUGMODE = false;
@@ -11,9 +137,8 @@ namespace promise
         const int PROMISEBOARDX = 10;
         const int PROMISEBOARDY = 33;
 
-        // public int PlayerCount {get; set;}
-
         public Player[] Players {get; set;}
+        public List<PlayerAI> PlayerAIs {get; set;}
 
         public int StartRound {get; set;}
         public int TurnRound {get; set;}
@@ -24,11 +149,28 @@ namespace promise
         public bool IsBotMatch {get; set;}
         public bool ShowCards {get; set;}
 
-        public Game(bool isBotMatch = false, bool showCards = true)
+        public Game(bool isBotMatch = false, bool showCards = true, bool randomizedBots = false)
         {
             this.IsBotMatch = isBotMatch;
             this.ShowCards = showCards;
-            GetPlayers();
+            this.PlayerAIs = new List<PlayerAI>();
+            if (randomizedBots)
+            {
+                this.PlayerAIs.Add(new PlayerAI(""));
+                this.PlayerAIs.Add(new PlayerAI(""));
+                this.PlayerAIs.Add(new PlayerAI(""));
+                this.PlayerAIs.Add(new PlayerAI(""));
+                this.PlayerAIs.Add(new PlayerAI(""));
+            }
+            else
+            {
+                this.PlayerAIs.Add(new PlayerAI());
+                this.PlayerAIs.Add(new PlayerAI());
+                this.PlayerAIs.Add(new PlayerAI());
+                this.PlayerAIs.Add(new PlayerAI());
+                this.PlayerAIs.Add(new PlayerAI());
+            }
+            GetPlayers(this.PlayerAIs);
             this.Players = ShufflePlayers();
             GetGameRules();
             ScreenUtils.ClearScreen();
@@ -217,7 +359,7 @@ namespace promise
             }
         }
 
-        private void GetPlayers()
+        private void GetPlayers(List<PlayerAI> playerAIs)
         {
             ScreenUtils.ClearScreen();
             
@@ -243,7 +385,7 @@ namespace promise
             this.Players = new Player[lkm];
             for (int i = 0; i < this.Players.Count(); i++)
             {
-                this.Players[i] = new Player(i+1, this.IsBotMatch);
+                this.Players[i] = new Player(i+1, playerAIs.Skip(i).First(), this.IsBotMatch);
             }
 
             if (this.Players.Any(x => x.PlayerType == PlayerType.HUMAN)) this.IsBotMatch = false;
@@ -296,7 +438,7 @@ namespace promise
 
         private Player[] ShufflePlayers(int shuffleTime = 0)
         {
-            Random rnd=new Random();
+            Random rnd = new Random();
             Player[] shuffledPlayers = this.Players.OrderBy(x => rnd.Next()).ToArray();
             return shuffledPlayers;
         }
