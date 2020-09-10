@@ -1,8 +1,5 @@
 using System;
-using DSI.Deck;
-using System.Collections.Generic; 
 using System.Linq; 
-using System.Text; 
 
 namespace promise
 {
@@ -24,8 +21,11 @@ namespace promise
 
         public Round[] Rounds {get; set;}
 
+        public bool IsBotMatch {get; set;}
+
         public Game()
         {
+            this.IsBotMatch = true;
             GetPlayers();
             this.Players = ShufflePlayers();
             GetGameRules();
@@ -135,11 +135,10 @@ namespace promise
             roundToPlay.MakePromises();
             PrintPromiseBoard(roundNbr);
             roundToPlay.PlayRound();
-
             PrintScoreBoard();
             PrintPromiseBoard();
 
-            Console.ReadKey();
+            if (!this.IsBotMatch) Console.ReadKey();
         }
 
         private void PlayPromise()
@@ -164,12 +163,12 @@ namespace promise
             int round = 0;
             for (int i = this.StartRound; i >= this.TurnRound; i--)
             {
-                this.Rounds[round] = new Round(i, round, this.Players);
+                this.Rounds[round] = new Round(i, round, this.Players, this.IsBotMatch);
                 round++;
             }
             for (int i = this.TurnRound+1; i <= this.EndRound; i++)
             {
-                this.Rounds[round] = new Round(i, round, this.Players);
+                this.Rounds[round] = new Round(i, round, this.Players, this.IsBotMatch);
                 round++;
             }
         }
@@ -194,6 +193,7 @@ namespace promise
             for (int i = 0; i < this.Players.Count(); i++)
             {
                 this.Players[i] = new Player(i+1);
+                if (this.Players[i].PlayerType == PlayerType.HUMAN) this.IsBotMatch = false;
             }
         }
 
@@ -212,7 +212,7 @@ namespace promise
             int lkm = 0;
 
             Console.Write($"Mistä jaosta lähdetään (max {MaximumRounds()}): ");
-            input = DEBUGMODE ? "4" : Console.ReadLine();
+            input = this.IsBotMatch ? "10" : DEBUGMODE ? "4" : Console.ReadLine();
             while (!Int32.TryParse(input, out lkm) || lkm > MaximumRounds())
             {
                 Console.Write($"Mistä jaosta lähdetään (max {MaximumRounds()}): ");
@@ -221,7 +221,7 @@ namespace promise
             this.StartRound = lkm;
 
             Console.Write("Missä jaossa käännytään: ");
-            input = DEBUGMODE ? "1" : Console.ReadLine();
+            input = this.IsBotMatch ? "1" : DEBUGMODE ? "1" : Console.ReadLine();
             while (!Int32.TryParse(input, out lkm) || lkm < 1 || lkm > this.StartRound)
             {
                 Console.Write("Missä jaossa käännytään: ");
@@ -230,7 +230,7 @@ namespace promise
             this.TurnRound = lkm;
 
             Console.Write($"Mihin jakoon lopetetaan (max {MaximumRounds()}): ");
-            input = DEBUGMODE ? "4" : Console.ReadLine();
+            input = this.IsBotMatch ? "10" : DEBUGMODE ? "4" : Console.ReadLine();
             while (!Int32.TryParse(input, out lkm) || lkm < this.TurnRound || lkm > MaximumRounds())
             {
                 Console.Write($"Mihin jakoon lopetetaan (max {MaximumRounds()}): ");

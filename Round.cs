@@ -59,6 +59,8 @@ namespace promise
         const int CARDWIDTH = 11;
         const int CARDHEIGHT = 7;
 
+        public bool IsBotMatch {get; set;}
+
         public int CardsInRound {get; set;}
         
         // first round = 0
@@ -87,8 +89,9 @@ namespace promise
             return PlayerPositionHelper(i - this.Players.Count());
         }
 
-        public Round(int cardsInRound, int roundCount, Player[] players)
+        public Round(int cardsInRound, int roundCount, Player[] players, bool isBotMatch)
         {
+            this.IsBotMatch = isBotMatch;
             this.CardsInRound = cardsInRound;
             this.RoundCount = roundCount;
             this.RoundPlayed = false;
@@ -162,7 +165,7 @@ namespace promise
             if (this.Players[playerInd].PlayerType == PlayerType.COMPUTER)
             {
                 PrintPlayerCards(NextPlayerIndex(playerInd), false);
-                Thread.Sleep(WAITTIME);
+                if (!this.IsBotMatch) Thread.Sleep(WAITTIME);
                 cardIndex = ComputerAI.PlayCard(playerInd
                                                 , this.Hands[playerInd]
                                                 , this.CardInCharge
@@ -306,7 +309,7 @@ namespace promise
 
                 Console.SetCursorPosition(CARDSSTARTX + (CARDWIDTH / 2) - 1, CARDSSTARTY + CARDHEIGHT + 2);
                 Console.Write($"Kierroksen voitti {this.Players[winnerOfRound].PlayerName}");
-                Console.ReadKey();
+                if (!this.IsBotMatch) Console.ReadKey();
                 ScreenUtils.ClearPlayedCards();
                 ScreenUtils.ClearPlayerCards();
 
@@ -527,7 +530,7 @@ namespace promise
             {
                 string promiseStr = $"{this.Promises[i].PromiseNumber}";
                 Console.Write("|  ");
-                Thread.Sleep(WAITTIME);
+                if (!this.IsBotMatch) Thread.Sleep(WAITTIME);
                 Console.Write(promiseStr.PadRight(COLWIDTH - 1, ' '));
             }
 
