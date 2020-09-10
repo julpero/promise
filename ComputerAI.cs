@@ -274,7 +274,8 @@ namespace promise
             double avgTrumpsAtPlayer = avgTrumpsInGame / (double)playersInGame;
             double avgEachSuitAtPlayer = avgEachSuitInGame / (double)playersInGame;
 
-            int promisesLeft = cardsInRound - PromisesMade(promises);
+            int promisesMade = PromisesMade(promises);
+            int promisesLeft = cardsInRound - promisesMade;
             int bigPromises = BigPromises(promises, avgPoints);
             int zeroPromises = ZeroPromises(promises);
 
@@ -304,21 +305,45 @@ namespace promise
             double averageSuitMultiplier = Math.Sqrt(avgEachSuitAtPlayer);
             if (iAmFirst) promiseMultiplier+= 0.3;
             if (iAmLast) promiseMultiplier+= 0.15;
+            promiseMultiplier+= zeroPromises * 0.1;
 
             if (trumpCard.CardSuit != CardSuit.Clubs) myPromise+= analyzedC.BiggestValuesInSuit * averageSuitMultiplier * promiseMultiplier;
             if (trumpCard.CardSuit != CardSuit.Diamonds) myPromise+= analyzedD.BiggestValuesInSuit * averageSuitMultiplier * promiseMultiplier;
             if (trumpCard.CardSuit != CardSuit.Hearts) myPromise+= analyzedH.BiggestValuesInSuit * averageSuitMultiplier * promiseMultiplier;
             if (trumpCard.CardSuit != CardSuit.Spades) myPromise+= analyzedS.BiggestValuesInSuit * averageSuitMultiplier * promiseMultiplier;
 
+            
+            promiseMultiplier = 0.2;
+            if (iAmFirst) promiseMultiplier+= 0.1;
+            if (iAmLast) promiseMultiplier+= 0.05;
+            promiseMultiplier+= bigPromises * 0.1;
+
+            if (trumpCard.CardSuit != CardSuit.Clubs) myPromise-= analyzedC.SmallestValuesInSuit * averageSuitMultiplier * promiseMultiplier;
+            if (trumpCard.CardSuit != CardSuit.Diamonds) myPromise-= analyzedD.SmallestValuesInSuit * averageSuitMultiplier * promiseMultiplier;
+            if (trumpCard.CardSuit != CardSuit.Hearts) myPromise-= analyzedH.SmallestValuesInSuit * averageSuitMultiplier * promiseMultiplier;
+            if (trumpCard.CardSuit != CardSuit.Spades) myPromise-= analyzedS.SmallestValuesInSuit * averageSuitMultiplier * promiseMultiplier;
+
 
             promiseMultiplier = 0.3;
             if (iAmFirst) promiseMultiplier+= 0.4;
             if (iAmLast) promiseMultiplier+= 0.25;
+            promiseMultiplier+= zeroPromises * 0.1;
 
             if (trumpCard.CardSuit != CardSuit.Clubs) myPromise+= (analyzedC.BigValuesInSuit - analyzedC.BiggestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
             if (trumpCard.CardSuit != CardSuit.Diamonds) myPromise+= (analyzedD.BigValuesInSuit - analyzedD.BiggestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
             if (trumpCard.CardSuit != CardSuit.Hearts) myPromise+= (analyzedH.BigValuesInSuit - analyzedH.BiggestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
             if (trumpCard.CardSuit != CardSuit.Spades) myPromise+= (analyzedS.BigValuesInSuit - analyzedS.BiggestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
+
+            
+            promiseMultiplier = 0.25;
+            if (iAmFirst) promiseMultiplier+= 0.1;
+            if (iAmLast) promiseMultiplier+= 0.05;
+            promiseMultiplier+= bigPromises * 0.1;
+
+            if (trumpCard.CardSuit != CardSuit.Clubs) myPromise-= (analyzedC.SmallValuesInSuit - analyzedC.SmallestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
+            if (trumpCard.CardSuit != CardSuit.Diamonds) myPromise-= (analyzedD.SmallValuesInSuit - analyzedD.SmallestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
+            if (trumpCard.CardSuit != CardSuit.Hearts) myPromise-= (analyzedH.SmallValuesInSuit - analyzedH.SmallestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
+            if (trumpCard.CardSuit != CardSuit.Spades) myPromise-= (analyzedS.SmallValuesInSuit - analyzedS.SmallestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
 
             if (biggestTrumpsInHand == 0)
             {
@@ -343,12 +368,31 @@ namespace promise
                 {
                     myPromise+= analyzedT.BigValuesInSuit - biggestTrumpsInHand;
                 }
-                
             }
 
+            List<double> goingOverList = new List<double>();
+            double goingOver = (promisesMade + myPromise) - cardsInRound;
+            double changePromiseBy = 0;
+            if (iAmLast && goingOver > 1 && myPromise > -1)
+            {
+                for (double i = 0; i < goingOver; i+= 0.5)
+                {
+                    for (double j = 0; j <= i; j+= 0.5) goingOverList.Add(j);
+                }
+                changePromiseBy = goingOverList.OrderBy(x => rand.Next()).First() * -1;
+            }
+            else if (iAmLast && goingOver < -1 && myPromise > -1)
+            {
+                for (double i = 0; i > goingOver; i-= 0.5)
+                {
+                    for (double j = 0; j >= i; j-= 0.5) goingOverList.Add(j);
+                }
+                changePromiseBy = goingOverList.OrderBy(x => rand.Next()).First() * -1;
+            }
+            myPromise+= changePromiseBy;
 
             int finalPromise;
-            if (myPromise == 0 || playZero)
+            if (myPromise <= 0 || playZero)
             {
                 finalPromise = 0;
             }
@@ -360,6 +404,8 @@ namespace promise
                 finalPromise = (CheckRandom(randTest)) ? maxPromise : minPromise;
             }
             
+            // last check - do not promise under your biggest trumps!
+            if (finalPromise < biggestTrumpsInHand) finalPromise = biggestTrumpsInHand;
 
             if (finalPromise > cardsInRound) finalPromise = cardsInGame;
 
