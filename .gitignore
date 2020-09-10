@@ -43,3 +43,6 @@ _ReSharper*/
 
 # Office Temp Files
 ~$*
+
+# Projec Temp Files
+log_test.txt
