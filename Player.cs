@@ -1,8 +1,4 @@
 using System;
-using DSI.Deck;
-using System.Collections.Generic; 
-using System.Linq; 
-using System.Text; 
 
 namespace promise
 {
@@ -30,7 +26,6 @@ namespace promise
             ConsoleKeyInfo input = Console.ReadKey();
             while (!Int32.TryParse(input.KeyChar.ToString(), out playerTypeInt))
             {
-                // Console.Write($"Pelaajan {playerNro} tyyppi, 0 = tietokone, 1 = ihminen: ");
                 input = Console.ReadKey();
             }
             Console.WriteLine();
