@@ -68,6 +68,7 @@ namespace promise
 
         public bool IsBotMatch {get; set;}
         public bool ShowCards {get; set;}
+        public bool TotalTest {get; set;}
 
         public int CardsInRound {get; set;}
         
@@ -97,10 +98,12 @@ namespace promise
             return PlayerPositionHelper(i - this.Players.Count());
         }
 
-        public Round(int cardsInRound, int roundCount, Player[] players, bool isBotMatch, bool showCards)
+        public Round(int cardsInRound, int roundCount, Player[] players, bool isBotMatch, bool showCards, bool totalTest)
         {
             this.IsBotMatch = isBotMatch;
             this.ShowCards = showCards;
+            this.TotalTest = totalTest;
+
             this.CardsInRound = cardsInRound;
             this.RoundCount = roundCount;
             this.RoundPlayed = false;
@@ -224,7 +227,7 @@ namespace promise
             if (this.Players[playerInd].PlayerType == PlayerType.HUMAN)
             {
                 ScreenUtils.ClearPlayerCards();
-                PrintPlayerCards(playerInd, false);
+                if (!this.TotalTest) PrintPlayerCards(playerInd, false);
             }
 
             return playedCard;
@@ -288,8 +291,8 @@ namespace promise
             this.PlayerInCharge = 0;
             this.CardsPlayedInRounds = new List<Card>();
             Console.ForegroundColor = ConsoleColor.White;
-            UIShowNames(0);
-            UIShowPromises();
+            if (!this.TotalTest) UIShowNames(0);
+            if (!this.TotalTest) UIShowPromises();
             for (int i = 0; i < this.CardsInRound; i++)
             {
                 // List<string> debugInfo = new List<string>();
@@ -311,16 +314,16 @@ namespace promise
                 int winnerOfRound = CheckWinner();
                 this.RoundWins[winnerOfRound]++;
                 this.PlayerInCharge = winnerOfRound;
-                UIShowNames(winnerOfRound);
-                UIShowPromises();
+                if (!this.TotalTest) UIShowNames(winnerOfRound);
+                if (!this.TotalTest) UIShowPromises();
 
                 this.CardsPlayedInRounds.AddRange(cardsInThisRound);
 
-                Console.SetCursorPosition(CARDSSTARTX + (CARDWIDTH / 2) - 1, CARDSSTARTY + CARDHEIGHT + 2);
-                Console.Write($"Kierroksen voitti {this.Players[winnerOfRound].PlayerName}");
+                if (!this.TotalTest) Console.SetCursorPosition(CARDSSTARTX + (CARDWIDTH / 2) - 1, CARDSSTARTY + CARDHEIGHT + 2);
+                if (!this.TotalTest) Console.Write($"Kierroksen voitti {this.Players[winnerOfRound].PlayerName}");
                 if (!this.IsBotMatch) Console.ReadKey();
-                ScreenUtils.ClearPlayedCards();
-                ScreenUtils.ClearPlayerCards();
+                if (!this.TotalTest) ScreenUtils.ClearPlayedCards();
+                if (!this.TotalTest) ScreenUtils.ClearPlayerCards();
 
             }
 
