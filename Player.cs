@@ -19,16 +19,20 @@ namespace promise
             return name.Substring(0, 3);
         }
 
-        public Player(int playerNro)
+        public Player(int playerNro, bool botPlayer = false)
         {
             int playerTypeInt = 0;
-            Console.Write($"Pelaajan {playerNro} tyyppi, 0 = tietokone, 1 = ihminen: ");
-            ConsoleKeyInfo input = Console.ReadKey();
-            while (!Int32.TryParse(input.KeyChar.ToString(), out playerTypeInt))
+            if (!botPlayer)
             {
-                input = Console.ReadKey();
+                Console.Write($"Pelaajan {playerNro} tyyppi, 0 = tietokone, 1 = ihminen: ");
+                ConsoleKeyInfo input = Console.ReadKey();
+                while (!Int32.TryParse(input.KeyChar.ToString(), out playerTypeInt))
+                {
+                    input = Console.ReadKey();
+                }
+                Console.WriteLine();
             }
-            Console.WriteLine();
+            
             if (playerTypeInt == 1)
             {
                 this.PlayerType = PlayerType.HUMAN;

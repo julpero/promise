@@ -23,9 +23,9 @@ namespace promise
 
         public bool IsBotMatch {get; set;}
 
-        public Game()
+        public Game(bool isBotMatch = false)
         {
-            this.IsBotMatch = true;
+            this.IsBotMatch = isBotMatch;
             GetPlayers();
             this.Players = ShufflePlayers();
             GetGameRules();
@@ -179,22 +179,31 @@ namespace promise
             
             int lkm = 0;
 
-            Console.Write($"Pelaajien lukumäärä (2-{MAXPLAYERS}): ");
-            ConsoleKeyInfo input = Console.ReadKey();
-            while (!Int32.TryParse(input.KeyChar.ToString(), out lkm) || lkm > MAXPLAYERS || lkm < 2)
+            if (this.IsBotMatch)
             {
-                ScreenUtils.ClearScreen();
-                Console.Write($"Pelaajien lukumäärä (2-{MAXPLAYERS}): ");
-                input = Console.ReadKey();
+                lkm = 5;
             }
-            Console.WriteLine();
-            // this.PlayerCount = lkm;
+            else
+            {
+                Console.Write($"Pelaajien lukumäärä (2-{MAXPLAYERS}): ");
+                ConsoleKeyInfo input = Console.ReadKey();
+                while (!Int32.TryParse(input.KeyChar.ToString(), out lkm) || lkm > MAXPLAYERS || lkm < 2)
+                {
+                    ScreenUtils.ClearScreen();
+                    Console.Write($"Pelaajien lukumäärä (2-{MAXPLAYERS}): ");
+                    input = Console.ReadKey();
+                }
+                Console.WriteLine();
+            }
+
             this.Players = new Player[lkm];
             for (int i = 0; i < this.Players.Count(); i++)
             {
-                this.Players[i] = new Player(i+1);
-                if (this.Players[i].PlayerType == PlayerType.HUMAN) this.IsBotMatch = false;
+                this.Players[i] = new Player(i+1, this.IsBotMatch);
             }
+
+            if (this.Players.Any(x => x.PlayerType == PlayerType.HUMAN)) this.IsBotMatch = false;
+
         }
 
         private int MaximumRounds()
