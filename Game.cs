@@ -22,10 +22,12 @@ namespace promise
         public Round[] Rounds {get; set;}
 
         public bool IsBotMatch {get; set;}
+        public bool ShowCards {get; set;}
 
-        public Game(bool isBotMatch = false)
+        public Game(bool isBotMatch = false, bool showCards = true)
         {
             this.IsBotMatch = isBotMatch;
+            this.ShowCards = showCards;
             GetPlayers();
             this.Players = ShufflePlayers();
             GetGameRules();
@@ -163,12 +165,12 @@ namespace promise
             int round = 0;
             for (int i = this.StartRound; i >= this.TurnRound; i--)
             {
-                this.Rounds[round] = new Round(i, round, this.Players, this.IsBotMatch);
+                this.Rounds[round] = new Round(i, round, this.Players, this.IsBotMatch, this.ShowCards);
                 round++;
             }
             for (int i = this.TurnRound+1; i <= this.EndRound; i++)
             {
-                this.Rounds[round] = new Round(i, round, this.Players, this.IsBotMatch);
+                this.Rounds[round] = new Round(i, round, this.Players, this.IsBotMatch, this.ShowCards);
                 round++;
             }
         }

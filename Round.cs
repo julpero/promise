@@ -60,6 +60,7 @@ namespace promise
         const int CARDHEIGHT = 7;
 
         public bool IsBotMatch {get; set;}
+        public bool ShowCards {get; set;}
 
         public int CardsInRound {get; set;}
         
@@ -89,9 +90,10 @@ namespace promise
             return PlayerPositionHelper(i - this.Players.Count());
         }
 
-        public Round(int cardsInRound, int roundCount, Player[] players, bool isBotMatch)
+        public Round(int cardsInRound, int roundCount, Player[] players, bool isBotMatch, bool showCards)
         {
             this.IsBotMatch = isBotMatch;
+            this.ShowCards = showCards;
             this.CardsInRound = cardsInRound;
             this.RoundCount = roundCount;
             this.RoundPlayed = false;
@@ -164,7 +166,7 @@ namespace promise
             int cardIndex = -1;
             if (this.Players[playerInd].PlayerType == PlayerType.COMPUTER)
             {
-                PrintPlayerCards(NextPlayerIndex(playerInd), false);
+                if (this.ShowCards) PrintPlayerCards(NextPlayerIndex(playerInd), false);
                 if (!this.IsBotMatch) Thread.Sleep(WAITTIME);
                 cardIndex = ComputerAI.PlayCard(playerInd
                                                 , this.Hands[playerInd]
@@ -431,6 +433,7 @@ namespace promise
 
         private void PrintPlayedCards()
         {
+            if (!this.ShowCards) return;
             for (int i = 0; i < this.Players.Count(); i++)
             {
                 if (this.TableCards[i] != null)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq; 
 
 namespace promise
 {
@@ -11,17 +12,22 @@ namespace promise
 
             int GameCount = 1;
             bool isBotMatch = false;
-            if (args.Length > 0 && args[0] == "botmatch")
+            bool showCards = true;
+            if (args.Any(x => x.ToLower() == "botmatch"))
             {
                 GameCount = 5;
                 isBotMatch = true;
+            }
+            if (args.Any(x => x.ToLower() == "hidecards"))
+            {
+                showCards = false;
             }
             for (int i = 0; i < GameCount; i++)
             {
                 Console.BackgroundColor = ConsoleColor.Black;
                 Console.ForegroundColor = ConsoleColor.White;
                 ScreenUtils.ClearScreen();
-                Game promiseGame = new Game(isBotMatch);
+                Game promiseGame = new Game(isBotMatch, showCards);
             }
         }
     }
