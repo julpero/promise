@@ -6,6 +6,199 @@ using System.Runtime.CompilerServices;
 
 namespace promise
 {
+    public class PlayerAI
+    {
+        public string AiName {get; set;}
+        // AnalyzeDodgeable
+        public int DodgeBase {get; set;}
+        public int DodgeSure {get; set;}
+        public int DodgeSmallestValuesInSuit {get; set;}
+        public int DodgeSmallestValuesInSuitNOT {get; set;}
+        public int DodgeCardCountAvgOtherPlayersCount1 {get; set;}
+        public int DodgeBiggestValuesInSuit {get; set;}
+        public int DodgeBiggestValuesInSuitNOT {get; set;}
+        public int DodgeCardCountAvgOtherPlayersCount2 {get; set;}
+        public double DodgeInChargeAverageCount {get; set;}
+
+        // BigValuesInSuit, 2-14
+        public int BigValuesInSuit {get; set;}
+
+        // SmallValuesInSuit, 2-14
+        public int SmallValuesInSuit {get; set;}
+
+        // MakePromise
+        public double PromiseMultiplierBase1 {get; set;}
+        public double PromiseMultiplierBase2 {get; set;}
+        public double PromiseMultiplierBase3 {get; set;}
+        public double PromiseMultiplierBase4 {get; set;}
+        public double PromiseMultiplierChange1A {get; set;}
+        public double PromiseMultiplierChange1B {get; set;}
+        public double PromiseMultiplierChange1C {get; set;}
+        public double PromiseMultiplierChange2A {get; set;}
+        public double PromiseMultiplierChange2B {get; set;}
+        public double PromiseMultiplierChange2C {get; set;}
+        public double PromiseMultiplierChange3A {get; set;}
+        public double PromiseMultiplierChange3B {get; set;}
+        public double PromiseMultiplierChange3C {get; set;}
+        public double PromiseMultiplierChange4A {get; set;}
+        public double PromiseMultiplierChange4B {get; set;}
+        public double PromiseMultiplierChange4C {get; set;}
+        public int MiniRisk {get; set;}
+
+        private static Random randomAi = new Random();
+
+        public PlayerAI()
+        {
+            AiName = "Ville"; // "ee865a0c-a62d-49ec-98b8-1dc7a953c7f6";
+            // AnalyzeDodgeable
+            DodgeBase = 50;
+            DodgeSure = 100;
+            DodgeSmallestValuesInSuit = 95;
+            DodgeSmallestValuesInSuitNOT = 85;
+            DodgeCardCountAvgOtherPlayersCount1 = 3;
+            DodgeBiggestValuesInSuit = 15;
+            DodgeBiggestValuesInSuitNOT = 25;
+            DodgeCardCountAvgOtherPlayersCount1 = 7;
+            DodgeInChargeAverageCount = 0.8;
+            
+            // BigValuesInSuit
+            BigValuesInSuit = 10;
+
+            // SmallValuesInSuit
+            SmallValuesInSuit = 6;
+
+            // MakePromise
+            PromiseMultiplierBase1 = 0.6;
+            PromiseMultiplierBase2 = 0.2;
+            PromiseMultiplierBase3 = 0.3;
+            PromiseMultiplierBase4 = 0.25;
+            PromiseMultiplierChange1A = 0.3;
+            PromiseMultiplierChange1B = 0.15;
+            PromiseMultiplierChange1C = 0.1;
+            PromiseMultiplierChange2A = 0.1;
+            PromiseMultiplierChange2B = 0.05;
+            PromiseMultiplierChange2C = 0.1;
+            PromiseMultiplierChange3A = 0.4;
+            PromiseMultiplierChange3B = 0.25;
+            PromiseMultiplierChange3C = 0.1;
+            PromiseMultiplierChange4A = 0.1;
+            PromiseMultiplierChange4B = 0.05;
+            PromiseMultiplierChange4C = 0.1;
+            MiniRisk = 5;
+        }
+
+        public static bool KeepAiValue()
+        {
+            if (randomAi.Next(0, 2) != 0)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static double GetRandomNumber(double minimum, double maximum)
+        {
+            return randomAi.NextDouble() * (maximum - minimum) + minimum;
+        }
+        
+        public static int AverageInt(int i, int j)
+        {
+            return (i + j) / 2;
+        }
+        public static double AverageDouble(double i, double j)
+        {
+            return (i + j) / 2;
+        }
+
+        public PlayerAI(string guidStr)
+        {
+        }
+
+
+
+
+        public PlayerAI(int playerId, bool mutate = false)
+        {
+            
+            AiName = "Jaska";
+
+            DodgeBase = randomAi.Next(30, 75) + 1; // 50
+            DodgeSure = 100; // this is a fact
+            DodgeSmallestValuesInSuit = randomAi.Next(50, 95); // 95
+            DodgeSmallestValuesInSuitNOT = randomAi.Next(70, 95); // 85
+            DodgeCardCountAvgOtherPlayersCount1 = randomAi.Next(1, 25); // 3
+            DodgeBiggestValuesInSuit = randomAi.Next(20, 65); // 15;
+            DodgeBiggestValuesInSuitNOT = randomAi.Next(20, 85); // 25;
+            DodgeCardCountAvgOtherPlayersCount1 = randomAi.Next(0, 20); // 7;
+            DodgeInChargeAverageCount = GetRandomNumber(0.1, 0.5); // 0.8;
+            
+            // BigValuesInSuit
+            BigValuesInSuit = randomAi.Next(9, 14) + 1; // 10;
+
+            // SmallValuesInSuit
+            SmallValuesInSuit = randomAi.Next(1, 7) + 1; // 6;
+
+            // MakePromise
+            PromiseMultiplierBase1 = GetRandomNumber(0.55, 0.9); // 0.6;
+            PromiseMultiplierBase2 = GetRandomNumber(0.3, 0.8); // 0.2;
+            PromiseMultiplierBase3 = GetRandomNumber(0.2, 0.88); // 0.3;
+            PromiseMultiplierBase4 = GetRandomNumber(0.3, 0.9); // 0.25;
+            PromiseMultiplierChange1A = GetRandomNumber(0.01, 0.35); // 0.3;
+            PromiseMultiplierChange1B = GetRandomNumber(0.15, 0.7); // 0.15;
+            PromiseMultiplierChange1C = GetRandomNumber(0.3, 0.8); // 0.1;
+            PromiseMultiplierChange2A = GetRandomNumber(0.2, 0.8); // 0.1;
+            PromiseMultiplierChange2B = GetRandomNumber(0.5, 0.95); // 0.05;
+            PromiseMultiplierChange2C = GetRandomNumber(0.2, 0.6); // 0.1;
+            PromiseMultiplierChange3A = GetRandomNumber(0.1, 0.8); // 0.4;
+            PromiseMultiplierChange3B = GetRandomNumber(0.1, 0.95); // 0.25;
+            PromiseMultiplierChange3C = GetRandomNumber(0.1, 0.8); // 0.1;
+            PromiseMultiplierChange4A = GetRandomNumber(0.05, 0.3); // 0.1;
+            PromiseMultiplierChange4B = GetRandomNumber(0.05, 0.4); // 0.05;
+            PromiseMultiplierChange4C = GetRandomNumber(0.05, 0.65); // 0.1;
+            MiniRisk = randomAi.Next(10, 50); // 5;
+
+
+            if (mutate)
+            {
+                // mutation
+                if (randomAi.NextDouble() > 0.98) DodgeBase = randomAi.Next(100) + 1; // 50
+                DodgeSure = 100; // this is a fact
+                if (randomAi.NextDouble() > 0.98) DodgeSmallestValuesInSuit = randomAi.Next(100); // 95
+                if (randomAi.NextDouble() > 0.98) DodgeSmallestValuesInSuitNOT = randomAi.Next(100); // 85
+                if (randomAi.NextDouble() > 0.98) DodgeCardCountAvgOtherPlayersCount1 = randomAi.Next(100); // 3
+                if (randomAi.NextDouble() > 0.98) DodgeBiggestValuesInSuit = randomAi.Next(100); // 15;
+                if (randomAi.NextDouble() > 0.98) DodgeBiggestValuesInSuitNOT = randomAi.Next(100); // 25;
+                if (randomAi.NextDouble() > 0.98) DodgeCardCountAvgOtherPlayersCount1 = randomAi.Next(100); // 7;
+                if (randomAi.NextDouble() > 0.98) DodgeInChargeAverageCount = randomAi.NextDouble(); // 0.8;
+                
+                // BigValuesInSuit
+                if (randomAi.NextDouble() > 0.98) BigValuesInSuit = randomAi.Next(1, 14) + 1; // 10;
+
+                // SmallValuesInSuit
+                if (randomAi.NextDouble() > 0.98) SmallValuesInSuit = randomAi.Next(1, 14) + 1; // 6;
+
+                // MakePromise
+                if (randomAi.NextDouble() > 0.98) PromiseMultiplierBase1 = randomAi.NextDouble(); // 0.6;
+                if (randomAi.NextDouble() > 0.98) PromiseMultiplierBase2 = randomAi.NextDouble(); // 0.2;
+                if (randomAi.NextDouble() > 0.98) PromiseMultiplierBase3 = randomAi.NextDouble(); // 0.3;
+                if (randomAi.NextDouble() > 0.98) PromiseMultiplierBase4 = randomAi.NextDouble(); // 0.25;
+                if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange1A = randomAi.NextDouble(); // 0.3;
+                if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange1B = randomAi.NextDouble(); // 0.15;
+                if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange1C = randomAi.NextDouble(); // 0.1;
+                if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange2A = randomAi.NextDouble(); // 0.1;
+                if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange2B = randomAi.NextDouble(); // 0.05;
+                if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange2C = randomAi.NextDouble(); // 0.1;
+                if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange3A = randomAi.NextDouble(); // 0.4;
+                if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange3B = randomAi.NextDouble(); // 0.25;
+                if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange3C = randomAi.NextDouble(); // 0.1;
+                if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange4A = randomAi.NextDouble(); // 0.1;
+                if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange4B = randomAi.NextDouble(); // 0.05;
+                if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange4C = randomAi.NextDouble(); // 0.1;
+                if (randomAi.NextDouble() > 0.98) MiniRisk = randomAi.Next(100); // 5;
+            }
+        }
+    }
+    
     public static class ComputerAI
     {
         private enum PlayingMethod
