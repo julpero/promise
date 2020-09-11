@@ -105,80 +105,80 @@ namespace promise
         {
             AiName = guidStr;
 
-            DodgeBase = randomAi.Next(30, 75) + 1; // 50
+            DodgeBase = randomAi.Next(0, 101); // 50
             DodgeSure = 100; // this is a fact
-            DodgeSmallestValuesInSuit = randomAi.Next(50, 95); // 95
-            DodgeSmallestValuesInSuitNOT = randomAi.Next(70, 95); // 85
-            DodgeCardCountAvgOtherPlayersCount1 = randomAi.Next(1, 25); // 3
-            DodgeBiggestValuesInSuit = randomAi.Next(20, 65); // 15;
-            DodgeBiggestValuesInSuitNOT = randomAi.Next(20, 85); // 25;
-            DodgeCardCountAvgOtherPlayersCount2 = randomAi.Next(0, 20); // 7;
-            DodgeInChargeAverageCount = GetRandomNumber(0.1, 0.5); // 0.8;
+            DodgeSmallestValuesInSuit = randomAi.Next(0, 101); // 95
+            DodgeSmallestValuesInSuitNOT = randomAi.Next(0, 101); // 85
+            DodgeCardCountAvgOtherPlayersCount1 = randomAi.Next(0, 101); // 3
+            DodgeBiggestValuesInSuit = randomAi.Next(0, 101); // 15;
+            DodgeBiggestValuesInSuitNOT = randomAi.Next(0, 101); // 25;
+            DodgeCardCountAvgOtherPlayersCount2 = randomAi.Next(0, 101); // 7;
+            DodgeInChargeAverageCount = GetRandomNumber(0.0, 1.0); // 0.8;
             
             // BigValuesInSuit
-            BigValuesInSuit = randomAi.Next(9, 14) + 1; // 10;
+            BigValuesInSuit = randomAi.Next(2, 15); // 10;
 
             // SmallValuesInSuit
-            SmallValuesInSuit = randomAi.Next(1, 7) + 1; // 6;
+            SmallValuesInSuit = randomAi.Next(2, 15); // 6;
 
             // MakePromise
-            PromiseMultiplierBase1 = GetRandomNumber(0.55, 0.9); // 0.6;
-            PromiseMultiplierBase2 = GetRandomNumber(0.3, 0.8); // 0.2;
-            PromiseMultiplierBase3 = GetRandomNumber(0.2, 0.88); // 0.3;
-            PromiseMultiplierBase4 = GetRandomNumber(0.3, 0.9); // 0.25;
-            PromiseMultiplierChange1A = GetRandomNumber(0.01, 0.35); // 0.3;
-            PromiseMultiplierChange1B = GetRandomNumber(0.15, 0.7); // 0.15;
-            PromiseMultiplierChange1C = GetRandomNumber(0.3, 0.8); // 0.1;
-            PromiseMultiplierChange2A = GetRandomNumber(0.2, 0.8); // 0.1;
-            PromiseMultiplierChange2B = GetRandomNumber(0.5, 0.95); // 0.05;
-            PromiseMultiplierChange2C = GetRandomNumber(0.2, 0.6); // 0.1;
-            PromiseMultiplierChange3A = GetRandomNumber(0.1, 0.8); // 0.4;
-            PromiseMultiplierChange3B = GetRandomNumber(0.1, 0.95); // 0.25;
-            PromiseMultiplierChange3C = GetRandomNumber(0.1, 0.8); // 0.1;
-            PromiseMultiplierChange4A = GetRandomNumber(0.05, 0.3); // 0.1;
-            PromiseMultiplierChange4B = GetRandomNumber(0.05, 0.4); // 0.05;
-            PromiseMultiplierChange4C = GetRandomNumber(0.05, 0.65); // 0.1;
-            MiniRisk = randomAi.Next(10, 50); // 5;
+            PromiseMultiplierBase1 = GetRandomNumber(0.0, 1.0); // 0.6;
+            PromiseMultiplierBase2 = GetRandomNumber(0.0, 1.0); // 0.2;
+            PromiseMultiplierBase3 = GetRandomNumber(0.0, 1.0); // 0.3;
+            PromiseMultiplierBase4 = GetRandomNumber(0.0, 1.0); // 0.25;
+            PromiseMultiplierChange1A = GetRandomNumber(0.0, 1.0); // 0.3;
+            PromiseMultiplierChange1B = GetRandomNumber(0.0, 1.0); // 0.15;
+            PromiseMultiplierChange1C = GetRandomNumber(0.0, 1.0); // 0.1;
+            PromiseMultiplierChange2A = GetRandomNumber(0.0, 1.0); // 0.1;
+            PromiseMultiplierChange2B = GetRandomNumber(0.0, 1.0); // 0.05;
+            PromiseMultiplierChange2C = GetRandomNumber(0.0, 1.0); // 0.1;
+            PromiseMultiplierChange3A = GetRandomNumber(0.0, 1.0); // 0.4;
+            PromiseMultiplierChange3B = GetRandomNumber(0.0, 1.0); // 0.25;
+            PromiseMultiplierChange3C = GetRandomNumber(0.0, 1.0); // 0.1;
+            PromiseMultiplierChange4A = GetRandomNumber(0.0, 1.0); // 0.1;
+            PromiseMultiplierChange4B = GetRandomNumber(0.0, 1.0); // 0.05;
+            PromiseMultiplierChange4C = GetRandomNumber(0.0, 1.0); // 0.1;
+            MiniRisk = randomAi.Next(0, 101); // 5;
         }
 
         public PlayerAI(string guidStr, PlayerAI goodAi)
         {
             AiName = Guid.NewGuid().ToString();
 
-            DodgeBase = KeepAiValue() ? goodAi.DodgeBase : randomAi.Next(30, 75) + 1; // 50
+            DodgeBase = KeepAiValue() ? goodAi.DodgeBase : randomAi.Next(0, 101); // 50
             DodgeSure = 100; // this is a fact
-            DodgeSmallestValuesInSuit = KeepAiValue() ? goodAi.DodgeSmallestValuesInSuit : randomAi.Next(50, 95); // 95
-            DodgeSmallestValuesInSuitNOT = KeepAiValue() ? goodAi.DodgeSmallestValuesInSuitNOT : randomAi.Next(70, 95); // 85
-            DodgeCardCountAvgOtherPlayersCount1 = KeepAiValue() ? goodAi.DodgeCardCountAvgOtherPlayersCount1 : randomAi.Next(1, 25); // 3
-            DodgeBiggestValuesInSuit = KeepAiValue() ? goodAi.DodgeBiggestValuesInSuit : randomAi.Next(20, 65); // 15;
-            DodgeBiggestValuesInSuitNOT = KeepAiValue() ? goodAi.DodgeBiggestValuesInSuitNOT : randomAi.Next(20, 85); // 25;
-            DodgeCardCountAvgOtherPlayersCount2 = KeepAiValue() ? goodAi.DodgeCardCountAvgOtherPlayersCount2 : randomAi.Next(0, 20); // 7;
-            DodgeInChargeAverageCount = KeepAiValue() ? goodAi.DodgeInChargeAverageCount : GetRandomNumber(0.1, 0.5); // 0.8;
+            DodgeSmallestValuesInSuit = KeepAiValue() ? goodAi.DodgeSmallestValuesInSuit : randomAi.Next(0, 101); // 95
+            DodgeSmallestValuesInSuitNOT = KeepAiValue() ? goodAi.DodgeSmallestValuesInSuitNOT : randomAi.Next(0, 101); // 85
+            DodgeCardCountAvgOtherPlayersCount1 = KeepAiValue() ? goodAi.DodgeCardCountAvgOtherPlayersCount1 : randomAi.Next(0, 101); // 3
+            DodgeBiggestValuesInSuit = KeepAiValue() ? goodAi.DodgeBiggestValuesInSuit : randomAi.Next(0, 101); // 15;
+            DodgeBiggestValuesInSuitNOT = KeepAiValue() ? goodAi.DodgeBiggestValuesInSuitNOT : randomAi.Next(0, 101); // 25;
+            DodgeCardCountAvgOtherPlayersCount2 = KeepAiValue() ? goodAi.DodgeCardCountAvgOtherPlayersCount2 : randomAi.Next(0, 101); // 7;
+            DodgeInChargeAverageCount = KeepAiValue() ? goodAi.DodgeInChargeAverageCount : GetRandomNumber(0.0, 1.0); // 0.8;
             
             // BigValuesInSuit
-            BigValuesInSuit = KeepAiValue() ? goodAi.BigValuesInSuit : randomAi.Next(9, 14) + 1; // 10;
+            BigValuesInSuit = KeepAiValue() ? goodAi.BigValuesInSuit : randomAi.Next(2, 15); // 10;
 
             // SmallValuesInSuit
-            SmallValuesInSuit = KeepAiValue() ? goodAi.SmallValuesInSuit : randomAi.Next(1, 7) + 1; // 6;
+            SmallValuesInSuit = KeepAiValue() ? goodAi.SmallValuesInSuit : randomAi.Next(2, 15); // 6;
 
             // MakePromise
-            PromiseMultiplierBase1 = KeepAiValue() ? goodAi.PromiseMultiplierBase1 : GetRandomNumber(0.55, 0.9); // 0.6;
-            PromiseMultiplierBase2 = KeepAiValue() ? goodAi.PromiseMultiplierBase2 : GetRandomNumber(0.3, 0.8); // 0.2;
-            PromiseMultiplierBase3 = KeepAiValue() ? goodAi.PromiseMultiplierBase3 : GetRandomNumber(0.2, 0.88); // 0.3;
-            PromiseMultiplierBase4 = KeepAiValue() ? goodAi.PromiseMultiplierBase4 : GetRandomNumber(0.3, 0.9); // 0.25;
-            PromiseMultiplierChange1A = KeepAiValue() ? goodAi.PromiseMultiplierChange1A : GetRandomNumber(0.01, 0.35); // 0.3;
-            PromiseMultiplierChange1B = KeepAiValue() ? goodAi.PromiseMultiplierChange1B : GetRandomNumber(0.15, 0.7); // 0.15;
-            PromiseMultiplierChange1C = KeepAiValue() ? goodAi.PromiseMultiplierChange1C : GetRandomNumber(0.3, 0.8); // 0.1;
-            PromiseMultiplierChange2A = KeepAiValue() ? goodAi.PromiseMultiplierChange2A : GetRandomNumber(0.2, 0.8); // 0.1;
-            PromiseMultiplierChange2B = KeepAiValue() ? goodAi.PromiseMultiplierChange2B : GetRandomNumber(0.5, 0.95); // 0.05;
-            PromiseMultiplierChange2C = KeepAiValue() ? goodAi.PromiseMultiplierChange2C : GetRandomNumber(0.2, 0.6); // 0.1;
-            PromiseMultiplierChange3A = KeepAiValue() ? goodAi.PromiseMultiplierChange3A : GetRandomNumber(0.1, 0.8); // 0.4;
-            PromiseMultiplierChange3B = KeepAiValue() ? goodAi.PromiseMultiplierChange3B : GetRandomNumber(0.1, 0.95); // 0.25;
-            PromiseMultiplierChange3C = KeepAiValue() ? goodAi.PromiseMultiplierChange3C : GetRandomNumber(0.1, 0.8); // 0.1;
-            PromiseMultiplierChange4A = KeepAiValue() ? goodAi.PromiseMultiplierChange4A : GetRandomNumber(0.05, 0.3); // 0.1;
-            PromiseMultiplierChange4B = KeepAiValue() ? goodAi.PromiseMultiplierChange4B : GetRandomNumber(0.05, 0.4); // 0.05;
-            PromiseMultiplierChange4C = KeepAiValue() ? goodAi.PromiseMultiplierChange4C : GetRandomNumber(0.05, 0.65); // 0.1;
-            MiniRisk = KeepAiValue() ? goodAi.MiniRisk : randomAi.Next(10, 50); // 5;
+            PromiseMultiplierBase1 = KeepAiValue() ? goodAi.PromiseMultiplierBase1 : GetRandomNumber(0.0, 1.0); // 0.6;
+            PromiseMultiplierBase2 = KeepAiValue() ? goodAi.PromiseMultiplierBase2 : GetRandomNumber(0.0, 1.0); // 0.2;
+            PromiseMultiplierBase3 = KeepAiValue() ? goodAi.PromiseMultiplierBase3 : GetRandomNumber(0.0, 1.0); // 0.3;
+            PromiseMultiplierBase4 = KeepAiValue() ? goodAi.PromiseMultiplierBase4 : GetRandomNumber(0.0, 1.0); // 0.25;
+            PromiseMultiplierChange1A = KeepAiValue() ? goodAi.PromiseMultiplierChange1A : GetRandomNumber(0.0, 1.0); // 0.3;
+            PromiseMultiplierChange1B = KeepAiValue() ? goodAi.PromiseMultiplierChange1B : GetRandomNumber(0.0, 1.0); // 0.15;
+            PromiseMultiplierChange1C = KeepAiValue() ? goodAi.PromiseMultiplierChange1C : GetRandomNumber(0.0, 1.0); // 0.1;
+            PromiseMultiplierChange2A = KeepAiValue() ? goodAi.PromiseMultiplierChange2A : GetRandomNumber(0.0, 1.0); // 0.1;
+            PromiseMultiplierChange2B = KeepAiValue() ? goodAi.PromiseMultiplierChange2B : GetRandomNumber(0.0, 1.0); // 0.05;
+            PromiseMultiplierChange2C = KeepAiValue() ? goodAi.PromiseMultiplierChange2C : GetRandomNumber(0.0, 1.0); // 0.1;
+            PromiseMultiplierChange3A = KeepAiValue() ? goodAi.PromiseMultiplierChange3A : GetRandomNumber(0.0, 1.0); // 0.4;
+            PromiseMultiplierChange3B = KeepAiValue() ? goodAi.PromiseMultiplierChange3B : GetRandomNumber(0.0, 1.0); // 0.25;
+            PromiseMultiplierChange3C = KeepAiValue() ? goodAi.PromiseMultiplierChange3C : GetRandomNumber(0.0, 1.0); // 0.1;
+            PromiseMultiplierChange4A = KeepAiValue() ? goodAi.PromiseMultiplierChange4A : GetRandomNumber(0.0, 1.0); // 0.1;
+            PromiseMultiplierChange4B = KeepAiValue() ? goodAi.PromiseMultiplierChange4B : GetRandomNumber(0.0, 1.0); // 0.05;
+            PromiseMultiplierChange4C = KeepAiValue() ? goodAi.PromiseMultiplierChange4C : GetRandomNumber(0.0, 1.0); // 0.1;
+            MiniRisk = KeepAiValue() ? goodAi.MiniRisk : randomAi.Next(0, 101); // 5;
         }
 
         public static int AverageInt(int i, int j)
@@ -272,21 +272,21 @@ namespace promise
 
 
             // mutation
-            if (randomAi.NextDouble() > 0.98) DodgeBase = randomAi.Next(100) + 1; // 50
+            if (randomAi.NextDouble() > 0.98) DodgeBase = randomAi.Next(0, 101); // 50
             DodgeSure = 100; // this is a fact
-            if (randomAi.NextDouble() > 0.98) DodgeSmallestValuesInSuit = randomAi.Next(100); // 95
-            if (randomAi.NextDouble() > 0.98) DodgeSmallestValuesInSuitNOT = randomAi.Next(100); // 85
-            if (randomAi.NextDouble() > 0.98) DodgeCardCountAvgOtherPlayersCount1 = randomAi.Next(100); // 3
-            if (randomAi.NextDouble() > 0.98) DodgeBiggestValuesInSuit = randomAi.Next(100); // 15;
-            if (randomAi.NextDouble() > 0.98) DodgeBiggestValuesInSuitNOT = randomAi.Next(100); // 25;
-            if (randomAi.NextDouble() > 0.98) DodgeCardCountAvgOtherPlayersCount2 = randomAi.Next(100); // 7;
+            if (randomAi.NextDouble() > 0.98) DodgeSmallestValuesInSuit = randomAi.Next(0, 101); // 95
+            if (randomAi.NextDouble() > 0.98) DodgeSmallestValuesInSuitNOT = randomAi.Next(0, 101); // 85
+            if (randomAi.NextDouble() > 0.98) DodgeCardCountAvgOtherPlayersCount1 = randomAi.Next(0, 101); // 3
+            if (randomAi.NextDouble() > 0.98) DodgeBiggestValuesInSuit = randomAi.Next(0, 101); // 15;
+            if (randomAi.NextDouble() > 0.98) DodgeBiggestValuesInSuitNOT = randomAi.Next(0, 101); // 25;
+            if (randomAi.NextDouble() > 0.98) DodgeCardCountAvgOtherPlayersCount2 = randomAi.Next(0, 101); // 7;
             if (randomAi.NextDouble() > 0.98) DodgeInChargeAverageCount = randomAi.NextDouble(); // 0.8;
             
             // BigValuesInSuit
-            if (randomAi.NextDouble() > 0.98) BigValuesInSuit = randomAi.Next(1, 14) + 1; // 10;
+            if (randomAi.NextDouble() > 0.98) BigValuesInSuit = randomAi.Next(2, 15); // 10;
 
             // SmallValuesInSuit
-            if (randomAi.NextDouble() > 0.98) SmallValuesInSuit = randomAi.Next(1, 14) + 1; // 6;
+            if (randomAi.NextDouble() > 0.98) SmallValuesInSuit = randomAi.Next(2, 15); // 6;
 
             // MakePromise
             if (randomAi.NextDouble() > 0.98) PromiseMultiplierBase1 = randomAi.NextDouble(); // 0.6;
@@ -305,7 +305,7 @@ namespace promise
             if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange4A = randomAi.NextDouble(); // 0.1;
             if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange4B = randomAi.NextDouble(); // 0.05;
             if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange4C = randomAi.NextDouble(); // 0.1;
-            if (randomAi.NextDouble() > 0.98) MiniRisk = randomAi.Next(100); // 5;
+            if (randomAi.NextDouble() > 0.98) MiniRisk = randomAi.Next(0, 101); // 5;
         }
     }
 
