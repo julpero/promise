@@ -44,7 +44,10 @@ namespace promise
 
             for (int i = 0; i < 5; i++)
             {
-                playerAIs.Add(new PlayerAI());
+                if (i == 0)
+                    playerAIs.Add(new PlayerAI(i));
+                else
+                    playerAIs.Add(new PlayerAI());
             }
 
             for (int i = 0; i < GameCount; i++)
