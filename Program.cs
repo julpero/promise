@@ -104,7 +104,8 @@ namespace promise
                     // or use now some random
                     for (int i = 0; i < 5; i++)
                     {
-                        mongoAIs.Add(new MongoAI(Guid.NewGuid().ToString(), new PlayerAI("")));
+                        string guidStr = Guid.NewGuid().ToString();
+                        mongoAIs.Add(new MongoAI(guidStr, new PlayerAI(guidStr)));
                     }
                 }
                 catch
