@@ -17,13 +17,14 @@ namespace promise
         public int Evolution {get; set;}
         public DateTime Created {get; set;}
 
-        public MongoAI(string guid, PlayerAI playerAI, int points, int promisesKept)
+        public MongoAI(string guid, PlayerAI playerAI, int points, int promisesKept, int evolution = 0)
         {
             AiName = guid;
             PlayerAI = playerAI;
             Points = points;
             PromisesKept = promisesKept;
             Created = DateTime.Now;
+            Evolution = evolution + 1;
         }
 
         public MongoAI(string guid, PlayerAI playerAI, int evolution = 0)
@@ -116,7 +117,7 @@ namespace promise
             if (totalTest)
             {
                 GameCount = 20;
-                RandomizeLimit = 400;
+                RandomizeLimit = 20000;
                 ScreenUtils.ClearScreen();
                 Console.SetCursorPosition(0, 0);
             }
@@ -126,23 +127,6 @@ namespace promise
             {
                 if (totalTest)
                 {
-                    var getGoodOnes = new BsonArray
-                    {
-                        new BsonDocument("$group", 
-                        new BsonDocument
-                            {
-                                { "_id", "$AiName" }, 
-                                { "avgPoints", 
-                        new BsonDocument("$avg", "$Points") }, 
-                                { "avgKepts", 
-                        new BsonDocument("$avg", "$PromisesKept") }
-                            }),
-                        new BsonDocument("$sort", 
-                        new BsonDocument("avgPoints", -1)),
-                        new BsonDocument("$limit", 3)
-                    };
-
-                    //var goodOnes = collection.Find(getGoodOnes).to
                     var goodOnes = collection.AsQueryable()
                                             .GroupBy(x => new {AiName = x.AiName})
                                             .Select(x => new {AiName = x.Key.AiName
@@ -152,6 +136,8 @@ namespace promise
                     
                     MongoAI mongoAI1 = collection.Find(x => x.AiName == goodOnes.First().AiName).First();
                     MongoAI mongoAI2 = collection.Find(x => x.AiName == goodOnes.Last().AiName).First();
+
+                    Logger.Log($"paras: {mongoAI1.AiName}", "parhaat");
                     
                     mongoAIs = new List<MongoAI>();
 
