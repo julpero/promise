@@ -126,6 +126,7 @@ namespace promise
             
             for (int randomize = 0; randomize < RandomizeLimit; randomize++)
             {
+                var edellinenParas = "";
                 if (totalTest)
                 {
                     var goodOnes = collection.AsQueryable()
@@ -138,7 +139,10 @@ namespace promise
                     MongoAI mongoAI1 = collection.Find(x => x.AiName == goodOnes.First().AiName).First();
                     MongoAI mongoAI2 = collection.Find(x => x.AiName == goodOnes.Last().AiName).First();
 
-                    Logger.Log($"paras: {mongoAI1.AiName}", "parhaat");
+                    var paras = mongoAI1.AiName;
+                    if (paras != edellinenParas) Logger.Log($"paras: {paras} {DateTime.Now}", "parhaat");
+
+                    edellinenParas = paras;
                     
                     mongoAIs = new List<MongoAI>();
 
