@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using MongoDB.Driver;
+using MongoDB.Bson;
 
 namespace promise
 {
@@ -14,7 +16,7 @@ namespace promise
         const int PROMISEBOARDY = 33;
 
         public Player[] Players {get; set;}
-        public List<PlayerAI> PlayerAIs {get; set;}
+        public List<MongoAI> MongoAIs {get; set;}
 
         public int StartRound {get; set;}
         public int TurnRound {get; set;}
@@ -31,15 +33,16 @@ namespace promise
         public Game(bool isBotMatch = false
                     , bool showCards = true
                     , bool randomizedBots = false
-                    , List<PlayerAI> playerAIs = null
+                    , List<MongoAI> mongoAIs = null
+                    , IMongoCollection<MongoAI> collection = null
                     )
         {
             this.IsBotMatch = isBotMatch;
             this.ShowCards = showCards;
 
-            this.PlayerAIs = playerAIs;
+            this.MongoAIs = mongoAIs;
 
-            GetPlayers(this.PlayerAIs);
+            GetPlayers();
             this.Players = ShufflePlayers();
 
             this.TotalPoints = new int[this.Players.Count()];
@@ -50,7 +53,15 @@ namespace promise
             InitRounds();
             PlayPromise();
 
-        }
+            if (collection != null)
+            {
+                for (int i = 0; i < this.Players.Count(); i++)
+                {
+                    MongoAI newPlayerAi = new MongoAI(this.Players[i].AI.AiName, this.Players[i].AI, this.TotalPoints[i], this.PromisesKept[i], mongoAIs.Skip(i).First().Evolution);
+                    collection.InsertOne(newPlayerAi);
+                }
+            }
+         }
 
         private int PlayerPositionHelper(int i)
         {
@@ -237,7 +248,7 @@ namespace promise
             }
         }
 
-        private void GetPlayers(List<PlayerAI> playerAIs)
+        private void GetPlayers()
         {
             ScreenUtils.ClearScreen();
             
@@ -263,7 +274,7 @@ namespace promise
             this.Players = new Player[lkm];
             for (int i = 0; i < this.Players.Count(); i++)
             {
-                this.Players[i] = new Player(i+1, playerAIs.Skip(i).First(), this.IsBotMatch);
+                this.Players[i] = new Player(i+1, this.MongoAIs.Skip(i).First().PlayerAI, this.IsBotMatch);
             }
 
             if (this.Players.Any(x => x.PlayerType == PlayerType.HUMAN)) this.IsBotMatch = false;
