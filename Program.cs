@@ -44,7 +44,6 @@ namespace promise
         static void Main(string[] args)
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
-            Console.SetWindowSize(170, 42);
 
             int GameCount = 1;
             int RandomizeLimit = 1;
@@ -61,7 +60,7 @@ namespace promise
 
             if (args.Any(x => x.ToLower() == "botmatch"))
             {
-                GameCount = 5;
+                GameCount = 20;
                 isBotMatch = true;
             }
             if (args.Any(x => x.ToLower() == "hidecards"))
@@ -118,23 +117,38 @@ namespace promise
             if (totalTest)
             {
                 GameCount = 20;
-                RandomizeLimit = 20000;
+                RandomizeLimit = 200000;
                 ScreenUtils.ClearScreen();
                 Console.SetCursorPosition(0, 0);
             }
+            else
+            {
+                Console.SetWindowSize(170, 42);
+            }
 
-            
+            var edellinenParas = "";
             for (int randomize = 0; randomize < RandomizeLimit; randomize++)
             {
-                var edellinenParas = "";
                 if (totalTest)
                 {
                     var goodOnes = collection.AsQueryable()
-                                            .GroupBy(x => new {AiName = x.AiName})
-                                            .Select(x => new {AiName = x.Key.AiName
-                                                            , AvgPoints = x.Average(y => y.Points)
-                                                            , AvgKeeps = x.Average(y => y.PromisesKept)
-                                                            }).OrderByDescending(z => z.AvgPoints).Take(2).ToList();
+                                            .GroupBy(x => x.AiName)
+                                            .Where(grp => grp.Count() == 20)
+                                            .Select(grp => new {AiName = grp.Key
+                                                            , AvgPoints = grp.Average(y => y.Points)
+                                                            , AvgKeeps = grp.Average(y => y.PromisesKept)
+                                            })
+                                            .OrderByDescending(z => z.AvgPoints)
+                                            .ThenByDescending(z => z.AvgKeeps)
+                                            .Take(2).ToList();
+                    
+                    // var goodOnes = collection.AsQueryable()
+                    //                         .GroupBy(x => new {AiName = x.AiName})
+                    //                         .Where(x => x.Key.AiName.Count() == 20)
+                    //                         .Select(x => new {AiName = x.Key.AiName
+                    //                                         , AvgPoints = x.Average(y => y.Points)
+                    //                                         , AvgKeeps = x.Average(y => y.PromisesKept)
+                    //                                         }).OrderByDescending(z => z.AvgPoints).Take(2).ToList();
                     
                     MongoAI mongoAI1 = collection.Find(x => x.AiName == goodOnes.First().AiName).First();
                     MongoAI mongoAI2 = collection.Find(x => x.AiName == goodOnes.Last().AiName).First();
