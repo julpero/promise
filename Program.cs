@@ -71,6 +71,8 @@ namespace promise
                 }
             }
 
+            mongoAIs.Add(new MongoAI("Fuison"));
+
             for (int i = 0; i < Math.Max(CREATEDBOTS, 5); i++)
             {
                 if (randomizedBots)
@@ -85,7 +87,7 @@ namespace promise
             }
             Random randomX = new Random();
             mongoAIs = mongoAIs.OrderBy(x => randomX.Next()).ToList();
-            
+
 
             for (int i = 0; i < GameCount; i++)
             {

@@ -50,42 +50,43 @@ namespace promise
         public PlayerAI()
         {
             // this is my best guess when coding
+            // now with very small random
             AiName = "Fuison"; // "ee865a0c-a62d-49ec-98b8-1dc7a953c7f6";
             // AnalyzeDodgeable
-            DodgeBase = 50;
+            DodgeBase = PlayerRandInt(50);
             DodgeSure = 100;
-            DodgeSmallestValuesInSuit = 95;
-            DodgeSmallestValuesInSuitNOT = 85;
-            DodgeCardCountAvgOtherPlayersCount1 = 3;
-            DodgeBiggestValuesInSuit = 15;
-            DodgeBiggestValuesInSuitNOT = 25;
-            DodgeCardCountAvgOtherPlayersCount2 = 7;
-            DodgeInChargeAverageCount = 0.8;
+            DodgeSmallestValuesInSuit = PlayerRandInt(95);
+            DodgeSmallestValuesInSuitNOT = PlayerRandInt(85);
+            DodgeCardCountAvgOtherPlayersCount1 = PlayerRandInt(3);
+            DodgeBiggestValuesInSuit = PlayerRandInt(15);
+            DodgeBiggestValuesInSuitNOT = PlayerRandInt(25);
+            DodgeCardCountAvgOtherPlayersCount2 = PlayerRandInt(7);
+            DodgeInChargeAverageCount = PlayerRandDouble(0.8);
             
             // BigValuesInSuit
-            BigValuesInSuit = 10;
+            BigValuesInSuit = PlayerRandInt(10, 1);
 
             // SmallValuesInSuit
-            SmallValuesInSuit = 6;
+            SmallValuesInSuit = PlayerRandInt(6, 1);
 
             // MakePromise
-            PromiseMultiplierBase1 = 0.6;
-            PromiseMultiplierBase2 = 0.2;
-            PromiseMultiplierBase3 = 0.3;
-            PromiseMultiplierBase4 = 0.25;
-            PromiseMultiplierChange1A = 0.3;
-            PromiseMultiplierChange1B = 0.15;
-            PromiseMultiplierChange1C = 0.1;
-            PromiseMultiplierChange2A = 0.1;
-            PromiseMultiplierChange2B = 0.05;
-            PromiseMultiplierChange2C = 0.1;
-            PromiseMultiplierChange3A = 0.4;
-            PromiseMultiplierChange3B = 0.25;
-            PromiseMultiplierChange3C = 0.1;
-            PromiseMultiplierChange4A = 0.1;
-            PromiseMultiplierChange4B = 0.05;
-            PromiseMultiplierChange4C = 0.1;
-            MiniRisk = 5;
+            PromiseMultiplierBase1 = PlayerRandDouble(0.6);
+            PromiseMultiplierBase2 = PlayerRandDouble(0.2);
+            PromiseMultiplierBase3 = PlayerRandDouble(0.3);
+            PromiseMultiplierBase4 = PlayerRandDouble(0.25);
+            PromiseMultiplierChange1A = PlayerRandDouble(0.3);
+            PromiseMultiplierChange1B = PlayerRandDouble(0.15);
+            PromiseMultiplierChange1C = PlayerRandDouble(0.1);
+            PromiseMultiplierChange2A = PlayerRandDouble(0.1);
+            PromiseMultiplierChange2B = PlayerRandDouble(0.06);
+            PromiseMultiplierChange2C = PlayerRandDouble(0.1);
+            PromiseMultiplierChange3A = PlayerRandDouble(0.4);
+            PromiseMultiplierChange3B = PlayerRandDouble(0.25);
+            PromiseMultiplierChange3C = PlayerRandDouble(0.1);
+            PromiseMultiplierChange4A = PlayerRandDouble(0.1);
+            PromiseMultiplierChange4B = PlayerRandDouble(0.06);
+            PromiseMultiplierChange4C = PlayerRandDouble(0.1);
+            MiniRisk = PlayerRandInt(5);
         }
 
         public static double GetRandomNumber(double minimum, double maximum)
