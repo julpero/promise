@@ -7,7 +7,7 @@ promise.exe
 
 ### startup parameters
 #### botmatch
-fast way to create 5 player AI game
+fast way to create 5 player 10-1-10 AI game
 
 #### hidecards
 dont render cards, faster botmatch
