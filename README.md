@@ -1,7 +1,8 @@
 # promise
 Let's play some rounds Promise Card Game
 
-##Usage:
+## Usage:
+in windows, open preferred console (cmd / powershell) and start
 promise.exe
 
 ### startup parameters
