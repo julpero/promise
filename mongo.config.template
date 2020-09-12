@@ -1,1 +1,4 @@
 // if you are using mongodb, put connection here and rename file as mongo.config
+MongoClient=mongodb://localhost:27017
+database=XXX
+collection=promises
