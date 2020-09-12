@@ -57,8 +57,16 @@ namespace promise
             {
                 for (int i = 0; i < this.Players.Count(); i++)
                 {
-                    MongoAI newPlayerAi = new MongoAI(this.Players[i].AI.AiName, this.Players[i].AI, this.TotalPoints[i], this.PromisesKept[i], mongoAIs.Skip(i).First().Evolution);
-                    collection.InsertOne(newPlayerAi);
+                    if (this.Players[i].PlayerType == PlayerType.COMPUTER)
+                    {
+                        MongoAI newPlayerAi = new MongoAI(this.Players[i].AI.AiName, this.Players[i].AI, this.TotalPoints[i], this.PromisesKept[i], mongoAIs.Skip(i).First().Evolution);
+                        collection.InsertOne(newPlayerAi);
+                    }
+                    else
+                    {
+                        MongoAI newPlayerAi = new MongoAI(this.Players[i].PlayerName, this.Players[i].AI, this.TotalPoints[i], this.PromisesKept[i], -1);
+                        collection.InsertOne(newPlayerAi);
+                    }
                 }
             }
          }
