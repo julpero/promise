@@ -3,55 +3,23 @@ using System.IO;
 using System.Linq; 
 using System.Collections.Generic;
 using MongoDB.Driver;
-using MongoDB.Bson;
 
 namespace promise
 {
-    public class MongoAI
-    {
-        public ObjectId Id {get; set;}
-        public string AiName {get; set;}
-        public PlayerAI PlayerAI {get; set;}
-        public int Points {get; set;}
-        public int PromisesKept {get; set;}
-        public int Evolution {get; set;}
-        public DateTime Created {get; set;}
-
-        public MongoAI(string guid, PlayerAI playerAI, int points, int promisesKept, int evolution = 0)
-        {
-            AiName = guid;
-            PlayerAI = playerAI;
-            Points = points;
-            PromisesKept = promisesKept;
-            Created = DateTime.Now;
-            Evolution = evolution + 1;
-        }
-
-        public MongoAI(string guid, PlayerAI playerAI, int evolution = 0)
-        {
-            AiName = guid;
-            PlayerAI = playerAI;
-            Points = 0;
-            PromisesKept = 0;
-            Created = DateTime.Now;
-            Evolution = evolution + 1;
-        }
-
-    }
 
     class Program
     {
         static void Main(string[] args)
         {
+            const int CREATEDBOTS = 2;
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
             int GameCount = 1;
-            int RandomizeLimit = 1;
             bool isBotMatch = false;
             bool showCards = true;
             bool randomizedBots = false;
-            bool useDb = false;
             bool totalTest = false;
+            int RandomizeLimit = 1;
 
             MongoClient mongoClient = null;
             IMongoDatabase database = null;
@@ -73,11 +41,10 @@ namespace promise
             }
             if (args.Any(x => x.ToLower() == "totaltest"))
             {
-                totalTest = true;
+                // totalTest = true;
             }
             if (args.Any(x => x.ToLower() == "usedb"))
             {
-                useDb = true;
                 try
                 {
                     string[] config = File.ReadAllLines("mongo.config");
@@ -112,7 +79,6 @@ namespace promise
                     throw;
                 }
             }
-            totalTest = totalTest && randomizedBots && useDb;
 
             if (totalTest)
             {
@@ -129,7 +95,7 @@ namespace promise
             var edellinenParas = "";
             for (int randomize = 0; randomize < RandomizeLimit; randomize++)
             {
-                if (totalTest)
+                if (randomizedBots)
                 {
                     var goodOnes = collection.AsQueryable()
                                             .GroupBy(x => x.AiName)
@@ -174,24 +140,25 @@ namespace promise
                     }
                     Console.Write($"{randomize + 1}: ");
                 }
-
-                for (int i = 0; i < GameCount; i++)
+                else
                 {
-                    if (totalTest)
+                    for (int i = 0; i < 2; i++)
                     {
-                        Console.BackgroundColor = ConsoleColor.Black;
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.Write("*");
+                        var guidStr = Guid.NewGuid().ToString();
+                        mongoAIs.Add(new MongoAI(guidStr, new PlayerAI()));
                     }
-                    else
-                    {
-                        Console.BackgroundColor = ConsoleColor.Black;
-                        Console.ForegroundColor = ConsoleColor.White;
-                        ScreenUtils.ClearScreen();
-                    }
-                    Game promiseGame = new Game(isBotMatch, showCards, randomizedBots, useDb, collection, mongoAIs, totalTest);
                 }
-                if (totalTest) Console.WriteLine();
+            }
+            Random randomX = new Random();
+            mongoAIs = mongoAIs.OrderBy(x => randomX.Next()).ToList();
+
+
+            for (int i = 0; i < GameCount; i++)
+            {
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = ConsoleColor.White;
+                ScreenUtils.ClearScreen();
+                Game promiseGame = new Game(isBotMatch, showCards, randomizedBots, mongoAIs, collection);
             }
         }
     }

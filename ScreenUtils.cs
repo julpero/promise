@@ -377,7 +377,7 @@ namespace promise
             }
             switch (card.CardSuit)
             {
-                case CardSuit.Clubs: Console.ForegroundColor = ConsoleColor.Green; break;
+                case CardSuit.Clubs: Console.ForegroundColor = ConsoleColor.DarkGreen; break;
                 case CardSuit.Hearts: Console.ForegroundColor = ConsoleColor.Red; break;
                 case CardSuit.Diamonds: Console.ForegroundColor = ConsoleColor.Blue; break;
                 case CardSuit.Spades: Console.ForegroundColor = ConsoleColor.Black; break;

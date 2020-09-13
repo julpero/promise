@@ -44,8 +44,8 @@ namespace promise
             else
             {
                 this.PlayerType = PlayerType.COMPUTER;
-                this.PlayerName = $"Computer {playerNro}";
-                this.PlayerInitials = $"Co{playerNro}";
+                this.PlayerName = $"{ai.AiName}";
+                this.PlayerInitials = $"{ai.AiName.Substring(0,2)}{playerNro}";
                 this.AI = ai;
             }
         }
