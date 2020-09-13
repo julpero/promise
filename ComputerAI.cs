@@ -489,7 +489,7 @@ namespace promise
                 }
             }
 
-            return retVal < 0 ? 0 : retVal;
+            return retVal;
         }
 
         public static Promise MakePromise(PlayerAI ai, List<Card> hand, int playersInGame, Card trumpCard, Promise[] promises)
@@ -787,6 +787,10 @@ namespace promise
 
             int myPromises = promises[playerInd].PromiseNumber;
             int myCurrentWins = roundWins[playerInd];
+            
+            // 0 = this is good, no more wins
+            // negative = have to take wins
+            // positive = over
             int myPromiseStatus = myCurrentWins - myPromises;
 
             int roundsLeft = cardsInRound - roundWins.Sum();
