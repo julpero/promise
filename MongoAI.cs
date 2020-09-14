@@ -12,6 +12,12 @@ namespace promise
         public int PromisesKept {get; set;}
         public int Evolution {get; set;}
         public DateTime Created {get; set;}
+        public string GameGuid {get; set;}
+
+        public void SetGameGuid(string gameGuid)
+        {
+            GameGuid = gameGuid;
+        }
 
         public MongoAI(string guid, PlayerAI playerAI, int points, int promisesKept, int evolution = 0)
         {
@@ -45,7 +51,7 @@ namespace promise
 
         public MongoAI(string guid)
         {
-            PlayerAI = new PlayerAI();
+            PlayerAI = new PlayerAI(guid);
             AiName = PlayerAI.AiName;
             Points = 0;
             PromisesKept = 0;

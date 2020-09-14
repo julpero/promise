@@ -12,7 +12,7 @@ namespace promise
     {
         static void Main(string[] args)
         {
-            const int CREATEDBOTS = 2;
+            const int CREATEDBOTS = 5;
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             Console.SetWindowSize(170, 42);
 

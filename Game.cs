@@ -55,21 +55,28 @@ namespace promise
 
             if (collection != null)
             {
-                for (int i = 0; i < this.Players.Count(); i++)
-                {
-                    if (this.Players[i].PlayerType == PlayerType.COMPUTER)
-                    {
-                        MongoAI newPlayerAi = new MongoAI(this.Players[i].AI.AiName, this.Players[i].AI, this.TotalPoints[i], this.PromisesKept[i], mongoAIs.Skip(i).First().Evolution);
-                        collection.InsertOne(newPlayerAi);
-                    }
-                    else
-                    {
-                        MongoAI newPlayerAi = new MongoAI(this.Players[i].PlayerName, this.Players[i].AI, this.TotalPoints[i], this.PromisesKept[i], -1);
-                        collection.InsertOne(newPlayerAi);
-                    }
-                }
+                SaveGameResults(collection);
             }
-         }
+        }
+
+        private void SaveGameResults(IMongoCollection<MongoAI> collection)
+        {
+            string gameGuid = Guid.NewGuid().ToString();
+            for (int i = 0; i < this.Players.Count(); i++)
+            {
+                MongoAI newPlayerAi;
+                if (this.Players[i].PlayerType == PlayerType.COMPUTER)
+                {
+                    newPlayerAi = new MongoAI(this.Players[i].AI.AiName, this.Players[i].AI, this.TotalPoints[i], this.PromisesKept[i], this.MongoAIs.Skip(i).First().Evolution);
+                }
+                else
+                {
+                    newPlayerAi = new MongoAI(this.Players[i].PlayerName, this.Players[i].AI, this.TotalPoints[i], this.PromisesKept[i], -1);
+                }
+                newPlayerAi.SetGameGuid(gameGuid);
+                collection.InsertOne(newPlayerAi);
+            }
+        }
 
         private int PlayerPositionHelper(int i)
         {
