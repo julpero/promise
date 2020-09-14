@@ -280,6 +280,48 @@ namespace promise
             }
 
 
+            if (playerId == 4)
+            {
+                AiName = "Arska";
+                // da55a043-8321-47c7-b1fd-448ea0dea2a4
+
+                DodgeBase = PlayerRandInt(60);
+                DodgeSure = 100; // this is a fact
+                DodgeSmallestValuesInSuit = PlayerRandInt(44);
+                DodgeSmallestValuesInSuitNOT = PlayerRandInt(32);
+                DodgeCardCountAvgOtherPlayersCount1 = PlayerRandInt(78);
+                DodgeBiggestValuesInSuit = PlayerRandInt(63);
+                DodgeBiggestValuesInSuitNOT = PlayerRandInt(45);
+                DodgeCardCountAvgOtherPlayersCount2 = PlayerRandInt(10);
+                DodgeInChargeAverageCount = PlayerRandDouble(0.82);
+                
+                // BigValuesInSuit
+                BigValuesInSuit = randomAi.Next(13, 1); // 13;
+
+                // SmallValuesInSuit
+                SmallValuesInSuit = PlayerRandInt(6, 1);
+
+                // MakePromise
+                PromiseMultiplierBase1 = PlayerRandDouble(0.25);
+                PromiseMultiplierBase2 = PlayerRandDouble(0.67);
+                PromiseMultiplierBase3 = PlayerRandDouble(0.43);
+                PromiseMultiplierBase4 = PlayerRandDouble(0.48);
+                PromiseMultiplierChange1A = PlayerRandDouble(0.69);
+                PromiseMultiplierChange1B = PlayerRandDouble(0.66);
+                PromiseMultiplierChange1C = PlayerRandDouble(0.43);
+                PromiseMultiplierChange2A = PlayerRandDouble(0.42);
+                PromiseMultiplierChange2B = PlayerRandDouble(0.51);
+                PromiseMultiplierChange2C = PlayerRandDouble(0.37);
+                PromiseMultiplierChange3A = PlayerRandDouble(0.53);
+                PromiseMultiplierChange3B = PlayerRandDouble(0.37);
+                PromiseMultiplierChange3C = PlayerRandDouble(0.39);
+                PromiseMultiplierChange4A = PlayerRandDouble(0.84);
+                PromiseMultiplierChange4B = PlayerRandDouble(0.32);
+                PromiseMultiplierChange4C = PlayerRandDouble(0.31);
+                MiniRisk = PlayerRandInt(26);
+            }
+
+
             if (mutate)
             {
                 // mutation
