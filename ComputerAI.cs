@@ -2,7 +2,6 @@ using System;
 using DSI.Deck;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace promise
 {
@@ -414,7 +413,9 @@ namespace promise
             // player has lost but makes harm to others by skipping
             TRYTOSKIP,
             // player has enough sure cards to keep promise so play other cards away
-            SKIPSAFE
+            SKIPSAFE,
+            // player has to take all rest
+            TAKEREST
         }
 
 #region analyzing
@@ -992,7 +993,6 @@ namespace promise
                 if (CheckRandom(analyzedSuit.IsDodgeable)) return analyzedSuit.Suit;
             }
 
-            RuntimeHelpers.EnsureSufficientExecutionStack();
             return ChooseDodgeSuit(analyzedSuits, ++counter);
         }
 
@@ -1004,8 +1004,18 @@ namespace promise
                 if (CheckRandom(100 - analyzedSuit.IsDodgeable)) return analyzedSuit.Suit;
             }
 
-            RuntimeHelpers.EnsureSufficientExecutionStack();
             return ChooseDiffultiestDodgeSuit(analyzedSuits, ++counter);
+        }
+
+        private static int[] GetOtherPlayerStatus(int playerInd, Promise[] promises, int[] roundWins)
+        {
+            int[] otherPlayerStatus = new int[promises.Count()];
+            for (int i = 0; i < promises.Count(); i++)
+            {
+                if (i == playerInd) continue;
+                otherPlayerStatus[i] = roundWins[i] - promises[i].PromiseNumber;
+            }
+            return otherPlayerStatus;
         }
 
         public static int PlayCard(PlayerAI ai, int playerInd, List<Card> hand, Card cardInCharge, Card trumpCard, Card[] tableCards, int cardsInRound, Promise[] promises, int[] roundWins, List<Card> cardsPlayedInRounds, PlayerInfo[] playerInfos)
@@ -1018,6 +1028,13 @@ namespace promise
             int cardsInGame = playersInGame * cardsInRound;
             // int currentRound = roundWins.Sum() + 1;
 
+            // how many trumps are in this game
+            double avgTrumpsInGame = ((double)cardsInGame / 4.0) - 1; // substract trump card
+
+            double avgEachSuitInGame = ((double)cardsInGame / 4.0);
+            double avgTrumpsAtPlayer = avgTrumpsInGame / (double)playersInGame;
+            double avgEachSuitAtPlayer = avgEachSuitInGame / (double)playersInGame;
+
             int myPromises = promises[playerInd].PromiseNumber;
             int myCurrentWins = roundWins[playerInd];
             
@@ -1025,6 +1042,8 @@ namespace promise
             // negative = have to take wins
             // positive = over
             int myPromiseStatus = myCurrentWins - myPromises;
+
+            int[] otherPlayerStatus = GetOtherPlayerStatus(playerInd, promises, roundWins);
 
             int roundsLeft = cardsInRound - roundWins.Sum();
             bool firstRound = roundsLeft == cardsInRound;
@@ -1044,6 +1063,7 @@ namespace promise
             int myTrumpCount = myTrumps.Count();
             int biggestTrumpsInHand = BiggestTrumpsInHand(myTrumps, trumpCard, cardsPlayedInRounds.Where(x => x.CardSuit == trumpCard.CardSuit).ToList());
             int smallerTrumpsInHand = myTrumps.Count() - biggestTrumpsInHand;
+            int sureTrumpCount = KeepsAtLeastWithTrumps(myTrumps, trumpCard, cardsPlayedInRounds.Where(x => x.CardSuit == trumpCard.CardSuit).ToList());
 
             AnalyzedSuit analyzedC = new AnalyzedSuit(ai, suitC, CardSuit.Clubs, CardSuit.Clubs == trumpCard.CardSuit, cardsPlayedInRounds, playersInGame, cardsInGame, iAmFirst);
             AnalyzedSuit analyzedD = new AnalyzedSuit(ai, suitD, CardSuit.Diamonds, CardSuit.Diamonds == trumpCard.CardSuit, cardsPlayedInRounds, playersInGame, cardsInGame, iAmFirst);
@@ -1054,20 +1074,45 @@ namespace promise
 
             List<CardSuit> sureSuits = SureSuits(playerInd, playerInfos);
 
-            if (myPromiseStatus + biggestTrumpsInHand > 0)
+            if (myPromiseStatus + sureTrumpCount > 0)
             {
                 // pitkäksi oy:stä päivää
+                // try to harm other players
                 myMethod = PlayingMethod.TRYTOROB;
+                if (!otherPlayerStatus.Any(x => x > 0) && otherPlayerStatus.Sum() + roundsLeft == 0)
+                {
+                    // all other players are happy if i take all - so skip instead
+                    myMethod = PlayingMethod.TRYTOSKIP;
+                }
+                if (otherPlayerStatus.Sum() + roundsLeft > 0)
+                {
+                    // other player(s) will go over if i don't take - so skip
+                    myMethod = PlayingMethod.TRYTOSKIP;
+                }
             }
             else if (myPromiseStatus + roundsLeft < 0)
             {
                 // can't get promise anymore
                 myMethod = PlayingMethod.TRYTOSKIP;
+                if (otherPlayerStatus.Sum() + roundsLeft == 0)
+                {
+                    // other players try to take all rest, do harm
+                    myMethod = PlayingMethod.TRYTOROB;
+                }
             }
             else
             {
+                // i'm still in game
                 myMethod = (myPromises == myCurrentWins) ? PlayingMethod.TRYTODODGE : PlayingMethod.TRYTOWIN;
-                if (myPromiseStatus + biggestTrumpsInHand == 0 && roundsLeft > biggestTrumpsInHand) myMethod = PlayingMethod.SKIPSAFE;
+                if (myPromiseStatus + sureTrumpCount == 0 && roundsLeft > sureTrumpCount)
+                {
+                    // no need to take yet, it is also possible to skip
+                    myMethod = PlayingMethod.SKIPSAFE;
+                }
+                if (myPromiseStatus + roundsLeft == 0)
+                {
+                    myMethod = PlayingMethod.TAKEREST;
+                }
             }
 
             int selectedCardInd = 0;
@@ -1075,11 +1120,21 @@ namespace promise
 
             if (iAmFirst)
             {
-                if (myMethod == PlayingMethod.TRYTOROB || myMethod == PlayingMethod.TRYTOWIN)
+                if (myMethod == PlayingMethod.TRYTOROB || myMethod == PlayingMethod.TRYTOWIN || myMethod == PlayingMethod.TAKEREST)
                 {
+                    if (avgEachSuitAtPlayer >= 1)
+                    {
+                        List<Card> biggestCards = new List<Card>();
+                        if (trumpCard.CardSuit != CardSuit.Hearts) biggestCards.AddRange(suitH.Skip(suitH.Count() - analyzedH.BiggestValuesInSuit));
+                        if (trumpCard.CardSuit != CardSuit.Diamonds) biggestCards.AddRange(suitD.Skip(suitD.Count() - analyzedD.BiggestValuesInSuit));
+                        if (trumpCard.CardSuit != CardSuit.Clubs) biggestCards.AddRange(suitC.Skip(suitC.Count() - analyzedC.BiggestValuesInSuit));
+                        if (trumpCard.CardSuit != CardSuit.Spades) biggestCards.AddRange(suitS.Skip(suitD.Count() - analyzedS.BiggestValuesInSuit));
+                        if (biggestCards.Any()) return GetCardIndexFromHand(hand, biggestCards.OrderBy(x => rand.Next()).First());
+                    }
+
                     if (biggestTrumpsInHand > 0)
                     {
-                        return GetCardIndexFromHand(hand, myTrumps.OrderByDescending(x => x.CardValue).First());
+                        return GetCardIndexFromHand(hand, myTrumps.Skip(myTrumpCount - biggestTrumpsInHand).First());
                     }
                     else if (myTrumps.Any())
                     {
@@ -1112,19 +1167,8 @@ namespace promise
                         }
                     }
 
-                    try
-                    {
-                        CardSuit dodgeSuit = ChooseDodgeSuit(betterAnalyzedSuits);
-                        betterCards = betterCards.Where(x => x.CardSuit == dodgeSuit).ToList();
-                    }
-                    catch (InsufficientExecutionStackException)
-                    {
-                        throw;
-                    }
-                    catch
-                    {
-                        throw;
-                    }
+                    CardSuit dodgeSuit = ChooseDodgeSuit(betterAnalyzedSuits);
+                    betterCards = betterCards.Where(x => x.CardSuit == dodgeSuit).ToList();
 
                     selectedCardInd = rand.Next(betterCards.Count());
                     selectedCard = betterCards.Skip(selectedCardInd).First();
@@ -1139,8 +1183,9 @@ namespace promise
                 List<Card> possibleCards = (hand.Any(x => x.CardSuit == cardInCharge.CardSuit))
                                             ? hand.Where(x => x.CardSuit == cardInCharge.CardSuit).ToList()
                                             : hand;
-                selectedCardInd = rand.Next(possibleCards.Count());
+
                 // this is just a default card
+                selectedCardInd = rand.Next(possibleCards.Count());
                 selectedCard = possibleCards.Skip(selectedCardInd).First();
 
                 List<Card> losingCards = LosingCards(possibleCards, cardInCharge, tableCards.ToList(), trumpCard.CardSuit);
@@ -1166,19 +1211,8 @@ namespace promise
                             }
                         }
 
-                        try
-                        {
-                            CardSuit dodgeSuit = ChooseDiffultiestDodgeSuit(betterAnalyzedSuits);
-                            losingCards = losingCards.Where(x => x.CardSuit == dodgeSuit).ToList();
-                        }
-                        catch (InsufficientExecutionStackException)
-                        {
-                            throw;
-                        }
-                        catch
-                        {
-                            throw;
-                        }
+                        CardSuit dodgeSuit = ChooseDiffultiestDodgeSuit(betterAnalyzedSuits);
+                        losingCards = losingCards.Where(x => x.CardSuit == dodgeSuit).ToList();
                         
                         selectedCardInd = rand.Next(losingCards.Count());
                         selectedCard = losingCards.Skip(selectedCardInd).First();
@@ -1199,19 +1233,8 @@ namespace promise
                             }
                         }
 
-                        try
-                        {
-                            CardSuit dodgeSuit = ChooseDodgeSuit(betterAnalyzedSuits);
-                            possibleCards = possibleCards.Where(x => x.CardSuit == dodgeSuit).ToList();
-                        }
-                        catch (InsufficientExecutionStackException)
-                        {
-                            throw;
-                        }
-                        catch
-                        {
-                            throw;
-                        }
+                        CardSuit dodgeSuit = ChooseDodgeSuit(betterAnalyzedSuits);
+                        possibleCards = possibleCards.Where(x => x.CardSuit == dodgeSuit).ToList();
                         
                         selectedCardInd = rand.Next(possibleCards.Count());
                         selectedCard = possibleCards.Skip(selectedCardInd).First();
@@ -1219,15 +1242,15 @@ namespace promise
                 }
                 else
                 {
-                    // we should win some round in this game, possibly not now...
+                    // we should win some round in this game, but possibly not now...
 
-                    if (winningCards.Any() && myPromiseStatus + roundsLeft == 0)
+                    if (winningCards.Any() && myMethod == PlayingMethod.TAKEREST)
                     {
-                        // we have to win all next rounds
+                        // we have to win all rest rounds
                         // start using possible smallest winning card
                         if (iAmLast) return GetCardIndexFromHand(hand, winningCards.OrderBy(x => x.CardValue).First());
                         // otherwise take random
-                        return GetCardIndexFromHand(hand, winningCards.Skip(rand.Next(winningCards.Count())).First());
+                        return GetCardIndexFromHand(hand, winningCards.OrderBy(x => rand.Next()).First());
                     }
                     if (winningCards.Any())
                     {
@@ -1241,8 +1264,16 @@ namespace promise
                             // no need to take yet, i have enough biggest trumps in my hand
                             return GetCardIndexFromHand(hand, possibleCards.OrderBy(x => x.CardValue).First());
                         }
-                        selectedCardInd = rand.Next(winningCards.Count());
-                        selectedCard = winningCards.Skip(selectedCardInd).First();
+
+                        if (otherPlayerStatus.Sum() + roundsLeft < 0)
+                        {
+                            // maybe it's better to take now
+                            if (rand.Next(100) > 30)
+                            {
+                                selectedCardInd = rand.Next(winningCards.Count());
+                                selectedCard = winningCards.Skip(selectedCardInd).First();
+                            }
+                        }
                     }
                 }
                 
