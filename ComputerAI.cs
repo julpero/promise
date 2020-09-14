@@ -46,7 +46,7 @@ namespace promise
         public int MiniRisk {get; set;}
 
         private static Random randomAi = new Random();
-
+#region CreateAiRandoms
         public static double GetRandomNumber(double minimum, double maximum)
         {
             return randomAi.NextDouble() * (maximum - minimum) + minimum;
@@ -398,6 +398,8 @@ namespace promise
         }
     }
     
+#endregion
+
     public static class ComputerAI
     {
         private enum PlayingMethod
@@ -433,42 +435,56 @@ namespace promise
                 double retVal = ai.DodgeBase;
                 if (this.CardCount == 0)
                 {
+                    // i don't have this suit at all so this is sure to dodge
                     return ai.DodgeSure;
                 }
                 else if (this.SmallValuesInSuit > this.BigValuesInSuit)
                 {
+                    // i have more smaller values than bigger values
                     if (this.SmallestValuesInSuit > 0)
                     {
+                        // and i have some smallest values
                         retVal = ai.DodgeSmallestValuesInSuit;
                     }
                     else
                     {
+                        // i don't have the smallest values
                         retVal = ai.DodgeSmallestValuesInSuitNOT;
                     }
+
                     if (CardCount < this.AvgOtherPlayersCount)
                     {
+                        // i have less cards than average player with this suit
                         retVal+= ai.DodgeCardCountAvgOtherPlayersCount1;
                     }
                 }
                 else
                 {
+                    // more or equal of bigger values than smaller ones
                     if (this.BiggestValuesInSuit > 0)
                     {
+                        // and i have at least one biggest in suit
                         retVal = ai.DodgeBiggestValuesInSuit;
                     }
                     else
                     {
+                        // i don't have the biggest value in the suit
                         retVal = ai.DodgeBiggestValuesInSuitNOT;
                     }
+
                     if (CardCount > this.AvgOtherPlayersCount)
                     {
+                        // i have more cards than average player with this suit
                         retVal=- ai.DodgeCardCountAvgOtherPlayersCount2;
                     }
                 }
+
                 if (inCharge && this.AvgOtherPlayersCount < 1)
                 {
+                    // i'm in charge and average players doesn't have this suit
                     retVal*= ai.DodgeInChargeAverageCount;
                 }
+
                 int dodgeable = (int)retVal;
                 return dodgeable;
             }
@@ -603,7 +619,8 @@ namespace promise
 
         private static bool IsBigPromise(int promiseNbr, double avgPoints)
         {
-            return promiseNbr >= avgPoints; 
+            // if some promise is over avg + 1 then it is big one
+            return promiseNbr > avgPoints + 1;
         }
 
         private static int BigPromises(Promise[] promises, double avgPoints)
@@ -628,13 +645,13 @@ namespace promise
             return zeroPromises;
         }
 
-        private static int BiggestTrumpsInHand(List<Card> myHand, Card trumpCard, List<Card> playedTrumps)
+        private static int BiggestTrumpsInHand(List<Card> myTrumps, Card trumpCard, List<Card> playedTrumps)
         {
             int retVal = 0;
 
             for (int i = 14; i > 1; i--)
             {
-                if (myHand.Any(x => (int)x.CardValue == i))
+                if (myTrumps.Any(x => (int)x.CardValue == i))
                 {
                     retVal++;
                 }
@@ -651,24 +668,77 @@ namespace promise
             return retVal;
         }
 
+        private static int KeepsAtLeastWithTrumps(List<Card> myTrumps, Card trumpCard, List<Card> playedTrumps)
+        {
+            // this method counts also if player has for example trum king and queen -> a least one keep
+            // or if player has trumps four, three and two but there is one bigger trump -> at least two keeps
+
+            // first take biggest trumps
+            int retVal = BiggestTrumpsInHand(myTrumps, trumpCard, playedTrumps);
+
+            int strike = 0;
+            int gap = 0;
+
+            // this loops starts from gap (or played card which leads to gap) because biggest trumps ends to gap
+            for (int i = 14 - retVal; i > 1; i--)
+            {
+                if (myTrumps.Any(x => (int)x.CardValue == i))
+                {
+                    strike++;
+                }
+                else if ((int)trumpCard.CardValue == i || playedTrumps.Any(x => (int)x.CardValue == i))
+                {
+                    continue;
+                }
+                else
+                {
+                    if (strike > gap)
+                    {
+                        retVal+= strike - gap;
+                        strike = 0;
+                        gap = 0;
+                    }
+                    gap++;
+                }
+            }
+
+            if (strike > gap) retVal+= strike - gap;
+
+            return retVal;
+        }
+
         public static Promise MakePromise(PlayerAI ai, List<Card> hand, int playersInGame, Card trumpCard, Promise[] promises)
         {
+            // how many cards in hand in this round, 1-10
             int cardsInRound = hand.Count();
+
+            // is this 5 or 15 points zero round
             bool smallZeroRound = cardsInRound <= 5;
 
+            // how many players have made promises this far
             int playersPromised = PlayersPromised(promises);
+
             bool iAmFirst = playersPromised == 0;
             bool iAmLast = playersPromised == playersInGame - 1;
 
+            // average how many points for every player
             double avgPoints = (double)cardsInRound / (double)playersInGame;
+
+            // how many total cards are in hand in this game
             int cardsInGame = cardsInRound * playersInGame;
-            double avgTrumpsInGame = ((double)cardsInGame / 4.0) - 1;
+
+            // how many trumps are in this game
+            double avgTrumpsInGame = ((double)cardsInGame / 4.0) - 1; // substract trump card
+
             double avgEachSuitInGame = ((double)cardsInGame / 4.0);
             double avgTrumpsAtPlayer = avgTrumpsInGame / (double)playersInGame;
             double avgEachSuitAtPlayer = avgEachSuitInGame / (double)playersInGame;
 
+            // how many points promised this far, how many left for even game
             int promisesMade = PromisesMade(promises);
             int promisesLeft = cardsInRound - promisesMade;
+
+            // is there bigger than average promises and zero promises
             int bigPromises = BigPromises(promises, avgPoints);
             int zeroPromises = ZeroPromises(promises);
 
@@ -689,15 +759,18 @@ namespace promise
 
             AnalyzedSuit analyzedT = new AnalyzedSuit(ai, myTrumps, trumpCard.CardSuit, true, null, playersInGame, cardsInGame, iAmFirst);
 
+            int promisesAtLeast = KeepsAtLeastWithTrumps(myTrumps, trumpCard, new List<Card>());
+
             // this is a fact
-            double myPromise = biggestTrumpsInHand;
+            double myPromise = promisesAtLeast;
             bool playZero = false;
 
-            double promiseMultiplier = ai.PromiseMultiplierBase1;
-            double averageSuitMultiplier = Math.Sqrt(avgEachSuitAtPlayer);
-            if (iAmFirst) promiseMultiplier+= ai.PromiseMultiplierChange1A;
-            if (iAmLast) promiseMultiplier+= ai.PromiseMultiplierChange1B;
-            promiseMultiplier+= zeroPromises * ai.PromiseMultiplierChange1C;
+            double averageSuitMultiplier = Math.Sqrt(avgEachSuitAtPlayer); //
+
+            double promiseMultiplier = ai.PromiseMultiplierBase1; // base multiplier when analyzing biggest cards in my hand
+            if (iAmFirst) promiseMultiplier+= ai.PromiseMultiplierChange1A; // first player has advantage in round
+            if (iAmLast) promiseMultiplier+= ai.PromiseMultiplierChange1B; // last player has advantage in round
+            promiseMultiplier+= zeroPromises * ai.PromiseMultiplierChange1C; // if there are zero promises it is more likely to get bigger points
 
             if (trumpCard.CardSuit != CardSuit.Clubs) myPromise+= analyzedC.BiggestValuesInSuit * averageSuitMultiplier * promiseMultiplier;
             if (trumpCard.CardSuit != CardSuit.Diamonds) myPromise+= analyzedD.BiggestValuesInSuit * averageSuitMultiplier * promiseMultiplier;
@@ -705,7 +778,7 @@ namespace promise
             if (trumpCard.CardSuit != CardSuit.Spades) myPromise+= analyzedS.BiggestValuesInSuit * averageSuitMultiplier * promiseMultiplier;
 
             
-            promiseMultiplier = ai.PromiseMultiplierBase2;
+            promiseMultiplier = ai.PromiseMultiplierBase2; // base multiplier when analyzing smallest cards in my hand
             if (iAmFirst) promiseMultiplier+= ai.PromiseMultiplierChange2A;
             if (iAmLast) promiseMultiplier+= ai.PromiseMultiplierChange2B;
             promiseMultiplier+= bigPromises * ai.PromiseMultiplierChange2C;
@@ -716,10 +789,10 @@ namespace promise
             if (trumpCard.CardSuit != CardSuit.Spades) myPromise-= analyzedS.SmallestValuesInSuit * averageSuitMultiplier * promiseMultiplier;
 
 
-            promiseMultiplier = ai.PromiseMultiplierBase3;
+            promiseMultiplier = ai.PromiseMultiplierBase3; // base multiplier when analyzing rest of big cards in my hand
             if (iAmFirst) promiseMultiplier+= ai.PromiseMultiplierChange3A;
             if (iAmLast) promiseMultiplier+= ai.PromiseMultiplierChange3B;
-            promiseMultiplier+= zeroPromises * ai.PromiseMultiplierChange3C;
+            promiseMultiplier+= zeroPromises * ai.PromiseMultiplierChange3C; // if there are zero promises it is more likely to get bigger points
 
             if (trumpCard.CardSuit != CardSuit.Clubs) myPromise+= (analyzedC.BigValuesInSuit - analyzedC.BiggestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
             if (trumpCard.CardSuit != CardSuit.Diamonds) myPromise+= (analyzedD.BigValuesInSuit - analyzedD.BiggestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
@@ -727,7 +800,7 @@ namespace promise
             if (trumpCard.CardSuit != CardSuit.Spades) myPromise+= (analyzedS.BigValuesInSuit - analyzedS.BiggestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
 
             
-            promiseMultiplier = ai.PromiseMultiplierBase4;
+            promiseMultiplier = ai.PromiseMultiplierBase4; // base multiplier when analyzing rest of small cards in my hand
             if (iAmFirst) promiseMultiplier+= ai.PromiseMultiplierChange4A;
             if (iAmLast) promiseMultiplier+= ai.PromiseMultiplierChange4B;
             promiseMultiplier+= bigPromises * ai.PromiseMultiplierChange4C;
@@ -737,12 +810,13 @@ namespace promise
             if (trumpCard.CardSuit != CardSuit.Hearts) myPromise-= (analyzedH.SmallValuesInSuit - analyzedH.SmallestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
             if (trumpCard.CardSuit != CardSuit.Spades) myPromise-= (analyzedS.SmallValuesInSuit - analyzedS.SmallestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
 
-            if (biggestTrumpsInHand == 0)
+            if (promisesAtLeast == 0)
             {
                 // should play zero?
                 if (myTrumpCount < avgTrumpsAtPlayer && analyzedT.BigValuesInSuit < analyzedT.SmallValuesInSuit)
                 {
-                    int miniRisk = smallZeroRound ? ai.MiniRisk : 0;
+                    // i have less trumps than averarage player and more smaller trumps than big ones
+                    int miniRisk = smallZeroRound ? ai.MiniRisk : 0; // when playing small zero round it may be wiser promise something else than zero
                     // very likely zero
                     if (CheckRandom(analyzedC.IsDodgeable - miniRisk)
                         && CheckRandom(analyzedD.IsDodgeable - miniRisk)
@@ -755,15 +829,15 @@ namespace promise
                 }
             }
 
-            if (myTrumpCount - biggestTrumpsInHand - analyzedT.BigValuesInSuit > avgTrumpsAtPlayer)
+            if (myTrumpCount - promisesAtLeast - analyzedT.BigValuesInSuit > avgTrumpsAtPlayer)
             {
-                myPromise+= myTrumpCount - biggestTrumpsInHand - analyzedT.BigValuesInSuit;
+                myPromise+= myTrumpCount - promisesAtLeast - analyzedT.BigValuesInSuit;
             }
-            else if (myTrumpCount - biggestTrumpsInHand > avgTrumpsAtPlayer)
+            else if (myTrumpCount - promisesAtLeast > avgTrumpsAtPlayer)
             {
                 if (analyzedT.BigValuesInSuit > 0)
                 {
-                    myPromise+= analyzedT.BigValuesInSuit - biggestTrumpsInHand;
+                    myPromise+= analyzedT.BigValuesInSuit - promisesAtLeast;
                 }
             }
 
@@ -798,11 +872,11 @@ namespace promise
                 int minPromise = (int)myPromise;
                 int maxPromise = minPromise + 1;
                 int randTest = (int)((1 + myPromise - maxPromise) * 100);
-                finalPromise = (CheckRandom(randTest)) ? maxPromise : minPromise;
+                finalPromise = (CheckRandom(randTest)) ? minPromise : maxPromise;
             }
             
             // last check - do not promise under your biggest trumps!
-            if (finalPromise < biggestTrumpsInHand) finalPromise = biggestTrumpsInHand;
+            if (finalPromise < promisesAtLeast) finalPromise = promisesAtLeast;
 
             if (finalPromise > cardsInRound) finalPromise = cardsInRound;
 
