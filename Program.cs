@@ -45,7 +45,8 @@ namespace promise
             {
                 totalTest = true;
                 GameCount = 20;
-                gameLoop = 3;
+                gameLoop = 200000;
+                ScreenUtils.ClearScreen();
             }
             else
             {
@@ -81,11 +82,15 @@ namespace promise
                 }
             }
             
-
+            string prevBestPlayerByPointsName = "";
+            string prevBestPlayerByKeepsName = "";
             for (int loop = 0; loop < gameLoop; loop++)
             {
                 if (totalTest && collection != null)
                 {
+                    string bestPlayerByPointsName = "";
+                    string bestPlayerByKeepsName = "";
+
                     Console.SetCursorPosition(0, loop);
                     Console.Write($"{loop+1}: ");
                     // get best ai players from mongo
@@ -120,12 +125,18 @@ namespace promise
 
                     if (bestPlayerByPoints != null)
                     {
+                        bestPlayerByPointsName = bestPlayerByPoints.AiName;
+                        if (bestPlayerByPointsName != prevBestPlayerByPointsName) Logger.Log($"points;loop:{loop};name:{bestPlayerByPointsName}", "best");
+                        prevBestPlayerByPointsName = bestPlayerByPointsName;
                         string guid = Guid.NewGuid().ToString();
                         mongoAIs.Add(new MongoAI(guid, bestPlayerByPoints.PlayerAI, new PlayerAI("random"), false, bestPlayerByPoints.Evolution));
                     }
 
                     if (bestPlayerByKeeps != null)
                     {
+                        bestPlayerByKeepsName = bestPlayerByKeeps.AiName;
+                        if (bestPlayerByKeepsName != prevBestPlayerByKeepsName) Logger.Log($"keeps;loop:{loop};name:{bestPlayerByKeepsName}", "best");
+                        prevBestPlayerByKeepsName = bestPlayerByKeepsName;
                         string guid = Guid.NewGuid().ToString();
                         mongoAIs.Add(new MongoAI(guid, bestPlayerByKeeps.PlayerAI, new PlayerAI("random"), false, bestPlayerByKeeps.Evolution));
                     }
