@@ -20,8 +20,9 @@ namespace promise
             LOSING
         }
 
-        public static void ClearScreen()
+        public static void ClearScreen(bool totalTest = false)
         {
+            if (totalTest) return;
             try
             {
                 Console.Clear();
@@ -32,14 +33,16 @@ namespace promise
             }
         }
 
-        public static void ClearCards()
+        public static void ClearCards(bool totalTest = false)
         {
+            if (totalTest) return;
             ClearPlayedCards();
             ClearPlayerCards();
         }
 
-        public static void ClearPlayerCards()
+        public static void ClearPlayerCards(bool totalTest = false)
         {
+            if (totalTest) return;
             string clearString = "".PadRight(((CARDWIDTH + 1) * 10) + CARDSSTARTX, ' ');
             for (int i = CARDSSTARTY; i < CARDSSTARTY + CARDHEIGHT + 4; i++)
             {
@@ -48,8 +51,9 @@ namespace promise
             }
         }
 
-        public static void ClearPlayedCards()
+        public static void ClearPlayedCards(bool totalTest = false)
         {
+            if (totalTest) return;
             string clearString = "".PadRight(((CARDWIDTH + 1) * 10) + CARDSSTARTX, ' ');
             for (int i = 3; i < 5 + CARDHEIGHT + 1; i++)
             {
@@ -58,8 +62,9 @@ namespace promise
             }
         }
 
-        public static void ClearGetPromise()
+        public static void ClearGetPromise(bool totalTest = false)
         {
+            if (totalTest) return;
             Console.SetCursorPosition(0, 5);
             Console.Write("".PadRight(50, ' '));
         }
@@ -365,8 +370,9 @@ namespace promise
             }
         }
 
-        public static void PrintCard(int x, int y, Card card, CardBgType cardBgType = CardBgType.BASIC)
+        public static void PrintCard(int x, int y, Card card, CardBgType cardBgType = CardBgType.BASIC, bool totalTest = false)
         {
+            if (totalTest) return;
             switch (cardBgType)
             {
                 case CardBgType.WINNIG: Console.BackgroundColor = ConsoleColor.Yellow; break;

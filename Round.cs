@@ -68,6 +68,7 @@ namespace promise
 
         public bool IsBotMatch {get; set;}
         public bool ShowCards {get; set;}
+        public bool IsTotalTest {get; set;}
 
         public int CardsInRound {get; set;}
         
@@ -90,17 +91,17 @@ namespace promise
         public Promise[] Promises {get; set;}
         public int[] RoundWins {get; set;}
 
-
         private int PlayerPositionHelper(int i)
         {
             if (i < this.Players.Count()) return i;
             return PlayerPositionHelper(i - this.Players.Count());
         }
 
-        public Round(int cardsInRound, int roundCount, Player[] players, bool isBotMatch, bool showCards)
+        public Round(int cardsInRound, int roundCount, Player[] players, bool isBotMatch, bool showCards, bool isTotalTest)
         {
             this.IsBotMatch = isBotMatch;
             this.ShowCards = showCards;
+            this.IsTotalTest = isTotalTest;
 
             this.CardsInRound = cardsInRound;
             this.RoundCount = roundCount;
@@ -174,8 +175,8 @@ namespace promise
             int cardIndex = -1;
             if (this.Players[playerInd].PlayerType == PlayerType.COMPUTER)
             {
-                if (this.ShowCards) PrintPlayerCards(NextPlayerIndex(playerInd), false);
-                if (!this.IsBotMatch) Thread.Sleep(WAITTIME);
+                if (this.ShowCards && !this.IsTotalTest) PrintPlayerCards(NextPlayerIndex(playerInd), false);
+                if (!this.IsBotMatch && !this.IsTotalTest) Thread.Sleep(WAITTIME);
                 cardIndex = ComputerAI.PlayCard(this.Players[playerInd].AI, playerInd
                                                 , this.Hands[playerInd]
                                                 , this.CardInCharge
@@ -288,7 +289,7 @@ namespace promise
         {
             this.PlayerInCharge = 0;
             this.CardsPlayedInRounds = new List<Card>();
-            Console.ForegroundColor = ConsoleColor.White;
+            
             UIShowNames(0);
             UIShowPromises();
             for (int i = 0; i < this.CardsInRound; i++)
@@ -317,12 +318,9 @@ namespace promise
 
                 this.CardsPlayedInRounds.AddRange(cardsInThisRound);
 
-                Console.SetCursorPosition(CARDSSTARTX + (CARDWIDTH / 2) - 1, CARDSSTARTY + CARDHEIGHT + 2);
-                Console.Write($"Kierroksen voitti {this.Players[winnerOfRound].PlayerName}");
-                if (!this.IsBotMatch) Console.ReadKey();
-                ScreenUtils.ClearPlayedCards();
-                ScreenUtils.ClearPlayerCards();
-
+                UIShowWinner(this.Players[winnerOfRound].PlayerName);
+                if (!this.IsBotMatch && !this.IsTotalTest) Console.ReadKey();
+                ScreenUtils.ClearCards(this.IsTotalTest);
             }
 
             for (int i = 0; i < this.Players.Count(); i++)
@@ -443,7 +441,7 @@ namespace promise
 
         private void PrintPlayedCards()
         {
-            if (!this.ShowCards) return;
+            if (!this.ShowCards || this.IsTotalTest) return;
             for (int i = 0; i < this.Players.Count(); i++)
             {
                 if (this.TableCards[i] != null)
@@ -470,8 +468,16 @@ namespace promise
             ScreenUtils.PrintCard((playerInd * (COLWIDTH + 1)) + 5, 3, playedCard, cardBgType);
         }
 
+        private void UIShowWinner(string winnerName)
+        {
+            if (this.IsTotalTest) return;
+            Console.SetCursorPosition(CARDSSTARTX + (CARDWIDTH / 2) - 1, CARDSSTARTY + CARDHEIGHT + 2);
+            Console.Write($"Kierroksen voitti {winnerName}");
+        }
+
         private void UIShowPromises()
         {
+            if (this.IsTotalTest) return;
             int totalPromises = 0;
             Console.SetCursorPosition(0, 1);
             Console.ForegroundColor = ConsoleColor.White;
@@ -521,6 +527,7 @@ namespace promise
 
         private void UIShowNames(int boldPlayer = -1)
         {
+            if (this.IsTotalTest) return;
             Console.SetCursorPosition(0, 0);
             Console.ForegroundColor = ConsoleColor.White;
             for (int i = 0; i < this.Players.Count(); i++)

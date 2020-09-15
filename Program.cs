@@ -14,17 +14,19 @@ namespace promise
         {
             const int CREATEDBOTS = 5;
             Console.OutputEncoding = System.Text.Encoding.UTF8;
-            Console.SetWindowSize(170, 42);
 
             int GameCount = 1;
+            int gameLoop = 1;
             bool isBotMatch = false;
             bool showCards = true;
             bool randomizedBots = false;
+            bool totalTest = false;
 
             MongoClient mongoClient = null;
             IMongoDatabase database = null;
             IMongoCollection<MongoAI> collection = null;
             List<MongoAI> mongoAIs = new List<MongoAI>();
+            Random randomX = new Random();
 
             if (args.Any(x => x.ToLower() == "botmatch"))
             {
@@ -41,7 +43,13 @@ namespace promise
             }
             if (args.Any(x => x.ToLower() == "totaltest"))
             {
-                // totalTest = true;
+                totalTest = true;
+                GameCount = 20;
+                gameLoop = 3;
+            }
+            else
+            {
+                Console.SetWindowSize(170, 42);
             }
             if (args.Any(x => x.ToLower() == "usedb"))
             {
@@ -64,37 +72,108 @@ namespace promise
                             }
                         }
                     }
+
+
                 }
                 catch
                 {
                     throw;
                 }
             }
+            
 
-            mongoAIs.Add(new MongoAI("Fuison"));
-
-            for (int i = 0; i < Math.Max(CREATEDBOTS, 5); i++)
+            for (int loop = 0; loop < gameLoop; loop++)
             {
-                if (randomizedBots)
+                if (totalTest && collection != null)
                 {
-                    string name = Guid.NewGuid().ToString();
-                    mongoAIs.Add(new MongoAI(name));
+                    Console.SetCursorPosition(0, loop);
+                    Console.Write($"{loop+1}: ");
+                    // get best ai players from mongo
+                    var bestByPoints = collection.AsQueryable()
+                                            .GroupBy(x => x.AiName)
+                                            .Where(grp => grp.Count() >= 20)
+                                            .Select(grp => new {AiName = grp.Key
+                                                            , AvgPoints = grp.Average(y => y.Points)
+                                                            , AvgKeeps = grp.Average(y => y.PromisesKept)
+                                            })
+                                            .OrderByDescending(z => z.AvgPoints)
+                                            .ThenByDescending(z => z.AvgKeeps)
+                                            .FirstOrDefault();
+                    var bestByKeeps = collection.AsQueryable()
+                                            .GroupBy(x => x.AiName)
+                                            .Where(grp => grp.Count() >= 20)
+                                            .Select(grp => new {AiName = grp.Key
+                                                            , AvgPoints = grp.Average(y => y.Points)
+                                                            , AvgKeeps = grp.Average(y => y.PromisesKept)
+                                            })
+                                            .OrderByDescending(z => z.AvgKeeps)
+                                            .ThenByDescending(z => z.AvgPoints)
+                                            .FirstOrDefault();
+
+                    MongoAI bestPlayerByPoints;
+                    MongoAI bestPlayerByKeeps;
+
+                    bestPlayerByPoints = (bestByPoints != null)
+                        ? collection.Find(x => x.AiName == bestByPoints.AiName).First() : null;
+                    bestPlayerByKeeps = (bestByKeeps != null)
+                        ? collection.Find(x => x.AiName == bestByKeeps.AiName).First() : null;
+
+                    if (bestPlayerByPoints != null)
+                    {
+                        string guid = Guid.NewGuid().ToString();
+                        mongoAIs.Add(new MongoAI(guid, bestPlayerByPoints.PlayerAI, new PlayerAI("random"), false, bestPlayerByPoints.Evolution));
+                    }
+
+                    if (bestPlayerByKeeps != null)
+                    {
+                        string guid = Guid.NewGuid().ToString();
+                        mongoAIs.Add(new MongoAI(guid, bestPlayerByKeeps.PlayerAI, new PlayerAI("random"), false, bestPlayerByKeeps.Evolution));
+                    }
+
+                    if (bestPlayerByPoints != null && bestPlayerByKeeps != null)
+                    {
+                        string guid = Guid.NewGuid().ToString();
+                        mongoAIs.Add(new MongoAI(guid, bestPlayerByKeeps.PlayerAI, bestPlayerByPoints.PlayerAI, true, Math.Max(bestPlayerByKeeps.Evolution, bestPlayerByPoints.Evolution)));
+                    }
+
+                    while (mongoAIs.Count < 5)
+                    {
+                        // add total random bot
+                        string guid = Guid.NewGuid().ToString();
+                        mongoAIs.Add(new MongoAI(guid, 0));
+                    }
                 }
                 else
                 {
-                    mongoAIs.Add(new MongoAI(i));
+                    mongoAIs.Add(new MongoAI("Fuison"));
+
+                    for (int i = 0; i < Math.Max(CREATEDBOTS, 5); i++)
+                    {
+                        if (randomizedBots)
+                        {
+                            string name = Guid.NewGuid().ToString();
+                            mongoAIs.Add(new MongoAI(name));
+                        }
+                        else
+                        {
+                            mongoAIs.Add(new MongoAI(i));
+                        }
+                    }
                 }
-            }
-            Random randomX = new Random();
-            mongoAIs = mongoAIs.OrderBy(x => randomX.Next()).ToList();
+                mongoAIs = mongoAIs.OrderBy(x => randomX.Next()).ToList();
 
-
-            for (int i = 0; i < GameCount; i++)
-            {
-                Console.BackgroundColor = ConsoleColor.Black;
-                Console.ForegroundColor = ConsoleColor.White;
-                ScreenUtils.ClearScreen();
-                Game promiseGame = new Game(isBotMatch, showCards, randomizedBots, mongoAIs, collection);
+                for (int i = 0; i < GameCount; i++)
+                {
+                    if (!totalTest)
+                    {
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.ForegroundColor = ConsoleColor.White;
+                        ScreenUtils.ClearScreen();
+                    }
+                    Game promiseGame = new Game(isBotMatch, showCards, randomizedBots, mongoAIs, collection, totalTest);
+                    if (totalTest) Console.Write("*");
+                }
+                if (totalTest) Console.WriteLine();
             }
         }
     }

@@ -39,6 +39,16 @@ namespace promise
             Evolution = evolution + 1;
         }
 
+        public MongoAI(string guid, PlayerAI playerAI, PlayerAI playerAI2, bool average, int evolution = 0)
+        {
+            AiName = guid;
+            PlayerAI = new PlayerAI(guid, playerAI, playerAI2, average);
+            Points = 0;
+            PromisesKept = 0;
+            Created = DateTime.Now;
+            Evolution = evolution + 1;
+        }
+
         public MongoAI(int playerAIid)
         {
             PlayerAI = new PlayerAI(playerAIid);
@@ -49,14 +59,14 @@ namespace promise
             Evolution = 99999;
         }
 
-        public MongoAI(string guid)
+        public MongoAI(string guid, int? evolution = null)
         {
             PlayerAI = new PlayerAI(guid);
             AiName = PlayerAI.AiName;
             Points = 0;
             PromisesKept = 0;
             Created = DateTime.Now;
-            Evolution = 9999;
+            Evolution = evolution ?? 9999;
         }
     }
 }

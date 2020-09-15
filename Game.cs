@@ -29,16 +29,24 @@ namespace promise
 
         public bool IsBotMatch {get; set;}
         public bool ShowCards {get; set;}
+        public bool IsTotalTest {get; set;}
+
+        private void ClearScreen()
+        {
+            ScreenUtils.ClearScreen(this.IsTotalTest);
+        }
 
         public Game(bool isBotMatch = false
                     , bool showCards = true
                     , bool randomizedBots = false
                     , List<MongoAI> mongoAIs = null
                     , IMongoCollection<MongoAI> collection = null
+                    , bool isTotalTest = false
                     )
         {
             this.IsBotMatch = isBotMatch;
             this.ShowCards = showCards;
+            this.IsTotalTest = isTotalTest;
 
             this.MongoAIs = mongoAIs;
 
@@ -49,7 +57,7 @@ namespace promise
             this.PromisesKept = new int[this.Players.Count()];
 
             GetGameRules();
-            ScreenUtils.ClearScreen();
+            ClearScreen();
             InitRounds();
             PlayPromise();
 
@@ -95,6 +103,23 @@ namespace promise
         private void CalculateAndPrintScoreBoard()
         {
             int[] promiseSums = new int[this.Players.Count()];
+            for (int i = 0; i < this.Players.Count(); i++)
+            {
+                this.TotalPoints[i] = 0;
+            }
+            for (int i = 0; i < this.Rounds.Count(); i++)
+            {
+                if (!this.Rounds[i].RoundPlayed) continue;
+                for (int j = 0; j < this.Players.Count(); j++)
+                {
+                    int promiseSum = CountPoint(this.Rounds[i].CardsInRound, this.Rounds[i].Promises[PlayerPositionHelper(j - i)]);
+                    promiseSums[j]+= promiseSum;
+                    this.TotalPoints[j]+= promiseSum;
+                }
+            }
+            if (this.IsTotalTest) return;
+
+            promiseSums = new int[this.Players.Count()];
 
             Console.SetCursorPosition(SCOREBOARDSTART, 1);
             Console.ForegroundColor = ConsoleColor.White;
@@ -102,7 +127,6 @@ namespace promise
             {
                 Console.Write("|");
                 Console.Write(this.Players[i].PlayerInitials);
-                this.TotalPoints[i] = 0;
             }
 
             for (int i = 0; i < this.Rounds.Count(); i++)
@@ -118,7 +142,7 @@ namespace promise
                 {
                     int promiseSum = CountPoint(this.Rounds[i].CardsInRound, this.Rounds[i].Promises[PlayerPositionHelper(j - i)]);
                     promiseSums[j]+= promiseSum;
-                    this.TotalPoints[j]+= promiseSum;
+                    //this.TotalPoints[j]+= promiseSum;
                     string sumStr = (promiseSum > 0) ? $"{promiseSums[j]}" : "";
                     Console.Write(sumStr.PadLeft(3, ' '));
                     Console.Write(" ");
@@ -128,6 +152,19 @@ namespace promise
 
         private void CalculateAndPrintPromiseBoard(int inGame = -1)
         {
+            for (int i = 0; i < this.Players.Count(); i++)
+            {
+                this.PromisesKept[i] = 0;
+                for (int j = 0; j < this.Rounds.Count(); j++)
+                {
+                    if (this.Rounds[j].RoundPlayed)
+                    {
+                        if (inGame != j && this.Rounds[j].Promises[PlayerPositionHelper(i - j)].PromiseKept) this.PromisesKept[i]++;
+                    }
+                }
+            }
+            if (this.IsTotalTest) return;
+
             Console.SetCursorPosition(PROMISEBOARDX + 15, PROMISEBOARDY);
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("|");
@@ -228,18 +265,18 @@ namespace promise
             CalculateAndPrintScoreBoard();
             CalculateAndPrintPromiseBoard();
 
-            if (!this.IsBotMatch) Console.ReadKey();
+            if (!this.IsBotMatch && !this.IsTotalTest) Console.ReadKey();
         }
 
         private void PlayPromise()
         {
             for (int i = 0; i < this.Rounds.Count(); i++)
             {
-                ScreenUtils.ClearScreen();
+                ClearScreen();
                 PlayRound(i);
             }
 
-            Console.ReadKey();
+            if (!this.IsTotalTest) Console.ReadKey();
         }
 
         private int RoundsInThisGame()
@@ -253,23 +290,23 @@ namespace promise
             int round = 0;
             for (int i = this.StartRound; i >= this.TurnRound; i--)
             {
-                this.Rounds[round] = new Round(i, round, this.Players, this.IsBotMatch, this.ShowCards);
+                this.Rounds[round] = new Round(i, round, this.Players, this.IsBotMatch, this.ShowCards, this.IsTotalTest);
                 round++;
             }
             for (int i = this.TurnRound+1; i <= this.EndRound; i++)
             {
-                this.Rounds[round] = new Round(i, round, this.Players, this.IsBotMatch, this.ShowCards);
+                this.Rounds[round] = new Round(i, round, this.Players, this.IsBotMatch, this.ShowCards, this.IsTotalTest);
                 round++;
             }
         }
 
         private void GetPlayers()
         {
-            ScreenUtils.ClearScreen();
+            ClearScreen();
             
             int lkm = 0;
 
-            if (this.IsBotMatch)
+            if (this.IsBotMatch || this.IsTotalTest)
             {
                 lkm = 5;
             }
@@ -279,7 +316,7 @@ namespace promise
                 ConsoleKeyInfo input = Console.ReadKey();
                 while (!Int32.TryParse(input.KeyChar.ToString(), out lkm) || lkm > MAXPLAYERS || lkm < 2)
                 {
-                    ScreenUtils.ClearScreen();
+                    ClearScreen();
                     Console.Write($"Pelaajien lukumäärä (2-{MAXPLAYERS}): ");
                     input = Console.ReadKey();
                 }
@@ -289,7 +326,7 @@ namespace promise
             this.Players = new Player[lkm];
             for (int i = 0; i < this.Players.Count(); i++)
             {
-                this.Players[i] = new Player(i+1, this.MongoAIs.Skip(i).First().PlayerAI, this.IsBotMatch);
+                this.Players[i] = new Player(i+1, this.MongoAIs.Skip(i).First().PlayerAI, this.IsBotMatch || this.IsTotalTest);
             }
 
             if (this.Players.Any(x => x.PlayerType == PlayerType.HUMAN)) this.IsBotMatch = false;
@@ -305,13 +342,21 @@ namespace promise
 
         private void GetGameRules()
         {
-            ScreenUtils.ClearScreen();
+            if (this.IsTotalTest || this.IsBotMatch)
+            {
+                this.StartRound = 10;
+                this.TurnRound = 1;
+                this.EndRound = 10;
+                return;
+            }
+
+            ClearScreen();
             
             string input = "";
             int lkm = 0;
 
             Console.Write($"Mistä jaosta lähdetään (max {MaximumRounds()}): ");
-            input = this.IsBotMatch ? "10" : DEBUGMODE ? "4" : Console.ReadLine();
+            input = DEBUGMODE ? "4" : Console.ReadLine();
             while (!Int32.TryParse(input, out lkm) || lkm > MaximumRounds())
             {
                 Console.Write($"Mistä jaosta lähdetään (max {MaximumRounds()}): ");
@@ -320,7 +365,7 @@ namespace promise
             this.StartRound = lkm;
 
             Console.Write("Missä jaossa käännytään: ");
-            input = this.IsBotMatch ? "1" : DEBUGMODE ? "1" : Console.ReadLine();
+            input = DEBUGMODE ? "1" : Console.ReadLine();
             while (!Int32.TryParse(input, out lkm) || lkm < 1 || lkm > this.StartRound)
             {
                 Console.Write("Missä jaossa käännytään: ");
@@ -329,7 +374,7 @@ namespace promise
             this.TurnRound = lkm;
 
             Console.Write($"Mihin jakoon lopetetaan (max {MaximumRounds()}): ");
-            input = this.IsBotMatch ? "10" : DEBUGMODE ? "4" : Console.ReadLine();
+            input = DEBUGMODE ? "4" : Console.ReadLine();
             while (!Int32.TryParse(input, out lkm) || lkm < this.TurnRound || lkm > MaximumRounds())
             {
                 Console.Write($"Mihin jakoon lopetetaan (max {MaximumRounds()}): ");

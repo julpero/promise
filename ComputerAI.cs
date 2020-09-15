@@ -63,6 +63,141 @@ namespace promise
             return GetRandomNumber(mean - variance, mean + variance);
         }
 
+        public static bool KeepAiValue()
+        {
+            if (randomAi.Next(0, 2) != 0)
+            {
+                return true;
+            }
+            return false;
+        }
+        public static int AverageInt(int i, int j)
+        {
+            return (i + j) / 2;
+        }
+        public static double AverageDouble(double i, double j)
+        {
+            return (i + j) / 2;
+        }
+
+        public PlayerAI(string guidStr, PlayerAI bestAi, PlayerAI goodAi, bool average = false)
+        {
+            AiName = guidStr;
+
+            if (average)
+            {
+                DodgeBase = AverageInt(bestAi.DodgeBase, goodAi.DodgeBase); // 50
+                DodgeSure = 100; // this is a fact
+                DodgeSmallestValuesInSuit = AverageInt(bestAi.DodgeSmallestValuesInSuit, goodAi.DodgeSmallestValuesInSuit); // 95
+                DodgeSmallestValuesInSuitNOT = AverageInt(bestAi.DodgeSmallestValuesInSuitNOT, goodAi.DodgeSmallestValuesInSuitNOT); // 85
+                DodgeCardCountAvgOtherPlayersCount1 = AverageInt(bestAi.DodgeCardCountAvgOtherPlayersCount1, goodAi.DodgeCardCountAvgOtherPlayersCount1); // 3
+                DodgeBiggestValuesInSuit = AverageInt(bestAi.DodgeBiggestValuesInSuit, goodAi.DodgeBiggestValuesInSuit); // 15;
+                DodgeBiggestValuesInSuitNOT = AverageInt(bestAi.DodgeBiggestValuesInSuitNOT, goodAi.DodgeBiggestValuesInSuitNOT); // 25;
+                DodgeCardCountAvgOtherPlayersCount2 = AverageInt(bestAi.DodgeCardCountAvgOtherPlayersCount2, goodAi.DodgeCardCountAvgOtherPlayersCount2); // 7;
+                DodgeInChargeAverageCount = AverageDouble(bestAi.DodgeInChargeAverageCount, goodAi.DodgeInChargeAverageCount); // 0.8;
+                
+                // BigValuesInSuit
+                BigValuesInSuit = AverageInt(bestAi.BigValuesInSuit, goodAi.BigValuesInSuit); // 10;
+
+                // SmallValuesInSuit
+                SmallValuesInSuit = AverageInt(bestAi.SmallValuesInSuit, goodAi.SmallValuesInSuit); // 6;
+
+                // MakePromise
+                PromiseMultiplierBase1 = AverageDouble(bestAi.PromiseMultiplierBase1, goodAi.PromiseMultiplierBase1); // 0.6;
+                PromiseMultiplierBase2 = AverageDouble(bestAi.PromiseMultiplierBase2, goodAi.PromiseMultiplierBase2); // 0.2;
+                PromiseMultiplierBase3 = AverageDouble(bestAi.PromiseMultiplierBase3, goodAi.PromiseMultiplierBase3); // 0.3;
+                PromiseMultiplierBase4 = AverageDouble(bestAi.PromiseMultiplierBase4, goodAi.PromiseMultiplierBase4); // 0.25;
+                PromiseMultiplierChange1A = AverageDouble(bestAi.PromiseMultiplierChange1A, goodAi.PromiseMultiplierChange1A); // 0.3;
+                PromiseMultiplierChange1B = AverageDouble(bestAi.PromiseMultiplierChange1B, goodAi.PromiseMultiplierChange1B); // 0.15;
+                PromiseMultiplierChange1C = AverageDouble(bestAi.PromiseMultiplierChange1C, goodAi.PromiseMultiplierChange1C); // 0.1;
+                PromiseMultiplierChange2A = AverageDouble(bestAi.PromiseMultiplierChange2A, goodAi.PromiseMultiplierChange2A); // 0.1;
+                PromiseMultiplierChange2B = AverageDouble(bestAi.PromiseMultiplierChange2B, goodAi.PromiseMultiplierChange2B); // 0.05;
+                PromiseMultiplierChange2C = AverageDouble(bestAi.PromiseMultiplierChange2C, goodAi.PromiseMultiplierChange2C); // 0.1;
+                PromiseMultiplierChange3A = AverageDouble(bestAi.PromiseMultiplierChange3A, goodAi.PromiseMultiplierChange3A); // 0.4;
+                PromiseMultiplierChange3B = AverageDouble(bestAi.PromiseMultiplierChange3B, goodAi.PromiseMultiplierChange3B); // 0.25;
+                PromiseMultiplierChange3C = AverageDouble(bestAi.PromiseMultiplierChange3C, goodAi.PromiseMultiplierChange3C); // 0.1;
+                PromiseMultiplierChange4A = AverageDouble(bestAi.PromiseMultiplierChange4A, goodAi.PromiseMultiplierChange4A); // 0.1;
+                PromiseMultiplierChange4B = AverageDouble(bestAi.PromiseMultiplierChange4B, goodAi.PromiseMultiplierChange4B); // 0.05;
+                PromiseMultiplierChange4C = AverageDouble(bestAi.PromiseMultiplierChange4C, goodAi.PromiseMultiplierChange4C); // 0.1;
+                MiniRisk = AverageInt(bestAi.MiniRisk, goodAi.MiniRisk); // 5;
+            }
+            else
+            {
+                DodgeBase = KeepAiValue() ? bestAi.DodgeBase : goodAi.DodgeBase; // 50
+                DodgeSure = 100; // this is a fact
+                DodgeSmallestValuesInSuit = KeepAiValue() ? bestAi.DodgeSmallestValuesInSuit : goodAi.DodgeSmallestValuesInSuit; // 95
+                DodgeSmallestValuesInSuitNOT = KeepAiValue() ? bestAi.DodgeSmallestValuesInSuitNOT : goodAi.DodgeSmallestValuesInSuitNOT; // 85
+                DodgeCardCountAvgOtherPlayersCount1 = KeepAiValue() ? bestAi.DodgeCardCountAvgOtherPlayersCount1 : goodAi.DodgeCardCountAvgOtherPlayersCount1; // 3
+                DodgeBiggestValuesInSuit = KeepAiValue() ? bestAi.DodgeBiggestValuesInSuit : goodAi.DodgeBiggestValuesInSuit; // 15;
+                DodgeBiggestValuesInSuitNOT = KeepAiValue() ? bestAi.DodgeBiggestValuesInSuitNOT : goodAi.DodgeBiggestValuesInSuitNOT; // 25;
+                DodgeCardCountAvgOtherPlayersCount2 = KeepAiValue() ? bestAi.DodgeCardCountAvgOtherPlayersCount2 : goodAi.DodgeCardCountAvgOtherPlayersCount2; // 7;
+                DodgeInChargeAverageCount = KeepAiValue() ? bestAi.DodgeInChargeAverageCount : goodAi.DodgeInChargeAverageCount; // 0.8;
+                
+                // BigValuesInSuit
+                BigValuesInSuit = KeepAiValue() ? bestAi.BigValuesInSuit : goodAi.BigValuesInSuit; // 10;
+
+                // SmallValuesInSuit
+                SmallValuesInSuit = KeepAiValue() ? bestAi.SmallValuesInSuit : goodAi.SmallValuesInSuit; // 6;
+
+                // MakePromise
+                PromiseMultiplierBase1 = KeepAiValue() ? bestAi.PromiseMultiplierBase1 : goodAi.PromiseMultiplierBase1; // 0.6;
+                PromiseMultiplierBase2 = KeepAiValue() ? bestAi.PromiseMultiplierBase2 : goodAi.PromiseMultiplierBase2; // 0.2;
+                PromiseMultiplierBase3 = KeepAiValue() ? bestAi.PromiseMultiplierBase3 : goodAi.PromiseMultiplierBase3; // 0.3;
+                PromiseMultiplierBase4 = KeepAiValue() ? bestAi.PromiseMultiplierBase4 : goodAi.PromiseMultiplierBase4; // 0.25;
+                PromiseMultiplierChange1A = KeepAiValue() ? bestAi.PromiseMultiplierChange1A : goodAi.PromiseMultiplierChange1A; // 0.3;
+                PromiseMultiplierChange1B = KeepAiValue() ? bestAi.PromiseMultiplierChange1B : goodAi.PromiseMultiplierChange1B; // 0.15;
+                PromiseMultiplierChange1C = KeepAiValue() ? bestAi.PromiseMultiplierChange1C : goodAi.PromiseMultiplierChange1C; // 0.1;
+                PromiseMultiplierChange2A = KeepAiValue() ? bestAi.PromiseMultiplierChange2A : goodAi.PromiseMultiplierChange2A; // 0.1;
+                PromiseMultiplierChange2B = KeepAiValue() ? bestAi.PromiseMultiplierChange2B : goodAi.PromiseMultiplierChange2B; // 0.05;
+                PromiseMultiplierChange2C = KeepAiValue() ? bestAi.PromiseMultiplierChange2C : goodAi.PromiseMultiplierChange2C; // 0.1;
+                PromiseMultiplierChange3A = KeepAiValue() ? bestAi.PromiseMultiplierChange3A : goodAi.PromiseMultiplierChange3A; // 0.4;
+                PromiseMultiplierChange3B = KeepAiValue() ? bestAi.PromiseMultiplierChange3B : goodAi.PromiseMultiplierChange3B; // 0.25;
+                PromiseMultiplierChange3C = KeepAiValue() ? bestAi.PromiseMultiplierChange3C : goodAi.PromiseMultiplierChange3C; // 0.1;
+                PromiseMultiplierChange4A = KeepAiValue() ? bestAi.PromiseMultiplierChange4A : goodAi.PromiseMultiplierChange4A; // 0.1;
+                PromiseMultiplierChange4B = KeepAiValue() ? bestAi.PromiseMultiplierChange4B : goodAi.PromiseMultiplierChange4B; // 0.05;
+                PromiseMultiplierChange4C = KeepAiValue() ? bestAi.PromiseMultiplierChange4C : goodAi.PromiseMultiplierChange4C; // 0.1;
+                MiniRisk = KeepAiValue() ? bestAi.MiniRisk : goodAi.MiniRisk; // 5;
+            }
+
+
+
+            // mutation
+            if (randomAi.NextDouble() > 0.98) DodgeBase = randomAi.Next(3, 90); // 50
+            DodgeSure = 100; // this is a fact
+            if (randomAi.NextDouble() > 0.98) DodgeSmallestValuesInSuit = randomAi.Next(30, 101); // 95
+            if (randomAi.NextDouble() > 0.98) DodgeSmallestValuesInSuitNOT = randomAi.Next(0, 101); // 85
+            if (randomAi.NextDouble() > 0.98) DodgeCardCountAvgOtherPlayersCount1 = randomAi.Next(0, 101); // 3
+            if (randomAi.NextDouble() > 0.98) DodgeBiggestValuesInSuit = randomAi.Next(0, 101); // 15;
+            if (randomAi.NextDouble() > 0.98) DodgeBiggestValuesInSuitNOT = randomAi.Next(0, 101); // 25;
+            if (randomAi.NextDouble() > 0.98) DodgeCardCountAvgOtherPlayersCount2 = randomAi.Next(0, 101); // 7;
+            if (randomAi.NextDouble() > 0.98) DodgeInChargeAverageCount = randomAi.NextDouble(); // 0.8;
+            
+            // BigValuesInSuit
+            if (randomAi.NextDouble() > 0.98) BigValuesInSuit = randomAi.Next(9, 15); // 10;
+
+            // SmallValuesInSuit
+            if (randomAi.NextDouble() > 0.98) SmallValuesInSuit = randomAi.Next(2, 8); // 6;
+
+            // MakePromise
+            if (randomAi.NextDouble() > 0.98) PromiseMultiplierBase1 = randomAi.NextDouble(); // 0.6;
+            if (randomAi.NextDouble() > 0.98) PromiseMultiplierBase2 = randomAi.NextDouble(); // 0.2;
+            if (randomAi.NextDouble() > 0.98) PromiseMultiplierBase3 = randomAi.NextDouble(); // 0.3;
+            if (randomAi.NextDouble() > 0.98) PromiseMultiplierBase4 = randomAi.NextDouble(); // 0.25;
+            if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange1A = randomAi.NextDouble(); // 0.3;
+            if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange1B = randomAi.NextDouble(); // 0.15;
+            if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange1C = randomAi.NextDouble(); // 0.1;
+            if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange2A = randomAi.NextDouble(); // 0.1;
+            if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange2B = randomAi.NextDouble(); // 0.05;
+            if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange2C = randomAi.NextDouble(); // 0.1;
+            if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange3A = randomAi.NextDouble(); // 0.4;
+            if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange3B = randomAi.NextDouble(); // 0.25;
+            if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange3C = randomAi.NextDouble(); // 0.1;
+            if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange4A = randomAi.NextDouble(); // 0.1;
+            if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange4B = randomAi.NextDouble(); // 0.05;
+            if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange4C = randomAi.NextDouble(); // 0.1;
+            if (randomAi.NextDouble() > 0.98) MiniRisk = randomAi.Next(0, 50); // 5;
+        }
+
         public PlayerAI(string aiName)
         {
             if (aiName == "Fuison")
