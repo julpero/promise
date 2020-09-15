@@ -80,6 +80,11 @@ namespace promise
             return (i + j) / 2;
         }
 
+        public static double LesserDouble()
+        {
+            return Math.Pow(randomAi.NextDouble(), 2);
+        }
+
         public PlayerAI(string guidStr, PlayerAI bestAi, PlayerAI goodAi, bool average = false)
         {
             AiName = guidStr;
@@ -189,9 +194,9 @@ namespace promise
             if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange2A = randomAi.NextDouble(); // 0.1;
             if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange2B = randomAi.NextDouble(); // 0.05;
             if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange2C = randomAi.NextDouble(); // 0.1;
-            if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange3A = randomAi.NextDouble(); // 0.4;
-            if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange3B = randomAi.NextDouble(); // 0.25;
-            if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange3C = randomAi.NextDouble(); // 0.1;
+            if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange3A = LesserDouble(); //randomAi.NextDouble(); // 0.4;
+            if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange3B = LesserDouble(); //randomAi.NextDouble(); // 0.25;
+            if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange3C = LesserDouble(); //randomAi.NextDouble(); // 0.1;
             if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange4A = randomAi.NextDouble(); // 0.1;
             if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange4B = randomAi.NextDouble(); // 0.05;
             if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange4C = randomAi.NextDouble(); // 0.1;
@@ -274,9 +279,9 @@ namespace promise
                 PromiseMultiplierChange2A = GetRandomNumber(0.0, 1.0); // 0.1;
                 PromiseMultiplierChange2B = GetRandomNumber(0.0, 1.0); // 0.05;
                 PromiseMultiplierChange2C = GetRandomNumber(0.0, 1.0); // 0.1;
-                PromiseMultiplierChange3A = GetRandomNumber(0.0, 1.0); // 0.4;
-                PromiseMultiplierChange3B = GetRandomNumber(0.0, 1.0); // 0.25;
-                PromiseMultiplierChange3C = GetRandomNumber(0.0, 1.0); // 0.1;
+                PromiseMultiplierChange3A = LesserDouble(); //GetRandomNumber(0.0, 1.0); // 0.4;
+                PromiseMultiplierChange3B = LesserDouble(); //GetRandomNumber(0.0, 1.0); // 0.25;
+                PromiseMultiplierChange3C = LesserDouble(); //GetRandomNumber(0.0, 1.0); // 0.1;
                 PromiseMultiplierChange4A = GetRandomNumber(0.0, 1.0); // 0.1;
                 PromiseMultiplierChange4B = GetRandomNumber(0.0, 1.0); // 0.05;
                 PromiseMultiplierChange4C = GetRandomNumber(0.0, 1.0); // 0.1;
@@ -980,15 +985,19 @@ namespace promise
             List<double> goingOverList = new List<double>();
             double goingOver = (promisesMade + myPromise) - cardsInRound;
             double changePromiseBy = 0;
-            if (iAmLast && goingOver > 1 && myPromise > -1)
+            if ((goingOver > 1 && myPromise > 1) || (myPromise > avgPoints + 2))
             {
                 for (double i = 0; i < goingOver; i+= 0.5)
                 {
                     for (double j = 0; j <= i; j+= 0.5) goingOverList.Add(j);
                 }
+                for (double i = avgPoints + 2; i < myPromise; i+= 0.5)
+                {
+                    for (double j = avgPoints + 2; j <= i; j+= 0.5) goingOverList.Add(myPromise - j);
+                }
                 changePromiseBy = goingOverList.OrderBy(x => rand.Next()).First() * -1;
             }
-            else if (iAmLast && goingOver < -1 && myPromise > -1)
+            else if (goingOver < -1 && myPromise > -1)
             {
                 for (double i = 0; i > goingOver; i-= 0.5)
                 {
