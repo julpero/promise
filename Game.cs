@@ -38,7 +38,6 @@ namespace promise
 
         public Game(bool isBotMatch = false
                     , bool showCards = true
-                    , bool randomizedBots = false
                     , List<MongoAI> mongoAIs = null
                     , IMongoCollection<MongoAI> collection = null
                     , bool isTotalTest = false
