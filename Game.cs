@@ -9,7 +9,7 @@ namespace promise
 
     class Game
     {
-        const bool DEBUGMODE = false;
+        const bool DEBUGMODE = true;
         const int MAXPLAYERS = 5;
         const int SCOREBOARDSTART = 130;
         const int PROMISEBOARDX = 10;
@@ -355,7 +355,7 @@ namespace promise
             int lkm = 0;
 
             Console.Write($"Mistä jaosta lähdetään (max {MaximumRounds()}): ");
-            input = DEBUGMODE ? "4" : Console.ReadLine();
+            input = DEBUGMODE ? "10" : Console.ReadLine();
             while (!Int32.TryParse(input, out lkm) || lkm > MaximumRounds())
             {
                 Console.Write($"Mistä jaosta lähdetään (max {MaximumRounds()}): ");
@@ -373,7 +373,7 @@ namespace promise
             this.TurnRound = lkm;
 
             Console.Write($"Mihin jakoon lopetetaan (max {MaximumRounds()}): ");
-            input = DEBUGMODE ? "4" : Console.ReadLine();
+            input = DEBUGMODE ? "10" : Console.ReadLine();
             while (!Int32.TryParse(input, out lkm) || lkm < this.TurnRound || lkm > MaximumRounds())
             {
                 Console.Write($"Mihin jakoon lopetetaan (max {MaximumRounds()}): ");

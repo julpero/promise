@@ -220,14 +220,17 @@ namespace promise
                 }
             }
 
-            PrintPlayedCards();
             this.Hands[playerInd].RemoveAt(cardIndex);
 
             if (this.Players[playerInd].PlayerType == PlayerType.HUMAN)
             {
+                int[] positionFrom = CardPosition(cardIndex);
+                int[] positionTo = PlayedCardPosition(playerInd);
+                ScreenUtils.AnimateCard(positionFrom[0], positionFrom[1], positionTo[0], positionTo[1], playedCard, ScreenUtils.CardBgType.BASIC, this.TrumpCard, this.IsTotalTest);
                 ScreenUtils.ClearPlayerCards();
                 PrintPlayerCards(playerInd, false);
             }
+            PrintPlayedCards();
 
             return playedCard;
         }
@@ -294,8 +297,6 @@ namespace promise
             UIShowPromises();
             for (int i = 0; i < this.CardsInRound; i++)
             {
-                // List<string> debugInfo = new List<string>();
-
                 List<Card> cardsInThisRound = new List<Card>();
 
                 this.TableCards = new Card[this.Players.Count()];
@@ -304,8 +305,6 @@ namespace promise
                 for (int j = 0; j < this.Players.Count(); j++)
                 {
                     int currentPlayerIndex = CardAskHelper(j);
-                    // string debugStr = $"{this.PlayerInCharge} - {j} -> {currentPlayerIndex}";
-                    // debugInfo.Add(debugStr);
                     Card cardPlayed = AskCard(currentPlayerIndex);
                     cardsInThisRound.Add(cardPlayed);
                 }
@@ -356,7 +355,7 @@ namespace promise
         private int GetPlayerCard(int playerIndex)
         {
             ScreenUtils.ClearPlayerCards();
-            PrintTrumpCard();
+            ScreenUtils.PrintTrumpCard(this.TrumpCard);
             PrintPlayerCards(playerIndex, true);
 
             int lkm = -1;
@@ -375,7 +374,7 @@ namespace promise
         private Promise GetPlayerPromise(int playerIndex)
         {
             UiAskPromise(playerIndex);
-            PrintTrumpCard();
+            ScreenUtils.PrintTrumpCard(this.TrumpCard);
             PrintPlayerCards(playerIndex);
 
             string input = "";
@@ -392,11 +391,12 @@ namespace promise
             return new Promise(lkm);
         }
 
-        private void PrintTrumpCard()
+        private int[] CardPosition(int cardIndex)
         {
-            Console.SetCursorPosition(CARDSSTARTX + 2, TRUMPSTARTY);
-            Console.Write("VALTTI");
-            ScreenUtils.PrintCard(CARDSSTARTX, TRUMPSTARTY + 1, this.TrumpCard);
+            int[] position = new int[2];
+            position[0] = CARDSSTARTX + (cardIndex * (CARDWIDTH + 1));
+            position[1] = CARDSSTARTY;
+            return position;
         }
 
         private void PrintPlayerCards(int playerInd, bool printCardNumber = false)
@@ -405,8 +405,9 @@ namespace promise
 
             for (int i = 0; i < this.Hands[playerInd].Count(); i++)
             {
-                int x = CARDSSTARTX + (i * (CARDWIDTH + 1));
-                int y = CARDSSTARTY;
+                int[] position = CardPosition(i);
+                int x = position[0];
+                int y = position[1];
                 Card cardToPrint = this.Hands[playerInd].Skip(i).First();
                 ScreenUtils.CardBgType cardBgType = ScreenUtils.CardBgType.BASIC;
                 bool cardIsAvailable = true;
@@ -463,9 +464,19 @@ namespace promise
             }
         }
 
+        private int[] PlayedCardPosition(int playerInd)
+        {
+            int[] position = new int[2];
+            position[0] = (playerInd * (COLWIDTH + 1)) + 5;
+            position[1] = 3;
+            return position;
+        }
+
+
         private void PrintPlayedCard(int playerInd, Card playedCard, ScreenUtils.CardBgType cardBgType)
         {
-            ScreenUtils.PrintCard((playerInd * (COLWIDTH + 1)) + 5, 3, playedCard, cardBgType);
+            int[] position = PlayedCardPosition(playerInd);
+            ScreenUtils.PrintCard(position[0], position[1], playedCard, cardBgType);
         }
 
         private void UIShowWinner(string winnerName)

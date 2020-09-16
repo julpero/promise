@@ -1,5 +1,6 @@
 using System;
 using DSI.Deck;
+using System.Threading;
 
 namespace promise
 {
@@ -10,6 +11,22 @@ namespace promise
         const int CARDSSTARTY = 22;
         const int TRUMPSTARTY = 12;
         const int CARDSSTARTX = 4;
+
+        const int ANIMATIONTIME = 200;
+        const int MAXFRAMETIME = 50;
+        const int MAXFRAMES = 10;
+
+        private class FramePosition
+        {
+            public int X;
+            public int Y;
+
+            public FramePosition(int x, int y)
+            {
+                X = x;
+                Y = y;
+            }
+        }
 
         public enum CardBgType
         {
@@ -368,6 +385,76 @@ namespace promise
                 case CardValue.king: PrintCardImgK(x, y, suite);break;
                 case CardValue.ace: PrintCardImgA(x, y, suite);break;
             }
+        }
+
+        public static void PrintTrumpCard(Card trumpCard)
+        {
+            Console.SetCursorPosition(CARDSSTARTX + 2, TRUMPSTARTY);
+            Console.Write("VALTTI");
+            ScreenUtils.PrintCard(CARDSSTARTX, TRUMPSTARTY + 1, trumpCard);
+        }
+
+        public static void AnimateCard(int fromX, int fromY, int toX, int toY, Card card, CardBgType cardBgType = CardBgType.BASIC, Card trumpCard = null, bool totalTest = false)
+        {
+            if (totalTest) return;
+            int frameCountX = Math.Abs(fromX - toX) + 1;
+            int frameCountY = Math.Abs(fromY - toY) + 1;
+            int frameCount = Math.Min(Math.Max(frameCountX, frameCountY), MAXFRAMES);
+            if (frameCount <= 1) return;
+
+            int frameDuration = Math.Min(ANIMATIONTIME / frameCount, MAXFRAMETIME);
+            double movementX = (double)(frameCountX-1) / (double)frameCount;
+            double movementY = (double)(frameCountY-1) / (double)frameCount;
+
+            FramePosition[] framePositions = new FramePosition[frameCount];
+            for (int i = 0; i < frameCount; i++)
+            {
+                if (i == 0)
+                {
+                    framePositions[i] = new FramePosition(fromX, fromY);
+                    continue;
+                }
+                else if (i == frameCount - 1)
+                {
+                    framePositions[i] = new FramePosition(toX, toY);
+                    continue;
+                }
+                else
+                {
+                    int x = (fromX < toX) ? (int)(fromX + (movementX * i)) : (int)(fromX - (movementX * i));
+                    int y = (fromY < toY) ? (int)(fromY + (movementY * i)) : (int)(fromY - (movementY * i));
+                    framePositions[i] = new FramePosition(x, y);
+                    continue;
+                }
+            }
+
+            for (int i = 0; i < frameCount; i++)
+            {
+                if (i > 0)
+                {
+                    ClearCard(framePositions[i-1].X, framePositions[i-1].Y);
+                    if (trumpCard != null && OverLapsTrumpCard(framePositions[i-1].X, framePositions[i-1].Y)) PrintTrumpCard(trumpCard);
+                }
+                PrintCard(framePositions[i].X, framePositions[i].Y, card, cardBgType, totalTest);
+                if (i != frameCount - 1)
+                {
+                    Thread.Sleep(frameDuration);
+                }
+            }
+        }
+
+        private static bool OverLapsTrumpCard(int x, int y)
+        {
+            if (x > CARDSSTARTX + CARDWIDTH + 2) return false;
+            if (y > TRUMPSTARTY + CARDHEIGHT + 2) return false;
+            if (y + CARDHEIGHT < TRUMPSTARTY) return false;
+            return true;
+        }
+
+        public static void ClearCard(int x, int y)
+        {
+            Console.BackgroundColor = ConsoleColor.Black;
+            PrintCardBackGround(x, y);
         }
 
         public static void PrintCard(int x, int y, Card card, CardBgType cardBgType = CardBgType.BASIC, bool totalTest = false)
