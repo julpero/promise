@@ -17,10 +17,14 @@ namespace promise
 
             int GameCount = 1;
             int gameLoop = 1;
-            bool isBotMatch = false;
-            bool showCards = true;
             bool knownPlayers = true;
-            bool totalTest = false;
+
+            GameDebugSettings GameSettings = new GameDebugSettings{
+                DebugPromise = false,
+                IsBotMatch = false,
+                ShowCards = true,
+                IsTotalTest = false
+            };
 
             MongoClient mongoClient = null;
             IMongoDatabase database = null;
@@ -31,20 +35,25 @@ namespace promise
             if (args.Any(x => x.ToLower() == "botmatch"))
             {
                 GameCount = 5;
-                isBotMatch = true;
+                GameSettings.IsBotMatch = true;
             }
             if (args.Any(x => x.ToLower() == "hidecards"))
             {
-                showCards = false;
+                GameSettings.ShowCards = false;
             }
-            if (args.Any(x => x.ToLower() == "randombotsX"))
+            if (args.Any(x => x.ToLower() == "randombots"))
             {
                 // do not use hard coded players
                 knownPlayers = false;
             }
+            if (args.Any(x => x.ToLower() == "debugpromise"))
+            {
+                // show bot cards so it is easier to debug how promise is made
+                GameSettings.DebugPromise = true;
+            }
             if (args.Any(x => x.ToLower() == "totaltest"))
             {
-                totalTest = true;
+                GameSettings.IsTotalTest = true;
                 GameCount = 20;
                 gameLoop = 200000;
                 ScreenUtils.ClearScreen();
@@ -84,12 +93,15 @@ namespace promise
             }
             
             string prevBestPlayerByPointsName = "";
+            // string prevBestPlayerByPointsName2 = "";
             string prevBestPlayerByKeepsName = "";
             for (int loop = 0; loop < gameLoop; loop++)
             {
-                if (totalTest && collection != null)
+                mongoAIs.Clear();
+                if (GameSettings.IsTotalTest && collection != null)
                 {
                     string bestPlayerByPointsName = "";
+                    // string bestPlayerByPointsName2 = "";
                     string bestPlayerByKeepsName = "";
 
                     Console.SetCursorPosition(0, loop);
@@ -105,6 +117,17 @@ namespace promise
                                             .OrderByDescending(z => z.AvgPoints)
                                             .ThenByDescending(z => z.AvgKeeps)
                                             .FirstOrDefault();
+                    // var bestByPoints2 = collection.AsQueryable()
+                    //                         .GroupBy(x => x.AiName)
+                    //                         .Where(grp => grp.Count() >= 20)
+                    //                         .Select(grp => new {AiName = grp.Key
+                    //                                         , AvgPoints = grp.Average(y => y.Points)
+                    //                                         , AvgKeeps = grp.Average(y => y.PromisesKept)
+                    //                         })
+                    //                         .OrderByDescending(z => z.AvgPoints)
+                    //                         .ThenByDescending(z => z.AvgKeeps)
+                    //                         .Skip(1)
+                    //                         .FirstOrDefault();
                     var bestByKeeps = collection.AsQueryable()
                                             .GroupBy(x => x.AiName)
                                             .Where(grp => grp.Count() >= 20)
@@ -117,26 +140,37 @@ namespace promise
                                             .FirstOrDefault();
 
                     MongoAI bestPlayerByPoints;
+                    // MongoAI bestPlayerByPoints2;
                     MongoAI bestPlayerByKeeps;
 
                     bestPlayerByPoints = (bestByPoints != null)
                         ? collection.Find(x => x.AiName == bestByPoints.AiName).First() : null;
+                    // bestPlayerByPoints2 = (bestByPoints2 != null)
+                    //     ? collection.Find(x => x.AiName == bestByPoints2.AiName).First() : null;
                     bestPlayerByKeeps = (bestByKeeps != null)
                         ? collection.Find(x => x.AiName == bestByKeeps.AiName).First() : null;
 
                     if (bestPlayerByPoints != null)
                     {
                         bestPlayerByPointsName = bestPlayerByPoints.AiName;
-                        if (bestPlayerByPointsName != prevBestPlayerByPointsName) Logger.Log($"points;loop:{loop};name:{bestPlayerByPointsName}", "best");
+                        if (bestPlayerByPointsName != prevBestPlayerByPointsName) Logger.Log($"points;loop:{loop};name:{bestPlayerByPointsName};date:{DateTime.Now}", "best");
                         prevBestPlayerByPointsName = bestPlayerByPointsName;
                         string guid = Guid.NewGuid().ToString();
                         mongoAIs.Add(new MongoAI(guid, bestPlayerByPoints.PlayerAI, new PlayerAI("random"), false, bestPlayerByPoints.Evolution));
                     }
+                    // if (bestPlayerByPoints2 != null)
+                    // {
+                    //     bestPlayerByPointsName2 = bestPlayerByPoints2.AiName;
+                    //     // if (bestPlayerByPointsName != prevBestPlayerByPointsName) Logger.Log($"points;loop:{loop};name:{bestPlayerByPointsName2};date:{DateTime.Now}", "best");
+                    //     prevBestPlayerByPointsName = bestPlayerByPointsName;
+                    //     string guid = Guid.NewGuid().ToString();
+                    //     mongoAIs.Add(new MongoAI(guid, bestPlayerByPoints2.PlayerAI, new PlayerAI("random"), false, bestPlayerByPoints2.Evolution));
+                    // }
 
                     if (bestPlayerByKeeps != null)
                     {
                         bestPlayerByKeepsName = bestPlayerByKeeps.AiName;
-                        if (bestPlayerByKeepsName != prevBestPlayerByKeepsName) Logger.Log($"keeps;loop:{loop};name:{bestPlayerByKeepsName}", "best");
+                        if (bestPlayerByKeepsName != prevBestPlayerByKeepsName) Logger.Log($"keeps;loop:{loop};name:{bestPlayerByKeepsName};date:{DateTime.Now}", "best");
                         prevBestPlayerByKeepsName = bestPlayerByKeepsName;
                         string guid = Guid.NewGuid().ToString();
                         mongoAIs.Add(new MongoAI(guid, bestPlayerByKeeps.PlayerAI, new PlayerAI("random"), false, bestPlayerByKeeps.Evolution));
@@ -145,7 +179,7 @@ namespace promise
                     if (bestPlayerByPoints != null && bestPlayerByKeeps != null)
                     {
                         string guid = Guid.NewGuid().ToString();
-                        mongoAIs.Add(new MongoAI(guid, bestPlayerByKeeps.PlayerAI, bestPlayerByPoints.PlayerAI, true, Math.Max(bestPlayerByKeeps.Evolution, bestPlayerByPoints.Evolution)));
+                        mongoAIs.Add(new MongoAI(guid, bestPlayerByKeeps.PlayerAI, bestPlayerByPoints.PlayerAI, false, Math.Max(bestPlayerByKeeps.Evolution, bestPlayerByPoints.Evolution)));
                     }
 
                     while (mongoAIs.Count < 5)
@@ -233,16 +267,16 @@ namespace promise
 
                 for (int i = 0; i < GameCount; i++)
                 {
-                    if (!totalTest)
+                    if (!GameSettings.IsTotalTest)
                     {
                         Console.BackgroundColor = ConsoleColor.Black;
                         Console.ForegroundColor = ConsoleColor.White;
                         ScreenUtils.ClearScreen();
                     }
-                    Game promiseGame = new Game(isBotMatch, showCards, mongoAIs, collection, totalTest);
-                    if (totalTest) Console.Write("*");
+                    Game promiseGame = new Game(GameSettings, mongoAIs, collection);
+                    if (GameSettings.IsTotalTest) Console.Write("*");
                 }
-                if (totalTest) Console.WriteLine();
+                if (GameSettings.IsTotalTest) Console.WriteLine();
             }
         }
     }

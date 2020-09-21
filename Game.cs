@@ -7,13 +7,24 @@ using MongoDB.Bson;
 namespace promise
 {
 
+    class GameDebugSettings
+    {
+        public bool IsBotMatch {get; set;}
+        public bool ShowCards {get; set;}
+        public bool IsTotalTest {get; set;}
+        public bool DebugPromise {get; set;}
+
+    }
+
     class Game
     {
-        const bool DEBUGMODE = true;
+        const bool DEBUGMODE = false;
         const int MAXPLAYERS = 5;
         const int SCOREBOARDSTART = 130;
         const int PROMISEBOARDX = 10;
         const int PROMISEBOARDY = 33;
+
+        public GameDebugSettings GameSettings {get; set;}
 
         public Player[] Players {get; set;}
         public List<MongoAI> MongoAIs {get; set;}
@@ -27,25 +38,18 @@ namespace promise
         public int[] TotalPoints {get; set;}
         public int[] PromisesKept {get; set;}
 
-        public bool IsBotMatch {get; set;}
-        public bool ShowCards {get; set;}
-        public bool IsTotalTest {get; set;}
 
         private void ClearScreen()
         {
-            ScreenUtils.ClearScreen(this.IsTotalTest);
+            ScreenUtils.ClearScreen(this.GameSettings.IsTotalTest);
         }
 
-        public Game(bool isBotMatch = false
-                    , bool showCards = true
+        public Game(GameDebugSettings gamesettings
                     , List<MongoAI> mongoAIs = null
                     , IMongoCollection<MongoAI> collection = null
-                    , bool isTotalTest = false
                     )
         {
-            this.IsBotMatch = isBotMatch;
-            this.ShowCards = showCards;
-            this.IsTotalTest = isTotalTest;
+            this.GameSettings = gamesettings;
 
             this.MongoAIs = mongoAIs;
 
@@ -116,7 +120,7 @@ namespace promise
                     this.TotalPoints[j]+= promiseSum;
                 }
             }
-            if (this.IsTotalTest) return;
+            if (this.GameSettings.IsTotalTest) return;
 
             promiseSums = new int[this.Players.Count()];
 
@@ -162,7 +166,7 @@ namespace promise
                     }
                 }
             }
-            if (this.IsTotalTest) return;
+            if (this.GameSettings.IsTotalTest) return;
 
             Console.SetCursorPosition(PROMISEBOARDX + 15, PROMISEBOARDY);
             Console.ForegroundColor = ConsoleColor.White;
@@ -264,7 +268,7 @@ namespace promise
             CalculateAndPrintScoreBoard();
             CalculateAndPrintPromiseBoard();
 
-            if (!this.IsBotMatch && !this.IsTotalTest) Console.ReadKey();
+            if (!this.GameSettings.IsBotMatch && !this.GameSettings.IsTotalTest) Console.ReadKey();
         }
 
         private void PlayPromise()
@@ -275,7 +279,7 @@ namespace promise
                 PlayRound(i);
             }
 
-            if (!this.IsTotalTest) Console.ReadKey();
+            if (!this.GameSettings.IsTotalTest) Console.ReadKey();
         }
 
         private int RoundsInThisGame()
@@ -289,12 +293,12 @@ namespace promise
             int round = 0;
             for (int i = this.StartRound; i >= this.TurnRound; i--)
             {
-                this.Rounds[round] = new Round(i, round, this.Players, this.IsBotMatch, this.ShowCards, this.IsTotalTest);
+                this.Rounds[round] = new Round(i, round, this.Players, this.GameSettings);
                 round++;
             }
             for (int i = this.TurnRound+1; i <= this.EndRound; i++)
             {
-                this.Rounds[round] = new Round(i, round, this.Players, this.IsBotMatch, this.ShowCards, this.IsTotalTest);
+                this.Rounds[round] = new Round(i, round, this.Players, this.GameSettings);
                 round++;
             }
         }
@@ -305,7 +309,7 @@ namespace promise
             
             int lkm = 0;
 
-            if (this.IsBotMatch || this.IsTotalTest)
+            if (this.GameSettings.IsBotMatch || this.GameSettings.IsTotalTest)
             {
                 lkm = 5;
             }
@@ -325,10 +329,10 @@ namespace promise
             this.Players = new Player[lkm];
             for (int i = 0; i < this.Players.Count(); i++)
             {
-                this.Players[i] = new Player(i+1, this.MongoAIs.Skip(i).First().PlayerAI, this.IsBotMatch || this.IsTotalTest);
+                this.Players[i] = new Player(i+1, this.MongoAIs.Skip(i).First().PlayerAI, this.GameSettings.IsBotMatch || this.GameSettings.IsTotalTest);
             }
 
-            if (this.Players.Any(x => x.PlayerType == PlayerType.HUMAN)) this.IsBotMatch = false;
+            if (this.Players.Any(x => x.PlayerType == PlayerType.HUMAN)) this.GameSettings.IsBotMatch = false;
 
         }
 
@@ -341,7 +345,7 @@ namespace promise
 
         private void GetGameRules()
         {
-            if (this.IsTotalTest || this.IsBotMatch)
+            if (this.GameSettings.IsTotalTest || this.GameSettings.IsBotMatch)
             {
                 this.StartRound = 10;
                 this.TurnRound = 1;
@@ -355,7 +359,7 @@ namespace promise
             int lkm = 0;
 
             Console.Write($"Mistä jaosta lähdetään (max {MaximumRounds()}): ");
-            input = DEBUGMODE ? "10" : Console.ReadLine();
+            input = DEBUGMODE ? "2" : Console.ReadLine();
             while (!Int32.TryParse(input, out lkm) || lkm > MaximumRounds())
             {
                 Console.Write($"Mistä jaosta lähdetään (max {MaximumRounds()}): ");

@@ -66,9 +66,7 @@ namespace promise
         const int CARDWIDTH = 11;
         const int CARDHEIGHT = 7;
 
-        public bool IsBotMatch {get; set;}
-        public bool ShowCards {get; set;}
-        public bool IsTotalTest {get; set;}
+        public GameDebugSettings GameSettings {get; set;}
 
         public int CardsInRound {get; set;}
         
@@ -97,11 +95,9 @@ namespace promise
             return PlayerPositionHelper(i - this.Players.Count());
         }
 
-        public Round(int cardsInRound, int roundCount, Player[] players, bool isBotMatch, bool showCards, bool isTotalTest)
+        public Round(int cardsInRound, int roundCount, Player[] players, GameDebugSettings gamesettings)
         {
-            this.IsBotMatch = isBotMatch;
-            this.ShowCards = showCards;
-            this.IsTotalTest = isTotalTest;
+            this.GameSettings = gamesettings;
 
             this.CardsInRound = cardsInRound;
             this.RoundCount = roundCount;
@@ -175,8 +171,8 @@ namespace promise
             int cardIndex = -1;
             if (this.Players[playerInd].PlayerType == PlayerType.COMPUTER)
             {
-                if (this.ShowCards && !this.IsTotalTest) PrintPlayerCards(NextPlayerIndex(playerInd), false);
-                if (!this.IsBotMatch && !this.IsTotalTest) Thread.Sleep(WAITTIME);
+                if (this.GameSettings.ShowCards && !this.GameSettings.IsTotalTest) PrintPlayerCards(NextPlayerIndex(playerInd), false);
+                if (!this.GameSettings.IsBotMatch && !this.GameSettings.IsTotalTest) Thread.Sleep(WAITTIME);
                 cardIndex = ComputerAI.PlayCard(this.Players[playerInd].AI, playerInd
                                                 , this.Hands[playerInd]
                                                 , this.CardInCharge
@@ -226,7 +222,7 @@ namespace promise
             {
                 int[] positionFrom = CardPosition(cardIndex);
                 int[] positionTo = PlayedCardPosition(playerInd);
-                ScreenUtils.AnimateCard(positionFrom[0], positionFrom[1], positionTo[0], positionTo[1], playedCard, ScreenUtils.CardBgType.BASIC, this.TrumpCard, this.IsTotalTest);
+                ScreenUtils.AnimateCard(positionFrom[0], positionFrom[1], positionTo[0], positionTo[1], playedCard, ScreenUtils.CardBgType.BASIC, this.TrumpCard, this.GameSettings.IsTotalTest);
                 ScreenUtils.ClearPlayerCards();
                 PrintPlayerCards(playerInd, false);
             }
@@ -318,8 +314,8 @@ namespace promise
                 this.CardsPlayedInRounds.AddRange(cardsInThisRound);
 
                 UIShowWinner(this.Players[winnerOfRound].PlayerName);
-                if (!this.IsBotMatch && !this.IsTotalTest) Console.ReadKey();
-                ScreenUtils.ClearCards(this.IsTotalTest);
+                if (!this.GameSettings.IsBotMatch && !this.GameSettings.IsTotalTest) Console.ReadKey();
+                ScreenUtils.ClearCards(this.GameSettings.IsTotalTest);
             }
 
             for (int i = 0; i < this.Players.Count(); i++)
@@ -344,7 +340,23 @@ namespace promise
         {
             if (this.Players[i].PlayerType == PlayerType.COMPUTER)
             {
-                return ComputerAI.MakePromise(this.Players[i].AI, this.Hands[i], this.Players.Count(), this.TrumpCard, this.Promises);
+                if (this.GameSettings.DebugPromise)
+                {
+                    ScreenUtils.PrintTrumpCard(this.TrumpCard);
+                    PrintPlayerCards(i);
+                }
+                Promise computerPromise = ComputerAI.MakePromise(this.Players[i].AI, this.Hands[i], this.Players.Count(), this.TrumpCard, this.Promises, this.GameSettings.DebugPromise);
+                if (this.GameSettings.DebugPromise)
+                {
+                    Console.SetCursorPosition(CARDSSTARTX + (CARDWIDTH / 2) - 1, CARDSSTARTY + CARDHEIGHT + 2);
+                    Console.Write("                                                                                      ");
+                    Console.SetCursorPosition(CARDSSTARTX + (CARDWIDTH / 2) - 1, CARDSSTARTY + CARDHEIGHT + 2);
+                    Console.Write($"Computer {this.Players[i].PlayerName} promised {computerPromise.PromiseNumber}, press X to get new promise");
+                    ConsoleKeyInfo input = Console.ReadKey();
+                    if (input.KeyChar.ToString().ToLower() == "x") return GetPromise(i);
+                }
+
+                return computerPromise;
             }
             else
             {
@@ -442,7 +454,7 @@ namespace promise
 
         private void PrintPlayedCards()
         {
-            if (!this.ShowCards || this.IsTotalTest) return;
+            if (!this.GameSettings.ShowCards || this.GameSettings.IsTotalTest) return;
             for (int i = 0; i < this.Players.Count(); i++)
             {
                 if (this.TableCards[i] != null)
@@ -481,14 +493,14 @@ namespace promise
 
         private void UIShowWinner(string winnerName)
         {
-            if (this.IsTotalTest) return;
+            if (this.GameSettings.IsTotalTest) return;
             Console.SetCursorPosition(CARDSSTARTX + (CARDWIDTH / 2) - 1, CARDSSTARTY + CARDHEIGHT + 2);
             Console.Write($"Kierroksen voitti {winnerName}");
         }
 
         private void UIShowPromises()
         {
-            if (this.IsTotalTest) return;
+            if (this.GameSettings.IsTotalTest) return;
             int totalPromises = 0;
             Console.SetCursorPosition(0, 1);
             Console.ForegroundColor = ConsoleColor.White;
@@ -538,7 +550,7 @@ namespace promise
 
         private void UIShowNames(int boldPlayer = -1)
         {
-            if (this.IsTotalTest) return;
+            if (this.GameSettings.IsTotalTest) return;
             Console.SetCursorPosition(0, 0);
             Console.ForegroundColor = ConsoleColor.White;
             for (int i = 0; i < this.Players.Count(); i++)
@@ -561,7 +573,7 @@ namespace promise
             {
                 string promiseStr = $"{this.Promises[i].PromiseNumber}";
                 Console.Write("|  ");
-                if (!this.IsBotMatch) Thread.Sleep(WAITTIME);
+                if (!this.GameSettings.IsBotMatch) Thread.Sleep(WAITTIME);
                 Console.Write(promiseStr.PadRight(COLWIDTH - 1, ' '));
             }
 

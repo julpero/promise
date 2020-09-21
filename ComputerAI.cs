@@ -27,21 +27,21 @@ namespace promise
 
         // MakePromise
         public double PromiseMultiplierBase1 {get; set;}
-        public double PromiseMultiplierBase2 {get; set;}
-        public double PromiseMultiplierBase3 {get; set;}
-        public double PromiseMultiplierBase4 {get; set;}
+        // public double PromiseMultiplierBase2 {get; set;}
+        // public double PromiseMultiplierBase3 {get; set;}
+        // public double PromiseMultiplierBase4 {get; set;}
         public double PromiseMultiplierChange1A {get; set;}
         public double PromiseMultiplierChange1B {get; set;}
         public double PromiseMultiplierChange1C {get; set;}
-        public double PromiseMultiplierChange2A {get; set;}
-        public double PromiseMultiplierChange2B {get; set;}
-        public double PromiseMultiplierChange2C {get; set;}
-        public double PromiseMultiplierChange3A {get; set;}
-        public double PromiseMultiplierChange3B {get; set;}
-        public double PromiseMultiplierChange3C {get; set;}
-        public double PromiseMultiplierChange4A {get; set;}
-        public double PromiseMultiplierChange4B {get; set;}
-        public double PromiseMultiplierChange4C {get; set;}
+        // public double PromiseMultiplierChange2A {get; set;}
+        // public double PromiseMultiplierChange2B {get; set;}
+        // public double PromiseMultiplierChange2C {get; set;}
+        // public double PromiseMultiplierChange3A {get; set;}
+        // public double PromiseMultiplierChange3B {get; set;}
+        // public double PromiseMultiplierChange3C {get; set;}
+        // public double PromiseMultiplierChange4A {get; set;}
+        // public double PromiseMultiplierChange4B {get; set;}
+        // public double PromiseMultiplierChange4C {get; set;}
         public int MiniRisk {get; set;}
 
         private static Random randomAi = new Random();
@@ -109,21 +109,21 @@ namespace promise
 
                 // MakePromise
                 PromiseMultiplierBase1 = AverageDouble(bestAi.PromiseMultiplierBase1, goodAi.PromiseMultiplierBase1); // 0.6;
-                PromiseMultiplierBase2 = AverageDouble(bestAi.PromiseMultiplierBase2, goodAi.PromiseMultiplierBase2); // 0.2;
-                PromiseMultiplierBase3 = AverageDouble(bestAi.PromiseMultiplierBase3, goodAi.PromiseMultiplierBase3); // 0.3;
-                PromiseMultiplierBase4 = AverageDouble(bestAi.PromiseMultiplierBase4, goodAi.PromiseMultiplierBase4); // 0.25;
+                // PromiseMultiplierBase2 = AverageDouble(bestAi.PromiseMultiplierBase2, goodAi.PromiseMultiplierBase2); // 0.2;
+                // PromiseMultiplierBase3 = AverageDouble(bestAi.PromiseMultiplierBase3, goodAi.PromiseMultiplierBase3); // 0.3;
+                // PromiseMultiplierBase4 = AverageDouble(bestAi.PromiseMultiplierBase4, goodAi.PromiseMultiplierBase4); // 0.25;
                 PromiseMultiplierChange1A = AverageDouble(bestAi.PromiseMultiplierChange1A, goodAi.PromiseMultiplierChange1A); // 0.3;
                 PromiseMultiplierChange1B = AverageDouble(bestAi.PromiseMultiplierChange1B, goodAi.PromiseMultiplierChange1B); // 0.15;
                 PromiseMultiplierChange1C = AverageDouble(bestAi.PromiseMultiplierChange1C, goodAi.PromiseMultiplierChange1C); // 0.1;
-                PromiseMultiplierChange2A = AverageDouble(bestAi.PromiseMultiplierChange2A, goodAi.PromiseMultiplierChange2A); // 0.1;
-                PromiseMultiplierChange2B = AverageDouble(bestAi.PromiseMultiplierChange2B, goodAi.PromiseMultiplierChange2B); // 0.05;
-                PromiseMultiplierChange2C = AverageDouble(bestAi.PromiseMultiplierChange2C, goodAi.PromiseMultiplierChange2C); // 0.1;
-                PromiseMultiplierChange3A = AverageDouble(bestAi.PromiseMultiplierChange3A, goodAi.PromiseMultiplierChange3A); // 0.4;
-                PromiseMultiplierChange3B = AverageDouble(bestAi.PromiseMultiplierChange3B, goodAi.PromiseMultiplierChange3B); // 0.25;
-                PromiseMultiplierChange3C = AverageDouble(bestAi.PromiseMultiplierChange3C, goodAi.PromiseMultiplierChange3C); // 0.1;
-                PromiseMultiplierChange4A = AverageDouble(bestAi.PromiseMultiplierChange4A, goodAi.PromiseMultiplierChange4A); // 0.1;
-                PromiseMultiplierChange4B = AverageDouble(bestAi.PromiseMultiplierChange4B, goodAi.PromiseMultiplierChange4B); // 0.05;
-                PromiseMultiplierChange4C = AverageDouble(bestAi.PromiseMultiplierChange4C, goodAi.PromiseMultiplierChange4C); // 0.1;
+                // PromiseMultiplierChange2A = AverageDouble(bestAi.PromiseMultiplierChange2A, goodAi.PromiseMultiplierChange2A); // 0.1;
+                // PromiseMultiplierChange2B = AverageDouble(bestAi.PromiseMultiplierChange2B, goodAi.PromiseMultiplierChange2B); // 0.05;
+                // PromiseMultiplierChange2C = AverageDouble(bestAi.PromiseMultiplierChange2C, goodAi.PromiseMultiplierChange2C); // 0.1;
+                // PromiseMultiplierChange3A = AverageDouble(bestAi.PromiseMultiplierChange3A, goodAi.PromiseMultiplierChange3A); // 0.4;
+                // PromiseMultiplierChange3B = AverageDouble(bestAi.PromiseMultiplierChange3B, goodAi.PromiseMultiplierChange3B); // 0.25;
+                // PromiseMultiplierChange3C = AverageDouble(bestAi.PromiseMultiplierChange3C, goodAi.PromiseMultiplierChange3C); // 0.1;
+                // PromiseMultiplierChange4A = AverageDouble(bestAi.PromiseMultiplierChange4A, goodAi.PromiseMultiplierChange4A); // 0.1;
+                // PromiseMultiplierChange4B = AverageDouble(bestAi.PromiseMultiplierChange4B, goodAi.PromiseMultiplierChange4B); // 0.05;
+                // PromiseMultiplierChange4C = AverageDouble(bestAi.PromiseMultiplierChange4C, goodAi.PromiseMultiplierChange4C); // 0.1;
                 MiniRisk = AverageInt(bestAi.MiniRisk, goodAi.MiniRisk); // 5;
             }
             else
@@ -146,21 +146,21 @@ namespace promise
 
                 // MakePromise
                 PromiseMultiplierBase1 = KeepAiValue() ? bestAi.PromiseMultiplierBase1 : goodAi.PromiseMultiplierBase1; // 0.6;
-                PromiseMultiplierBase2 = KeepAiValue() ? bestAi.PromiseMultiplierBase2 : goodAi.PromiseMultiplierBase2; // 0.2;
-                PromiseMultiplierBase3 = KeepAiValue() ? bestAi.PromiseMultiplierBase3 : goodAi.PromiseMultiplierBase3; // 0.3;
-                PromiseMultiplierBase4 = KeepAiValue() ? bestAi.PromiseMultiplierBase4 : goodAi.PromiseMultiplierBase4; // 0.25;
+                // PromiseMultiplierBase2 = KeepAiValue() ? bestAi.PromiseMultiplierBase2 : goodAi.PromiseMultiplierBase2; // 0.2;
+                // PromiseMultiplierBase3 = KeepAiValue() ? bestAi.PromiseMultiplierBase3 : goodAi.PromiseMultiplierBase3; // 0.3;
+                // PromiseMultiplierBase4 = KeepAiValue() ? bestAi.PromiseMultiplierBase4 : goodAi.PromiseMultiplierBase4; // 0.25;
                 PromiseMultiplierChange1A = KeepAiValue() ? bestAi.PromiseMultiplierChange1A : goodAi.PromiseMultiplierChange1A; // 0.3;
                 PromiseMultiplierChange1B = KeepAiValue() ? bestAi.PromiseMultiplierChange1B : goodAi.PromiseMultiplierChange1B; // 0.15;
                 PromiseMultiplierChange1C = KeepAiValue() ? bestAi.PromiseMultiplierChange1C : goodAi.PromiseMultiplierChange1C; // 0.1;
-                PromiseMultiplierChange2A = KeepAiValue() ? bestAi.PromiseMultiplierChange2A : goodAi.PromiseMultiplierChange2A; // 0.1;
-                PromiseMultiplierChange2B = KeepAiValue() ? bestAi.PromiseMultiplierChange2B : goodAi.PromiseMultiplierChange2B; // 0.05;
-                PromiseMultiplierChange2C = KeepAiValue() ? bestAi.PromiseMultiplierChange2C : goodAi.PromiseMultiplierChange2C; // 0.1;
-                PromiseMultiplierChange3A = KeepAiValue() ? bestAi.PromiseMultiplierChange3A : goodAi.PromiseMultiplierChange3A; // 0.4;
-                PromiseMultiplierChange3B = KeepAiValue() ? bestAi.PromiseMultiplierChange3B : goodAi.PromiseMultiplierChange3B; // 0.25;
-                PromiseMultiplierChange3C = KeepAiValue() ? bestAi.PromiseMultiplierChange3C : goodAi.PromiseMultiplierChange3C; // 0.1;
-                PromiseMultiplierChange4A = KeepAiValue() ? bestAi.PromiseMultiplierChange4A : goodAi.PromiseMultiplierChange4A; // 0.1;
-                PromiseMultiplierChange4B = KeepAiValue() ? bestAi.PromiseMultiplierChange4B : goodAi.PromiseMultiplierChange4B; // 0.05;
-                PromiseMultiplierChange4C = KeepAiValue() ? bestAi.PromiseMultiplierChange4C : goodAi.PromiseMultiplierChange4C; // 0.1;
+                // PromiseMultiplierChange2A = KeepAiValue() ? bestAi.PromiseMultiplierChange2A : goodAi.PromiseMultiplierChange2A; // 0.1;
+                // PromiseMultiplierChange2B = KeepAiValue() ? bestAi.PromiseMultiplierChange2B : goodAi.PromiseMultiplierChange2B; // 0.05;
+                // PromiseMultiplierChange2C = KeepAiValue() ? bestAi.PromiseMultiplierChange2C : goodAi.PromiseMultiplierChange2C; // 0.1;
+                // PromiseMultiplierChange3A = KeepAiValue() ? bestAi.PromiseMultiplierChange3A : goodAi.PromiseMultiplierChange3A; // 0.4;
+                // PromiseMultiplierChange3B = KeepAiValue() ? bestAi.PromiseMultiplierChange3B : goodAi.PromiseMultiplierChange3B; // 0.25;
+                // PromiseMultiplierChange3C = KeepAiValue() ? bestAi.PromiseMultiplierChange3C : goodAi.PromiseMultiplierChange3C; // 0.1;
+                // PromiseMultiplierChange4A = KeepAiValue() ? bestAi.PromiseMultiplierChange4A : goodAi.PromiseMultiplierChange4A; // 0.1;
+                // PromiseMultiplierChange4B = KeepAiValue() ? bestAi.PromiseMultiplierChange4B : goodAi.PromiseMultiplierChange4B; // 0.05;
+                // PromiseMultiplierChange4C = KeepAiValue() ? bestAi.PromiseMultiplierChange4C : goodAi.PromiseMultiplierChange4C; // 0.1;
                 MiniRisk = KeepAiValue() ? bestAi.MiniRisk : goodAi.MiniRisk; // 5;
             }
 
@@ -185,21 +185,21 @@ namespace promise
 
             // MakePromise
             if (randomAi.NextDouble() > 0.98) PromiseMultiplierBase1 = randomAi.NextDouble(); // 0.6;
-            if (randomAi.NextDouble() > 0.98) PromiseMultiplierBase2 = randomAi.NextDouble(); // 0.2;
-            if (randomAi.NextDouble() > 0.98) PromiseMultiplierBase3 = randomAi.NextDouble(); // 0.3;
-            if (randomAi.NextDouble() > 0.98) PromiseMultiplierBase4 = randomAi.NextDouble(); // 0.25;
+            // if (randomAi.NextDouble() > 0.98) PromiseMultiplierBase2 = randomAi.NextDouble(); // 0.2;
+            // if (randomAi.NextDouble() > 0.98) PromiseMultiplierBase3 = randomAi.NextDouble(); // 0.3;
+            // if (randomAi.NextDouble() > 0.98) PromiseMultiplierBase4 = randomAi.NextDouble(); // 0.25;
             if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange1A = randomAi.NextDouble(); // 0.3;
             if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange1B = randomAi.NextDouble(); // 0.15;
             if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange1C = randomAi.NextDouble(); // 0.1;
-            if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange2A = randomAi.NextDouble(); // 0.1;
-            if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange2B = randomAi.NextDouble(); // 0.05;
-            if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange2C = randomAi.NextDouble(); // 0.1;
-            if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange3A = LesserDouble(); //randomAi.NextDouble(); // 0.4;
-            if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange3B = LesserDouble(); //randomAi.NextDouble(); // 0.25;
-            if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange3C = LesserDouble(); //randomAi.NextDouble(); // 0.1;
-            if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange4A = randomAi.NextDouble(); // 0.1;
-            if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange4B = randomAi.NextDouble(); // 0.05;
-            if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange4C = randomAi.NextDouble(); // 0.1;
+            // if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange2A = randomAi.NextDouble(); // 0.1;
+            // if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange2B = randomAi.NextDouble(); // 0.05;
+            // if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange2C = randomAi.NextDouble(); // 0.1;
+            // if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange3A = LesserDouble(); //randomAi.NextDouble(); // 0.4;
+            // if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange3B = LesserDouble(); //randomAi.NextDouble(); // 0.25;
+            // if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange3C = LesserDouble(); //randomAi.NextDouble(); // 0.1;
+            // if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange4A = randomAi.NextDouble(); // 0.1;
+            // if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange4B = randomAi.NextDouble(); // 0.05;
+            // if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange4C = randomAi.NextDouble(); // 0.1;
             if (randomAi.NextDouble() > 0.98) MiniRisk = randomAi.Next(0, 50); // 5;
         }
 
@@ -230,21 +230,21 @@ namespace promise
 
                 // MakePromise
                 PromiseMultiplierBase1 = PlayerRandDouble(0.6);
-                PromiseMultiplierBase2 = PlayerRandDouble(0.2);
-                PromiseMultiplierBase3 = PlayerRandDouble(0.3);
-                PromiseMultiplierBase4 = PlayerRandDouble(0.25);
+                // PromiseMultiplierBase2 = PlayerRandDouble(0.2);
+                // PromiseMultiplierBase3 = PlayerRandDouble(0.3);
+                // PromiseMultiplierBase4 = PlayerRandDouble(0.25);
                 PromiseMultiplierChange1A = PlayerRandDouble(0.3);
                 PromiseMultiplierChange1B = PlayerRandDouble(0.15);
                 PromiseMultiplierChange1C = PlayerRandDouble(0.1);
-                PromiseMultiplierChange2A = PlayerRandDouble(0.1);
-                PromiseMultiplierChange2B = PlayerRandDouble(0.06);
-                PromiseMultiplierChange2C = PlayerRandDouble(0.1);
-                PromiseMultiplierChange3A = PlayerRandDouble(0.4);
-                PromiseMultiplierChange3B = PlayerRandDouble(0.25);
-                PromiseMultiplierChange3C = PlayerRandDouble(0.1);
-                PromiseMultiplierChange4A = PlayerRandDouble(0.1);
-                PromiseMultiplierChange4B = PlayerRandDouble(0.06);
-                PromiseMultiplierChange4C = PlayerRandDouble(0.1);
+                // PromiseMultiplierChange2A = PlayerRandDouble(0.1);
+                // PromiseMultiplierChange2B = PlayerRandDouble(0.06);
+                // PromiseMultiplierChange2C = PlayerRandDouble(0.1);
+                // PromiseMultiplierChange3A = PlayerRandDouble(0.4);
+                // PromiseMultiplierChange3B = PlayerRandDouble(0.25);
+                // PromiseMultiplierChange3C = PlayerRandDouble(0.1);
+                // PromiseMultiplierChange4A = PlayerRandDouble(0.1);
+                // PromiseMultiplierChange4B = PlayerRandDouble(0.06);
+                // PromiseMultiplierChange4C = PlayerRandDouble(0.1);
                 MiniRisk = PlayerRandInt(5);
             }
             else
@@ -270,21 +270,21 @@ namespace promise
 
                 // MakePromise
                 PromiseMultiplierBase1 = GetRandomNumber(0.0, 1.0); // 0.6;
-                PromiseMultiplierBase2 = GetRandomNumber(0.0, 1.0); // 0.2;
-                PromiseMultiplierBase3 = GetRandomNumber(0.0, 1.0); // 0.3;
-                PromiseMultiplierBase4 = GetRandomNumber(0.0, 1.0); // 0.25;
+                // PromiseMultiplierBase2 = GetRandomNumber(0.0, 1.0); // 0.2;
+                // PromiseMultiplierBase3 = GetRandomNumber(0.0, 1.0); // 0.3;
+                // PromiseMultiplierBase4 = GetRandomNumber(0.0, 1.0); // 0.25;
                 PromiseMultiplierChange1A = GetRandomNumber(0.0, 1.0); // 0.3;
                 PromiseMultiplierChange1B = GetRandomNumber(0.0, 1.0); // 0.15;
                 PromiseMultiplierChange1C = GetRandomNumber(0.0, 1.0); // 0.1;
-                PromiseMultiplierChange2A = GetRandomNumber(0.0, 1.0); // 0.1;
-                PromiseMultiplierChange2B = GetRandomNumber(0.0, 1.0); // 0.05;
-                PromiseMultiplierChange2C = GetRandomNumber(0.0, 1.0); // 0.1;
-                PromiseMultiplierChange3A = LesserDouble(); //GetRandomNumber(0.0, 1.0); // 0.4;
-                PromiseMultiplierChange3B = LesserDouble(); //GetRandomNumber(0.0, 1.0); // 0.25;
-                PromiseMultiplierChange3C = LesserDouble(); //GetRandomNumber(0.0, 1.0); // 0.1;
-                PromiseMultiplierChange4A = GetRandomNumber(0.0, 1.0); // 0.1;
-                PromiseMultiplierChange4B = GetRandomNumber(0.0, 1.0); // 0.05;
-                PromiseMultiplierChange4C = GetRandomNumber(0.0, 1.0); // 0.1;
+                // PromiseMultiplierChange2A = GetRandomNumber(0.0, 1.0); // 0.1;
+                // PromiseMultiplierChange2B = GetRandomNumber(0.0, 1.0); // 0.05;
+                // PromiseMultiplierChange2C = GetRandomNumber(0.0, 1.0); // 0.1;
+                // PromiseMultiplierChange3A = LesserDouble(); //GetRandomNumber(0.0, 1.0); // 0.4;
+                // PromiseMultiplierChange3B = LesserDouble(); //GetRandomNumber(0.0, 1.0); // 0.25;
+                // PromiseMultiplierChange3C = LesserDouble(); //GetRandomNumber(0.0, 1.0); // 0.1;
+                // PromiseMultiplierChange4A = GetRandomNumber(0.0, 1.0); // 0.1;
+                // PromiseMultiplierChange4B = GetRandomNumber(0.0, 1.0); // 0.05;
+                // PromiseMultiplierChange4C = GetRandomNumber(0.0, 1.0); // 0.1;
                 MiniRisk = randomAi.Next(0, 101); // 5;            
             }
         }
@@ -313,21 +313,21 @@ namespace promise
 
                 // MakePromise
                 PromiseMultiplierBase1 = PlayerRandDouble(0.95);
-                PromiseMultiplierBase2 = PlayerRandDouble(0.26);
-                PromiseMultiplierBase3 = PlayerRandDouble(0.60);
-                PromiseMultiplierBase4 = PlayerRandDouble(0.34);
+                // PromiseMultiplierBase2 = PlayerRandDouble(0.26);
+                // PromiseMultiplierBase3 = PlayerRandDouble(0.60);
+                // PromiseMultiplierBase4 = PlayerRandDouble(0.34);
                 PromiseMultiplierChange1A = PlayerRandDouble(0.04);
                 PromiseMultiplierChange1B = PlayerRandDouble(0.43);
                 PromiseMultiplierChange1C = PlayerRandDouble(0.04);
-                PromiseMultiplierChange2A = PlayerRandDouble(0.54);
-                PromiseMultiplierChange2B = PlayerRandDouble(0.31);
-                PromiseMultiplierChange2C = PlayerRandDouble(0.43);
-                PromiseMultiplierChange3A = PlayerRandDouble(0.61);
-                PromiseMultiplierChange3B = PlayerRandDouble(0.98);
-                PromiseMultiplierChange3C = PlayerRandDouble(0.35);
-                PromiseMultiplierChange4A = PlayerRandDouble(0.32);
-                PromiseMultiplierChange4B = PlayerRandDouble(0.53);
-                PromiseMultiplierChange4C = PlayerRandDouble(0.27);
+                // PromiseMultiplierChange2A = PlayerRandDouble(0.54);
+                // PromiseMultiplierChange2B = PlayerRandDouble(0.31);
+                // PromiseMultiplierChange2C = PlayerRandDouble(0.43);
+                // PromiseMultiplierChange3A = PlayerRandDouble(0.61);
+                // PromiseMultiplierChange3B = PlayerRandDouble(0.98);
+                // PromiseMultiplierChange3C = PlayerRandDouble(0.35);
+                // PromiseMultiplierChange4A = PlayerRandDouble(0.32);
+                // PromiseMultiplierChange4B = PlayerRandDouble(0.53);
+                // PromiseMultiplierChange4C = PlayerRandDouble(0.27);
                 MiniRisk = PlayerRandInt(27);
 
             }
@@ -354,21 +354,21 @@ namespace promise
 
                 // MakePromise
                 PromiseMultiplierBase1 = PlayerRandDouble(0.46);
-                PromiseMultiplierBase2 = PlayerRandDouble(0.83);
-                PromiseMultiplierBase3 = PlayerRandDouble(0.71);
-                PromiseMultiplierBase4 = PlayerRandDouble(0.14);
+                // PromiseMultiplierBase2 = PlayerRandDouble(0.83);
+                // PromiseMultiplierBase3 = PlayerRandDouble(0.71);
+                // PromiseMultiplierBase4 = PlayerRandDouble(0.14);
                 PromiseMultiplierChange1A = PlayerRandDouble(0.35);
                 PromiseMultiplierChange1B = PlayerRandDouble(0.40);
                 PromiseMultiplierChange1C = PlayerRandDouble(0.67);
-                PromiseMultiplierChange2A = PlayerRandDouble(0.75);
-                PromiseMultiplierChange2B = PlayerRandDouble(0.33);
-                PromiseMultiplierChange2C = PlayerRandDouble(0.31);
-                PromiseMultiplierChange3A = PlayerRandDouble(0.61);
-                PromiseMultiplierChange3B = PlayerRandDouble(0.63);
-                PromiseMultiplierChange3C = PlayerRandDouble(0.49);
-                PromiseMultiplierChange4A = PlayerRandDouble(0.46);
-                PromiseMultiplierChange4B = PlayerRandDouble(0.50);
-                PromiseMultiplierChange4C = PlayerRandDouble(0.91);
+                // PromiseMultiplierChange2A = PlayerRandDouble(0.75);
+                // PromiseMultiplierChange2B = PlayerRandDouble(0.33);
+                // PromiseMultiplierChange2C = PlayerRandDouble(0.31);
+                // PromiseMultiplierChange3A = PlayerRandDouble(0.61);
+                // PromiseMultiplierChange3B = PlayerRandDouble(0.63);
+                // PromiseMultiplierChange3C = PlayerRandDouble(0.49);
+                // PromiseMultiplierChange4A = PlayerRandDouble(0.46);
+                // PromiseMultiplierChange4B = PlayerRandDouble(0.50);
+                // PromiseMultiplierChange4C = PlayerRandDouble(0.91);
                 MiniRisk = PlayerRandInt(48);
             }
 
@@ -395,21 +395,21 @@ namespace promise
 
                 // MakePromise
                 PromiseMultiplierBase1 = PlayerRandDouble(0.49);
-                PromiseMultiplierBase2 = PlayerRandDouble(0.84);
-                PromiseMultiplierBase3 = PlayerRandDouble(0.68);
-                PromiseMultiplierBase4 = PlayerRandDouble(0.44);
+                // PromiseMultiplierBase2 = PlayerRandDouble(0.84);
+                // PromiseMultiplierBase3 = PlayerRandDouble(0.68);
+                // PromiseMultiplierBase4 = PlayerRandDouble(0.44);
                 PromiseMultiplierChange1A = PlayerRandDouble(0.43);
                 PromiseMultiplierChange1B = PlayerRandDouble(0.50);
                 PromiseMultiplierChange1C = PlayerRandDouble(0.39);
-                PromiseMultiplierChange2A = PlayerRandDouble(0.53);
-                PromiseMultiplierChange2B = PlayerRandDouble(0.62);
-                PromiseMultiplierChange2C = PlayerRandDouble(0.53);
-                PromiseMultiplierChange3A = PlayerRandDouble(0.78);
-                PromiseMultiplierChange3B = PlayerRandDouble(0.52);
-                PromiseMultiplierChange3C = PlayerRandDouble(0.45);
-                PromiseMultiplierChange4A = PlayerRandDouble(0.40);
-                PromiseMultiplierChange4B = PlayerRandDouble(0.54);
-                PromiseMultiplierChange4C = PlayerRandDouble(0.52);
+                // PromiseMultiplierChange2A = PlayerRandDouble(0.53);
+                // PromiseMultiplierChange2B = PlayerRandDouble(0.62);
+                // PromiseMultiplierChange2C = PlayerRandDouble(0.53);
+                // PromiseMultiplierChange3A = PlayerRandDouble(0.78);
+                // PromiseMultiplierChange3B = PlayerRandDouble(0.52);
+                // PromiseMultiplierChange3C = PlayerRandDouble(0.45);
+                // PromiseMultiplierChange4A = PlayerRandDouble(0.40);
+                // PromiseMultiplierChange4B = PlayerRandDouble(0.54);
+                // PromiseMultiplierChange4C = PlayerRandDouble(0.52);
                 MiniRisk = PlayerRandInt(13);
             }
 
@@ -436,21 +436,21 @@ namespace promise
 
                 // MakePromise
                 PromiseMultiplierBase1 = PlayerRandDouble(0.52);
-                PromiseMultiplierBase2 = PlayerRandDouble(0.95);
-                PromiseMultiplierBase3 = PlayerRandDouble(0.70);
-                PromiseMultiplierBase4 = PlayerRandDouble(0.14);
+                // PromiseMultiplierBase2 = PlayerRandDouble(0.95);
+                // PromiseMultiplierBase3 = PlayerRandDouble(0.70);
+                // PromiseMultiplierBase4 = PlayerRandDouble(0.14);
                 PromiseMultiplierChange1A = PlayerRandDouble(0.26);
                 PromiseMultiplierChange1B = PlayerRandDouble(0.65);
                 PromiseMultiplierChange1C = PlayerRandDouble(0.03);
-                PromiseMultiplierChange2A = PlayerRandDouble(0.24);
-                PromiseMultiplierChange2B = PlayerRandDouble(0.28);
-                PromiseMultiplierChange2C = PlayerRandDouble(0.90);
-                PromiseMultiplierChange3A = PlayerRandDouble(0.76);
-                PromiseMultiplierChange3B = PlayerRandDouble(0.62);
-                PromiseMultiplierChange3C = PlayerRandDouble(0.14);
-                PromiseMultiplierChange4A = PlayerRandDouble(0.49);
-                PromiseMultiplierChange4B = PlayerRandDouble(0.56);
-                PromiseMultiplierChange4C = PlayerRandDouble(0.59);
+                // PromiseMultiplierChange2A = PlayerRandDouble(0.24);
+                // PromiseMultiplierChange2B = PlayerRandDouble(0.28);
+                // PromiseMultiplierChange2C = PlayerRandDouble(0.90);
+                // PromiseMultiplierChange3A = PlayerRandDouble(0.76);
+                // PromiseMultiplierChange3B = PlayerRandDouble(0.62);
+                // PromiseMultiplierChange3C = PlayerRandDouble(0.14);
+                // PromiseMultiplierChange4A = PlayerRandDouble(0.49);
+                // PromiseMultiplierChange4B = PlayerRandDouble(0.56);
+                // PromiseMultiplierChange4C = PlayerRandDouble(0.59);
                 MiniRisk = PlayerRandInt(3);
             }
 
@@ -477,21 +477,21 @@ namespace promise
 
                 // MakePromise
                 PromiseMultiplierBase1 = PlayerRandDouble(0.25);
-                PromiseMultiplierBase2 = PlayerRandDouble(0.67);
-                PromiseMultiplierBase3 = PlayerRandDouble(0.43);
-                PromiseMultiplierBase4 = PlayerRandDouble(0.48);
+                // PromiseMultiplierBase2 = PlayerRandDouble(0.67);
+                // PromiseMultiplierBase3 = PlayerRandDouble(0.43);
+                // PromiseMultiplierBase4 = PlayerRandDouble(0.48);
                 PromiseMultiplierChange1A = PlayerRandDouble(0.69);
                 PromiseMultiplierChange1B = PlayerRandDouble(0.66);
                 PromiseMultiplierChange1C = PlayerRandDouble(0.43);
-                PromiseMultiplierChange2A = PlayerRandDouble(0.42);
-                PromiseMultiplierChange2B = PlayerRandDouble(0.51);
-                PromiseMultiplierChange2C = PlayerRandDouble(0.37);
-                PromiseMultiplierChange3A = PlayerRandDouble(0.53);
-                PromiseMultiplierChange3B = PlayerRandDouble(0.37);
-                PromiseMultiplierChange3C = PlayerRandDouble(0.39);
-                PromiseMultiplierChange4A = PlayerRandDouble(0.84);
-                PromiseMultiplierChange4B = PlayerRandDouble(0.32);
-                PromiseMultiplierChange4C = PlayerRandDouble(0.31);
+                // PromiseMultiplierChange2A = PlayerRandDouble(0.42);
+                // PromiseMultiplierChange2B = PlayerRandDouble(0.51);
+                // PromiseMultiplierChange2C = PlayerRandDouble(0.37);
+                // PromiseMultiplierChange3A = PlayerRandDouble(0.53);
+                // PromiseMultiplierChange3B = PlayerRandDouble(0.37);
+                // PromiseMultiplierChange3C = PlayerRandDouble(0.39);
+                // PromiseMultiplierChange4A = PlayerRandDouble(0.84);
+                // PromiseMultiplierChange4B = PlayerRandDouble(0.32);
+                // PromiseMultiplierChange4C = PlayerRandDouble(0.31);
                 MiniRisk = PlayerRandInt(26);
             }
 
@@ -517,21 +517,21 @@ namespace promise
 
                 // MakePromise
                 if (randomAi.NextDouble() > 0.98) PromiseMultiplierBase1 = randomAi.NextDouble(); // 0.6;
-                if (randomAi.NextDouble() > 0.98) PromiseMultiplierBase2 = randomAi.NextDouble(); // 0.2;
-                if (randomAi.NextDouble() > 0.98) PromiseMultiplierBase3 = randomAi.NextDouble(); // 0.3;
-                if (randomAi.NextDouble() > 0.98) PromiseMultiplierBase4 = randomAi.NextDouble(); // 0.25;
+                // if (randomAi.NextDouble() > 0.98) PromiseMultiplierBase2 = randomAi.NextDouble(); // 0.2;
+                // if (randomAi.NextDouble() > 0.98) PromiseMultiplierBase3 = randomAi.NextDouble(); // 0.3;
+                // if (randomAi.NextDouble() > 0.98) PromiseMultiplierBase4 = randomAi.NextDouble(); // 0.25;
                 if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange1A = randomAi.NextDouble(); // 0.3;
                 if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange1B = randomAi.NextDouble(); // 0.15;
                 if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange1C = randomAi.NextDouble(); // 0.1;
-                if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange2A = randomAi.NextDouble(); // 0.1;
-                if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange2B = randomAi.NextDouble(); // 0.05;
-                if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange2C = randomAi.NextDouble(); // 0.1;
-                if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange3A = randomAi.NextDouble(); // 0.4;
-                if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange3B = randomAi.NextDouble(); // 0.25;
-                if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange3C = randomAi.NextDouble(); // 0.1;
-                if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange4A = randomAi.NextDouble(); // 0.1;
-                if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange4B = randomAi.NextDouble(); // 0.05;
-                if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange4C = randomAi.NextDouble(); // 0.1;
+                // if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange2A = randomAi.NextDouble(); // 0.1;
+                // if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange2B = randomAi.NextDouble(); // 0.05;
+                // if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange2C = randomAi.NextDouble(); // 0.1;
+                // if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange3A = randomAi.NextDouble(); // 0.4;
+                // if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange3B = randomAi.NextDouble(); // 0.25;
+                // if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange3C = randomAi.NextDouble(); // 0.1;
+                // if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange4A = randomAi.NextDouble(); // 0.1;
+                // if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange4B = randomAi.NextDouble(); // 0.05;
+                // if (randomAi.NextDouble() > 0.98) PromiseMultiplierChange4C = randomAi.NextDouble(); // 0.1;
                 if (randomAi.NextDouble() > 0.98) MiniRisk = randomAi.Next(100); // 5;
             }
         }
@@ -642,7 +642,7 @@ namespace promise
                 }
                 Suit = suit;
                 IsTrump = isTrump;
-                BiggestValuesInSuit = BiggestValuesInSuit(cards, playedCardsInSuit);
+                BiggestValuesInSuit = BiggestSuitsInHand(cards, playedCardsInSuit);
                 BigValuesInSuit = BigValuesInSuit(ai, cards);
                 SmallestValuesInSuit = SmallestValuesInSuit(cards, playedCardsInSuit);
                 SmallValuesInSuit = SmallValuesInSuit(ai, cards);
@@ -786,17 +786,17 @@ namespace promise
             return zeroPromises;
         }
 
-        private static int BiggestTrumpsInHand(List<Card> myTrumps, Card trumpCard, List<Card> playedTrumps)
+        private static int BiggestSuitsInHand(List<Card> myCardsInSuit, List<Card> playedCardsInSuit, Card trumpCard = null)
         {
             int retVal = 0;
 
             for (int i = 14; i > 1; i--)
             {
-                if (myTrumps.Any(x => (int)x.CardValue == i))
+                if (myCardsInSuit.Any(x => (int)x.CardValue == i))
                 {
                     retVal++;
                 }
-                else if ((int)trumpCard.CardValue == i || playedTrumps.Any(x => (int)x.CardValue == i))
+                else if ((trumpCard != null && (int)trumpCard.CardValue == i) || playedCardsInSuit.Any(x => (int)x.CardValue == i))
                 {
                     continue;
                 }
@@ -809,13 +809,12 @@ namespace promise
             return retVal;
         }
 
-        private static int KeepsAtLeastWithTrumps(List<Card> myTrumps, Card trumpCard, List<Card> playedTrumps)
+        private static int KeepsAtLeastInSuit(List<Card> myCardsInSuit, List<Card> playedCardsInSuit, Card trumpCard = null)
         {
             // this method counts also if player has for example trum king and queen -> a least one keep
-            // or if player has trumps four, three and two but there is one bigger trump -> at least two keeps
 
             // first take biggest trumps
-            int retVal = BiggestTrumpsInHand(myTrumps, trumpCard, playedTrumps);
+            int retVal = BiggestSuitsInHand(myCardsInSuit, playedCardsInSuit, trumpCard);
 
             int strike = 0;
             int gap = 0;
@@ -823,11 +822,11 @@ namespace promise
             // this loops starts from gap (or played card which leads to gap) because biggest trumps ends to gap
             for (int i = 14 - retVal; i > 1; i--)
             {
-                if (myTrumps.Any(x => (int)x.CardValue == i))
+                if (myCardsInSuit.Any(x => (int)x.CardValue == i))
                 {
                     strike++;
                 }
-                else if ((int)trumpCard.CardValue == i || playedTrumps.Any(x => (int)x.CardValue == i))
+                else if ((trumpCard != null && (int)trumpCard.CardValue == i) || playedCardsInSuit.Any(x => (int)x.CardValue == i))
                 {
                     continue;
                 }
@@ -842,14 +841,175 @@ namespace promise
                     gap++;
                 }
             }
-
             if (strike > gap) retVal+= strike - gap;
 
             return retVal;
         }
 
-        public static Promise MakePromise(PlayerAI ai, List<Card> hand, int playersInGame, Card trumpCard, Promise[] promises)
+        private static double NormalizeGoingOverOrUnder(double myPromise, double avgPoints, double goingOver, int playersLeft)
         {
+            double changePromiseBy = 0.0;
+            List<double> goingOverList = new List<double>();
+            if ((goingOver > 1.5 && myPromise > 1.5) || (myPromise > avgPoints + 2))
+            {
+                for (double i = 0; i < goingOver; i+= 0.5)
+                {
+                    for (double j = 0; j <= i; j+= 0.5) goingOverList.Add(j);
+                }
+                for (double i = avgPoints + 2; i < myPromise; i+= 0.5)
+                {
+                    for (double j = avgPoints + 2; j <= i; j+= 0.5) goingOverList.Add(myPromise - j);
+                }
+                changePromiseBy = goingOverList.OrderBy(x => rand.Next()).First() * -1;
+            }
+            else if (goingOver + (playersLeft * avgPoints) < -1.5 && myPromise > -1)
+            {
+                for (double i = 0; i > goingOver + (playersLeft * avgPoints); i-= 0.5)
+                {
+                    for (double j = 0; j >= i; j-= 0.5) goingOverList.Add(j);
+                }
+                changePromiseBy = goingOverList.OrderBy(x => rand.Next()).First() * -1;
+            }
+            return changePromiseBy;
+        }
+
+        private static bool CountAsWinningCard(double probability)
+        {
+            if (probability <= 0) return false;
+            if (probability >= 1) return true;
+            if (rand.NextDouble() >= probability) return true;
+            return false;
+        }
+
+        public class AnalyzedCard
+        {
+            public Card Card {get; set;}
+            public bool CardIsTrump {get; set;}
+            public double IsBiggest {get; set;}
+            public double Skippable {get; set;}
+            public double IsBiggestWithTrumps {get; set;}
+            public bool CountAsWinningCard {get; set;}
+            public bool CountAsSkippingCard {get; set;}
+            public bool CountAsWinningCardWithTrumps {get; set;}
+
+            public AnalyzedCard(PlayerAI ai, Card analyzeThisCard, List<Card> myHand, Card trumpCard, int playersInGame, List<Card> playedCards)
+            {
+                Card = analyzeThisCard;
+                CardIsTrump = analyzeThisCard.CardSuit == trumpCard.CardSuit;
+
+                int cardsInRound = myHand.Count();
+                int cardsInDeck = 52 - 1 - (cardsInRound * playersInGame);
+                int cardsInProbabilityDeck = 52 - 1 - cardsInRound;
+
+                int otherPlayersCardCount = cardsInRound * (playersInGame - 1);
+
+                double avgCardsEachSuitInHand = (double)cardsInRound / 4.0;
+
+                /**/
+                int biggerCards = 14 - (int)analyzeThisCard.CardValue;
+                if (CardIsTrump && trumpCard.CardValue > analyzeThisCard.CardValue) biggerCards--;
+                biggerCards-= myHand.Count(x => x.CardSuit == analyzeThisCard.CardSuit && x.CardValue > analyzeThisCard.CardValue);
+                biggerCards-= playedCards.Count(x => x.CardSuit == analyzeThisCard.CardSuit && x.CardValue > analyzeThisCard.CardValue);
+
+                IsBiggest = 1 - (double)biggerCards * ((double)cardsInDeck / (double)(cardsInDeck+otherPlayersCardCount));
+                if (biggerCards > cardsInDeck)
+                {
+                    CountAsWinningCard = false;
+                }
+                else
+                {
+                    CountAsWinningCard = CountAsWinningCard(IsBiggest);
+                }
+
+                /**/
+                int smallerCards = (int)analyzeThisCard.CardValue - 2;
+                if (CardIsTrump && trumpCard.CardValue < analyzeThisCard.CardValue) smallerCards--;
+                smallerCards-= myHand.Count(x => x.CardSuit == analyzeThisCard.CardSuit && x.CardValue < analyzeThisCard.CardValue);
+                smallerCards-= playedCards.Count(x => x.CardSuit == analyzeThisCard.CardSuit && x.CardValue < analyzeThisCard.CardValue);
+
+                double otherPlayersHaveSuit = avgCardsEachSuitInHand * (playersInGame - 1);
+
+                Skippable = 1 - (double)smallerCards * ((double)cardsInDeck / (double)(cardsInDeck+otherPlayersCardCount));
+                if (smallerCards < otherPlayersHaveSuit)
+                {
+                    // it is very likely that some one has bigger 
+                    CountAsSkippingCard = true;
+                }
+                if (smallerCards > cardsInDeck)
+                {
+                    CountAsSkippingCard = false;
+                }
+                else
+                {
+                    CountAsSkippingCard = CountAsWinningCard(Skippable);
+                }
+
+                /**/
+                int biggerCardsWithTrumps = 14 - (int)analyzeThisCard.CardValue;
+                if (!CardIsTrump) biggerCardsWithTrumps+= 13;
+                biggerCardsWithTrumps-= myHand.Count(x => x.CardSuit == analyzeThisCard.CardSuit && x.CardValue > analyzeThisCard.CardValue);
+                biggerCardsWithTrumps-= playedCards.Count(x => x.CardSuit == analyzeThisCard.CardSuit && x.CardValue > analyzeThisCard.CardValue);
+                if (CardIsTrump)
+                {
+                    if (trumpCard.CardValue > analyzeThisCard.CardValue) biggerCardsWithTrumps--;
+                }
+                else
+                {
+                    // trump card is not available in game
+                    biggerCardsWithTrumps--;
+
+                    // all trump cards are bigger than not trump
+                    biggerCardsWithTrumps-= myHand.Count(x => x.CardSuit == trumpCard.CardSuit);
+                    biggerCardsWithTrumps-= playedCards.Count(x => x.CardSuit == trumpCard.CardSuit);
+                }
+
+                if (biggerCardsWithTrumps > cardsInDeck)
+                {
+                    CountAsWinningCardWithTrumps = false;
+                }
+                else
+                {
+                    CountAsWinningCardWithTrumps = CountAsWinningCard(IsBiggestWithTrumps);
+                }
+
+            }
+        }
+
+        private static List<AnalyzedCard> ShadowPromises(PlayerAI ai, List<Card> myHand, Card trumpCard, int playersInGame, int[] promisesMade)
+        {
+            bool iAmFirst = promisesMade.Count() == 0;
+            bool iAmLast = promisesMade.Count() == playersInGame - 1;
+
+            int cardsInRound = myHand.Count();
+
+            int cardsInDeck = 52 - 1 - (cardsInRound * playersInGame);
+
+            List<AnalyzedCard> analyzedCards = new List<AnalyzedCard>();
+
+            foreach (Card card in myHand)
+            {
+                analyzedCards.Add(new AnalyzedCard(ai, card, myHand, trumpCard, playersInGame, new List<Card>()));
+            }
+
+            // shadowPromises.Add("IsWinningCard", analyzedCards.Count(x => x.IsWinningCard()));
+            // shadowPromises.Add("IsSkippingCard", analyzedCards.Count(x => x.IsSkippingCard()));
+            // shadowPromises.Add("IsWinningCardWithTrumps", analyzedCards.Count(x => x.IsWinningCardWithTrumps()));
+
+            return analyzedCards;
+        }
+
+        private static int PrintDebugRow(bool printDebug, int row, string degugStr)
+        {
+            if (!printDebug) return row;
+            Console.SetCursorPosition(20, row);
+            Console.Write(degugStr);
+            return ++row;
+        }
+
+        public static Promise MakePromise(PlayerAI ai, List<Card> hand, int playersInGame, Card trumpCard, Promise[] promises, bool debugPromise = false)
+        {
+            int debugRow = PrintDebugRow(debugPromise, 0, "DEBUG");
+
             // how many cards in hand in this round, 1-10
             int cardsInRound = hand.Count();
 
@@ -890,7 +1050,7 @@ namespace promise
 
             List<Card> myTrumps = hand.Where(x => x.CardSuit == trumpCard.CardSuit).ToList();
             int myTrumpCount = myTrumps.Count();
-            int biggestTrumpsInHand = BiggestTrumpsInHand(myTrumps, trumpCard, new List<Card>());
+            int biggestTrumpsInHand = BiggestSuitsInHand(myTrumps, new List<Card>(), trumpCard);
             int smallerTrumpsInHand = myTrumps.Count() - biggestTrumpsInHand;
 
             AnalyzedSuit analyzedC = new AnalyzedSuit(ai, suitC, CardSuit.Clubs, CardSuit.Clubs == trumpCard.CardSuit, null, playersInGame, cardsInGame, iAmFirst);
@@ -900,56 +1060,66 @@ namespace promise
 
             AnalyzedSuit analyzedT = new AnalyzedSuit(ai, myTrumps, trumpCard.CardSuit, true, null, playersInGame, cardsInGame, iAmFirst);
 
-            int promisesAtLeast = KeepsAtLeastWithTrumps(myTrumps, trumpCard, new List<Card>());
+            int promisesAtLeast = KeepsAtLeastInSuit(myTrumps, new List<Card>(), trumpCard);
+
+            List<AnalyzedCard> analyzedCards = ShadowPromises(ai, hand, trumpCard, playersInGame, promises.Where(x => x != null).Select(y => y.PromiseNumber).ToArray());
+            int shadowPromiseIsWinningCard = analyzedCards.Count(x => x.CountAsWinningCardWithTrumps && x.Card.CardSuit != trumpCard.CardSuit);
+            int shadowPromiseIsTrumpWinningCard = analyzedCards.Count(x => x.CountAsWinningCard && x.Card.CardSuit == trumpCard.CardSuit);
+            debugRow = PrintDebugRow(debugPromise, debugRow, $"shadowPromiseIsWinningCard: {shadowPromiseIsWinningCard}");
+            debugRow = PrintDebugRow(debugPromise, debugRow, $"shadowPromiseIsTrumpWinningCard: {shadowPromiseIsTrumpWinningCard}");
 
             // this is a fact
             double myPromise = promisesAtLeast;
+            debugRow = PrintDebugRow(debugPromise, debugRow, $"promisesAtLeast: {promisesAtLeast}");
             bool playZero = false;
 
-            double averageSuitMultiplier = Math.Sqrt(avgEachSuitAtPlayer); //
+            double averageSuitMultiplier = 1 - Math.Sqrt(avgEachSuitAtPlayer); //
+            debugRow = PrintDebugRow(debugPromise, debugRow, $"averageSuitMultiplier: {averageSuitMultiplier}");
 
             double promiseMultiplier = ai.PromiseMultiplierBase1; // base multiplier when analyzing biggest cards in my hand
             if (iAmFirst) promiseMultiplier+= ai.PromiseMultiplierChange1A; // first player has advantage in round
             if (iAmLast) promiseMultiplier+= ai.PromiseMultiplierChange1B; // last player has advantage in round
             promiseMultiplier+= zeroPromises * ai.PromiseMultiplierChange1C; // if there are zero promises it is more likely to get bigger points
+            promiseMultiplier*= averageSuitMultiplier;
+            debugRow = PrintDebugRow(debugPromise, debugRow, $"promiseMultiplier: {promiseMultiplier}");
 
-            if (trumpCard.CardSuit != CardSuit.Clubs) myPromise+= analyzedC.BiggestValuesInSuit * averageSuitMultiplier * promiseMultiplier;
-            if (trumpCard.CardSuit != CardSuit.Diamonds) myPromise+= analyzedD.BiggestValuesInSuit * averageSuitMultiplier * promiseMultiplier;
-            if (trumpCard.CardSuit != CardSuit.Hearts) myPromise+= analyzedH.BiggestValuesInSuit * averageSuitMultiplier * promiseMultiplier;
-            if (trumpCard.CardSuit != CardSuit.Spades) myPromise+= analyzedS.BiggestValuesInSuit * averageSuitMultiplier * promiseMultiplier;
+            if (trumpCard.CardSuit != CardSuit.Clubs) myPromise+= analyzedC.BiggestValuesInSuit * promiseMultiplier;
+            if (trumpCard.CardSuit != CardSuit.Diamonds) myPromise+= analyzedD.BiggestValuesInSuit * promiseMultiplier;
+            if (trumpCard.CardSuit != CardSuit.Hearts) myPromise+= analyzedH.BiggestValuesInSuit * promiseMultiplier;
+            if (trumpCard.CardSuit != CardSuit.Spades) myPromise+= analyzedS.BiggestValuesInSuit * promiseMultiplier;
+            debugRow = PrintDebugRow(debugPromise, debugRow, $"myPromise: {myPromise}");
+            
+            // promiseMultiplier = ai.PromiseMultiplierBase2; // base multiplier when analyzing smallest cards in my hand
+            // if (iAmFirst) promiseMultiplier+= ai.PromiseMultiplierChange2A;
+            // if (iAmLast) promiseMultiplier+= ai.PromiseMultiplierChange2B;
+            // promiseMultiplier+= bigPromises * ai.PromiseMultiplierChange2C;
+
+            // if (trumpCard.CardSuit != CardSuit.Clubs) myPromise-= analyzedC.SmallestValuesInSuit * averageSuitMultiplier * promiseMultiplier;
+            // if (trumpCard.CardSuit != CardSuit.Diamonds) myPromise-= analyzedD.SmallestValuesInSuit * averageSuitMultiplier * promiseMultiplier;
+            // if (trumpCard.CardSuit != CardSuit.Hearts) myPromise-= analyzedH.SmallestValuesInSuit * averageSuitMultiplier * promiseMultiplier;
+            // if (trumpCard.CardSuit != CardSuit.Spades) myPromise-= analyzedS.SmallestValuesInSuit * averageSuitMultiplier * promiseMultiplier;
+
+
+            // promiseMultiplier = ai.PromiseMultiplierBase3; // base multiplier when analyzing rest of big cards in my hand
+            // if (iAmFirst) promiseMultiplier+= ai.PromiseMultiplierChange3A;
+            // if (iAmLast) promiseMultiplier+= ai.PromiseMultiplierChange3B;
+            // promiseMultiplier+= zeroPromises * ai.PromiseMultiplierChange3C; // if there are zero promises it is more likely to get bigger points
+
+            // if (trumpCard.CardSuit != CardSuit.Clubs) myPromise+= (analyzedC.BigValuesInSuit - analyzedC.BiggestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
+            // if (trumpCard.CardSuit != CardSuit.Diamonds) myPromise+= (analyzedD.BigValuesInSuit - analyzedD.BiggestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
+            // if (trumpCard.CardSuit != CardSuit.Hearts) myPromise+= (analyzedH.BigValuesInSuit - analyzedH.BiggestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
+            // if (trumpCard.CardSuit != CardSuit.Spades) myPromise+= (analyzedS.BigValuesInSuit - analyzedS.BiggestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
 
             
-            promiseMultiplier = ai.PromiseMultiplierBase2; // base multiplier when analyzing smallest cards in my hand
-            if (iAmFirst) promiseMultiplier+= ai.PromiseMultiplierChange2A;
-            if (iAmLast) promiseMultiplier+= ai.PromiseMultiplierChange2B;
-            promiseMultiplier+= bigPromises * ai.PromiseMultiplierChange2C;
+            // promiseMultiplier = ai.PromiseMultiplierBase4; // base multiplier when analyzing rest of small cards in my hand
+            // if (iAmFirst) promiseMultiplier+= ai.PromiseMultiplierChange4A;
+            // if (iAmLast) promiseMultiplier+= ai.PromiseMultiplierChange4B;
+            // promiseMultiplier+= bigPromises * ai.PromiseMultiplierChange4C;
 
-            if (trumpCard.CardSuit != CardSuit.Clubs) myPromise-= analyzedC.SmallestValuesInSuit * averageSuitMultiplier * promiseMultiplier;
-            if (trumpCard.CardSuit != CardSuit.Diamonds) myPromise-= analyzedD.SmallestValuesInSuit * averageSuitMultiplier * promiseMultiplier;
-            if (trumpCard.CardSuit != CardSuit.Hearts) myPromise-= analyzedH.SmallestValuesInSuit * averageSuitMultiplier * promiseMultiplier;
-            if (trumpCard.CardSuit != CardSuit.Spades) myPromise-= analyzedS.SmallestValuesInSuit * averageSuitMultiplier * promiseMultiplier;
-
-
-            promiseMultiplier = ai.PromiseMultiplierBase3; // base multiplier when analyzing rest of big cards in my hand
-            if (iAmFirst) promiseMultiplier+= ai.PromiseMultiplierChange3A;
-            if (iAmLast) promiseMultiplier+= ai.PromiseMultiplierChange3B;
-            promiseMultiplier+= zeroPromises * ai.PromiseMultiplierChange3C; // if there are zero promises it is more likely to get bigger points
-
-            if (trumpCard.CardSuit != CardSuit.Clubs) myPromise+= (analyzedC.BigValuesInSuit - analyzedC.BiggestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
-            if (trumpCard.CardSuit != CardSuit.Diamonds) myPromise+= (analyzedD.BigValuesInSuit - analyzedD.BiggestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
-            if (trumpCard.CardSuit != CardSuit.Hearts) myPromise+= (analyzedH.BigValuesInSuit - analyzedH.BiggestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
-            if (trumpCard.CardSuit != CardSuit.Spades) myPromise+= (analyzedS.BigValuesInSuit - analyzedS.BiggestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
-
-            
-            promiseMultiplier = ai.PromiseMultiplierBase4; // base multiplier when analyzing rest of small cards in my hand
-            if (iAmFirst) promiseMultiplier+= ai.PromiseMultiplierChange4A;
-            if (iAmLast) promiseMultiplier+= ai.PromiseMultiplierChange4B;
-            promiseMultiplier+= bigPromises * ai.PromiseMultiplierChange4C;
-
-            if (trumpCard.CardSuit != CardSuit.Clubs) myPromise-= (analyzedC.SmallValuesInSuit - analyzedC.SmallestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
-            if (trumpCard.CardSuit != CardSuit.Diamonds) myPromise-= (analyzedD.SmallValuesInSuit - analyzedD.SmallestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
-            if (trumpCard.CardSuit != CardSuit.Hearts) myPromise-= (analyzedH.SmallValuesInSuit - analyzedH.SmallestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
-            if (trumpCard.CardSuit != CardSuit.Spades) myPromise-= (analyzedS.SmallValuesInSuit - analyzedS.SmallestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
+            // if (trumpCard.CardSuit != CardSuit.Clubs) myPromise-= (analyzedC.SmallValuesInSuit - analyzedC.SmallestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
+            // if (trumpCard.CardSuit != CardSuit.Diamonds) myPromise-= (analyzedD.SmallValuesInSuit - analyzedD.SmallestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
+            // if (trumpCard.CardSuit != CardSuit.Hearts) myPromise-= (analyzedH.SmallValuesInSuit - analyzedH.SmallestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
+            // if (trumpCard.CardSuit != CardSuit.Spades) myPromise-= (analyzedS.SmallValuesInSuit - analyzedS.SmallestValuesInSuit) * averageSuitMultiplier * promiseMultiplier;
 
             if (promisesAtLeast == 0)
             {
@@ -982,30 +1152,9 @@ namespace promise
                 }
             }
 
-            List<double> goingOverList = new List<double>();
+            
             double goingOver = (promisesMade + myPromise) - cardsInRound;
-            double changePromiseBy = 0;
-            if ((goingOver > 1 && myPromise > 1) || (myPromise > avgPoints + 2))
-            {
-                for (double i = 0; i < goingOver; i+= 0.5)
-                {
-                    for (double j = 0; j <= i; j+= 0.5) goingOverList.Add(j);
-                }
-                for (double i = avgPoints + 2; i < myPromise; i+= 0.5)
-                {
-                    for (double j = avgPoints + 2; j <= i; j+= 0.5) goingOverList.Add(myPromise - j);
-                }
-                changePromiseBy = goingOverList.OrderBy(x => rand.Next()).First() * -1;
-            }
-            else if (goingOver < -1 && myPromise > -1)
-            {
-                for (double i = 0; i > goingOver; i-= 0.5)
-                {
-                    for (double j = 0; j >= i; j-= 0.5) goingOverList.Add(j);
-                }
-                changePromiseBy = goingOverList.OrderBy(x => rand.Next()).First() * -1;
-            }
-            myPromise+= changePromiseBy;
+            myPromise+= NormalizeGoingOverOrUnder(myPromise, avgPoints, goingOver, (playersInGame - playersPromised - 1));
 
             int finalPromise;
             if (myPromise <= 0 || playZero)
@@ -1017,13 +1166,26 @@ namespace promise
                 int minPromise = (int)myPromise;
                 int maxPromise = minPromise + 1;
                 int randTest = (int)((1 + myPromise - maxPromise) * 100);
-                finalPromise = (CheckRandom(randTest)) ? minPromise : maxPromise;
+                if (randTest == 0)
+                {
+                    finalPromise = minPromise;
+                }
+                else
+                {
+                    finalPromise = (CheckRandom(randTest)) ? minPromise : maxPromise;
+                }
             }
             
+            if (finalPromise != shadowPromiseIsWinningCard + Math.Max(promisesAtLeast, shadowPromiseIsTrumpWinningCard))
+            {
+                // finalPromise = shadowPromiseIsWinningCard + Math.Max(promisesAtLeast, shadowPromiseIsTrumpWinningCard);
+            }
+
             // last check - do not promise under your biggest trumps!
-            if (finalPromise < promisesAtLeast) finalPromise = promisesAtLeast;
+            if (finalPromise < Math.Max(promisesAtLeast, shadowPromiseIsTrumpWinningCard)) finalPromise = Math.Max(promisesAtLeast, shadowPromiseIsTrumpWinningCard);
 
             if (finalPromise > cardsInRound) finalPromise = cardsInRound;
+
 
             return new Promise(finalPromise);
         }
@@ -1205,9 +1367,9 @@ namespace promise
 
             List<Card> myTrumps = hand.Where(x => x.CardSuit == trumpCard.CardSuit).ToList();
             int myTrumpCount = myTrumps.Count();
-            int biggestTrumpsInHand = BiggestTrumpsInHand(myTrumps, trumpCard, cardsPlayedInRounds.Where(x => x.CardSuit == trumpCard.CardSuit).ToList());
+            int biggestTrumpsInHand = BiggestSuitsInHand(myTrumps, cardsPlayedInRounds.Where(x => x.CardSuit == trumpCard.CardSuit).ToList(), trumpCard);
             int smallerTrumpsInHand = myTrumps.Count() - biggestTrumpsInHand;
-            int sureTrumpCount = KeepsAtLeastWithTrumps(myTrumps, trumpCard, cardsPlayedInRounds.Where(x => x.CardSuit == trumpCard.CardSuit).ToList());
+            int sureTrumpCount = KeepsAtLeastInSuit(myTrumps, cardsPlayedInRounds.Where(x => x.CardSuit == trumpCard.CardSuit).ToList(), trumpCard);
 
             AnalyzedSuit analyzedC = new AnalyzedSuit(ai, suitC, CardSuit.Clubs, CardSuit.Clubs == trumpCard.CardSuit, cardsPlayedInRounds, playersInGame, cardsInGame, iAmFirst);
             AnalyzedSuit analyzedD = new AnalyzedSuit(ai, suitD, CardSuit.Diamonds, CardSuit.Diamonds == trumpCard.CardSuit, cardsPlayedInRounds, playersInGame, cardsInGame, iAmFirst);
