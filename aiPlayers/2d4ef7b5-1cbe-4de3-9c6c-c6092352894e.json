@@ -1,0 +1,32 @@
+{
+	"_id": {
+		"$oid": "5f6b8763953238575dab0673"
+	},
+	"AiName": "2d4ef7b5-1cbe-4de3-9c6c-c6092352894e",
+	"PlayerAI": {
+		"AiName": "2d4ef7b5-1cbe-4de3-9c6c-c6092352894e",
+		"DodgeBase": 20,
+		"DodgeSure": 100,
+		"DodgeSmallestValuesInSuit": 9,
+		"DodgeSmallestValuesInSuitNOT": 2,
+		"DodgeCardCountAvgOtherPlayersCount1": 61,
+		"DodgeBiggestValuesInSuit": 1,
+		"DodgeBiggestValuesInSuitNOT": 80,
+		"DodgeCardCountAvgOtherPlayersCount2": 22,
+		"DodgeInChargeAverageCount": 0.41700903159426944,
+		"BigValuesInSuit": 12,
+		"SmallValuesInSuit": 2,
+		"PromiseMultiplierBase1": 0.6357183482664257,
+		"PromiseMultiplierChange1A": 0.08266640225549526,
+		"PromiseMultiplierChange1B": 0.008074447516386606,
+		"PromiseMultiplierChange1C": 0.006248210094053396,
+		"MiniRisk": 75
+	},
+	"Points": 105,
+	"PromisesKept": 11,
+	"Evolution": 0,
+	"Created": {
+		"$date": "2020-09-23T17:35:31.439Z"
+	},
+	"GameGuid": "c66cf64d-c899-4722-b7a6-046d27d0097e"
+}
