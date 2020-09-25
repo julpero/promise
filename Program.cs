@@ -12,7 +12,7 @@ namespace promise
     {
         static void Main(string[] args)
         {
-            const int CREATEDBOTS = 5;
+            const int CREATEDBOTS = 9;
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
             int GameCount = 1;
@@ -55,7 +55,7 @@ namespace promise
             {
                 GameSettings.IsTotalTest = true;
                 GameCount = 20;
-                gameLoop = 200000;
+                gameLoop = 9000; // console max
                 ScreenUtils.ClearScreen();
             }
             else

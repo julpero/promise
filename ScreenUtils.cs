@@ -483,5 +483,25 @@ namespace promise
             ScreenUtils.ResetConsoleColors();
         }
 
+        public static void ClearDebugRows(bool printDebug)
+        {
+            if (!printDebug) return;
+            for (int i = 0; i < 20; i++)
+            {
+                Console.SetCursorPosition(18, i);
+                Console.Write("".PadRight(108, ' '));
+            }
+            return;
+        }
+
+        public static int PrintDebugRow(bool printDebug, int row, string degugStr)
+        {
+            if (!printDebug) return row;
+            Console.SetCursorPosition(18, row);
+            Console.Write(degugStr);
+            return ++row;
+        }
+
+
     }
 }
